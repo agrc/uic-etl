@@ -25,11 +25,15 @@ namespace uic_etl
                 return;
             }
 
+            var debug = new DebugService(options.Verbose);
+
             try
             {
+                debug.Write("Connecting to: {0}", options.SdeConnectionPath);
 
                 workspace = WorkspaceService.GetSdeWorkspace(options.SdeConnectionPath);
 
+                debug.Write("Connected.");
             }
             catch (COMException e)
             {

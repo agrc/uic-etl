@@ -60,6 +60,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="services\ArgParserService.cs" />
+    <Compile Include="services\DebugService.cs" />
     <Compile Include="services\WorkspaceService.cs" />
   </ItemGroup>
   <ItemGroup>
