@@ -1,6 +1,6 @@
 ﻿namespace uic_etl.models
 {
-    public enum Configruation
+    internal enum Configruation
     {
         Dev,
         Stage,
