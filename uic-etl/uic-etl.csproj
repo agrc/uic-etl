@@ -47,8 +47,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="models\Configruation.cs" />
+    <Compile Include="models\EtlOptions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="services\ArgParserService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
