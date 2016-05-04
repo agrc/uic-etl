@@ -1,6 +1,4 @@
 # Underground Injection Control ETL Tool
-============
-
 
 ### Reference Items
 
