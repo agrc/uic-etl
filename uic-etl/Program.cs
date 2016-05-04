@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+using ESRI.ArcGIS.Geodatabase;
 using uic_etl.models;
 using uic_etl.services;
 
@@ -8,6 +10,8 @@ namespace uic_etl
     {
         private static void Main(string[] args)
         {
+            EtlOptions options;
+            IWorkspace workspace;
 
             try
             {
@@ -21,23 +25,23 @@ namespace uic_etl
                 return;
             }
 
-            if (string.IsNullOrEmpty(sdePath))
+            try
             {
-                throw new InvalidOperationException("Missing required option -c for the location fo the sde connection file.");
-            }
 
-            if (showHelp)
+                workspace = WorkspaceService.GetSdeWorkspace(options.SdeConnectionPath);
+
+            }
+            catch (COMException e)
             {
-                ShowHelp(p);
-            }
-        }
+                Console.Write("uic-etl: ");
+                Console.WriteLine(e.Message);
 
-        private static void ShowHelp(OptionSet p)
-        {
-            Console.WriteLine("Usage: uicetl [OPTIONS]+");
-            Console.WriteLine();
-            Console.WriteLine("Options:");
-            p.WriteOptionDescriptions(Console.Out);
+                return; 
+            }
+            var featureWorkspace = (IFeatureWorkspace)workspace;
+
+            Marshal.ReleaseComObject(featureWorkspace);
+            Marshal.ReleaseComObject(workspace);
         }
     }
 }
