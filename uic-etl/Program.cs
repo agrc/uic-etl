@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using ESRI.ArcGIS.Geodatabase;
@@ -55,11 +56,14 @@ namespace uic_etl
 
             var payload = XmlService.CreatePayloadElements();
 
+            var comObjects = new List<object>();
+
             try
             {
                 debug.Write("{1} Connecting to: {0}", options.SdeConnectionPath, start.Elapsed);
 
                 workspace = WorkspaceService.GetSdeWorkspace(options.SdeConnectionPath);
+                comObjects.Add(workspace);
 
                 debug.Write("{0} Connected.", start.Elapsed);
             }
@@ -72,9 +76,19 @@ namespace uic_etl
             }
 
             var featureWorkspace = (IFeatureWorkspace)workspace;
+            comObjects.Add(featureWorkspace);
 
-            Marshal.ReleaseComObject(featureWorkspace);
-            Marshal.ReleaseComObject(workspace);
+            var uicFacility = featureWorkspace.OpenFeatureClass("UICFacility");
+            comObjects.Add(uicFacility);
+
+            debug.Write("{1} Releasing COMOBJECTS: {0}", comObjects.Count, start.Elapsed);
+
+            // dispost of objects in reverse order they were added
+            comObjects.Reverse();
+            foreach (var item in comObjects)
+            {
+                Marshal.ReleaseComObject(item);
+            }
 
             if (options.Verbose)
             {
