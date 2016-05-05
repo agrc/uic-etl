@@ -20,6 +20,13 @@ namespace uic_etl.services
 
             Console.Write(" # ");
             Console.WriteLine(format, args);
+
+            if (format.EndsWith("."))
+            {
+                return;
+            }
+
+            Console.Write("...");
         } 
     }
 }
