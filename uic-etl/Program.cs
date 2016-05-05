@@ -79,18 +79,19 @@ namespace uic_etl
             var featureWorkspace = (IFeatureWorkspace) workspace;
             comObjects.Add(featureWorkspace);
 
-            debug.Write("{0} Opening UICFacility feature class.", start.Elapsed);
+            debug.Write("{0} Opening UICFacility feature class", start.Elapsed);
 
             var uicFacility = featureWorkspace.OpenFeatureClass("UICFacility");
             comObjects.Add(uicFacility);
 
-            debug.Write("{0} Creating UICFacility field map", start.Elapsed);
+            debug.Write("{0} Creating UICFacility field mapping", start.Elapsed);
 
             var facilityFields = new[]
             {
                 "GUID", "FacilityID", "CountyFIPS", "NAICSPrimary", "FacilityName", "FacilityAddress", "FacilityCity",
                 "FacilityState", "FacilityZip", "FacilityMilePost", "FacilityType", "NoMigrationPetStatus"
             };
+
             var facilityFieldMap = new FindIndexByFieldNameCommand(uicFacility, facilityFields).Execute();
 
             var queryFilter = new QueryFilterClass
