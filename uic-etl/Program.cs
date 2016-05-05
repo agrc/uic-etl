@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using ESRI.ArcGIS.Geodatabase;
 using uic_etl.models;
+using uic_etl.models.dtos;
 using uic_etl.services;
 
 namespace uic_etl
@@ -26,6 +27,16 @@ namespace uic_etl
             }
 
             var debug = new DebugService(options.Verbose);
+            var doc = XlmService.CreateDocument();
+
+            var headerModel =  new HeaderInformation
+            {
+                Title = "data submission for quarter #1, fy 2010",
+                CreationTime = DateTime.Now.ToString("s"),
+                Comments = "This is a sample"
+            };
+
+            XlmService.AppendHeader(ref doc, headerModel);
 
             try
             {
@@ -42,6 +53,7 @@ namespace uic_etl
 
                 return; 
             }
+
             var featureWorkspace = (IFeatureWorkspace)workspace;
 
             Marshal.ReleaseComObject(featureWorkspace);
