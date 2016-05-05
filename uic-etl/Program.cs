@@ -38,7 +38,7 @@ namespace uic_etl
 
             debug.Write("{0} Creating XML document.", start.Elapsed);
 
-            var doc = XlmService.CreateDocument();
+            var doc = XmlService.CreateDocument();
 
             var headerModel =  new HeaderInformation
             {
@@ -49,7 +49,11 @@ namespace uic_etl
 
             debug.Write("{1} Creating header property for: {0}", headerModel.Title, start.Elapsed);
 
-            XlmService.AppendHeader(ref doc, headerModel);
+            XmlService.AppendHeader(ref doc, headerModel);
+
+            debug.Write("{0} Creating payload elements", start.Elapsed);
+
+            var payload = XmlService.CreatePayloadElements();
 
             try
             {

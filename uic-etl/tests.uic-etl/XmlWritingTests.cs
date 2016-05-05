@@ -17,7 +17,7 @@ namespace tests.uic_etl
             
             var expected = XDocument.Parse(documentXml);
 
-            var doc = XlmService.CreateDocument();
+            var doc = XmlService.CreateDocument();
 
             Assert.Equal(expected.ToString(), doc.ToString());
         }
@@ -47,6 +47,20 @@ namespace tests.uic_etl
                 new XElement(XName.Get("Sensitivity"), "UNCLASSIFIED"));
 
             Assert.Equal(expected.ToString(), root.ToString());
+        }
+
+        [Fact]
+        public void CreatePayload()
+        {
+            const string documentXml = "<Payload Operation=\"Delete - Insert\">" +
+                                       "<UIC xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.exchangenetwork.net/schema/uic/2\">" +
+                                       "<PrimacyAgencyCode>UDEQ</PrimacyAgencyCode><FacilityList/></UIC></Payload>";
+
+            var expected = XDocument.Parse(documentXml);
+
+            var doc = XmlService.CreatePayloadElements();
+
+            Assert.Equal(expected.ToString(), doc.ToString());
         }
     }
 }
