@@ -62,6 +62,7 @@
     <Compile Include="services\ArgParserService.cs" />
     <Compile Include="services\DebugService.cs" />
     <Compile Include="services\WorkspaceService.cs" />
+    <Compile Include="services\XlmService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
