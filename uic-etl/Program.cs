@@ -94,10 +94,11 @@ namespace uic_etl
 
             var facilityFieldMap = new FindIndexByFieldNameCommand(uicFacility, facilityFields).Execute();
 
-            var queryFilter = new QueryFilterClass
+            var queryFilter = new QueryFilter
             {
                 WhereClause = "1=1"
             };
+
             comObjects.Add(queryFilter);
 
             debug.Write("{0} Quering UICFacility features.", start.Elapsed);
