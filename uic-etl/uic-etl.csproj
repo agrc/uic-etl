@@ -55,7 +55,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="commands\FindIndexByFieldNameCommand.cs" />
     <Compile Include="models\Configruation.cs" />
+    <Compile Include="models\dtos\IndexFieldMap.cs" />
     <Compile Include="models\dtos\HeaderInformation.cs" />
     <Compile Include="models\EtlOptions.cs" />
     <Compile Include="Program.cs" />
@@ -68,6 +70,12 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\domain.uic-etl\domain.uic-etl.csproj">
+      <Project>{e7f4093d-7977-4e7c-bf1f-82d8ca8bb0e5}</Project>
+      <Name>domain.uic-etl</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
