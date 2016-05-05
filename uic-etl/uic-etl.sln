@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uic-etl", "uic-etl.csproj",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests.uic-etl", "tests.uic-etl\tests.uic-etl.csproj", "{AABD646C-6EB2-4863-B735-CC6574EC7698}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "domain.uic-etl", "..\domain.uic-etl\domain.uic-etl.csproj", "{E7F4093D-7977-4E7C-BF1F-82D8CA8BB0E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{AABD646C-6EB2-4863-B735-CC6574EC7698}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AABD646C-6EB2-4863-B735-CC6574EC7698}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AABD646C-6EB2-4863-B735-CC6574EC7698}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7F4093D-7977-4E7C-BF1F-82D8CA8BB0E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7F4093D-7977-4E7C-BF1F-82D8CA8BB0E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7F4093D-7977-4E7C-BF1F-82D8CA8BB0E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7F4093D-7977-4E7C-BF1F-82D8CA8BB0E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
