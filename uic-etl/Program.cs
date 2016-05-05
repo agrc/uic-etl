@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using ESRI.ArcGIS.Geodatabase;
 using uic_etl.models;
@@ -27,6 +28,16 @@ namespace uic_etl
             }
 
             var debug = new DebugService(options.Verbose);
+            Stopwatch start = null;
+            if (options.Verbose)
+            {
+                start = Stopwatch.StartNew();
+            }
+
+            debug.Write("Staring: {0}", DateTime.Now.ToString("s"));
+
+            debug.Write("{0} Creating XML document.", start.Elapsed);
+
             var doc = XlmService.CreateDocument();
 
             var headerModel =  new HeaderInformation
@@ -36,15 +47,17 @@ namespace uic_etl
                 Comments = "This is a sample"
             };
 
+            debug.Write("{1} Creating header property for: {0}", headerModel.Title, start.Elapsed);
+
             XlmService.AppendHeader(ref doc, headerModel);
 
             try
             {
-                debug.Write("Connecting to: {0}", options.SdeConnectionPath);
+                debug.Write("{1} Connecting to: {0}", options.SdeConnectionPath, start.Elapsed);
 
                 workspace = WorkspaceService.GetSdeWorkspace(options.SdeConnectionPath);
 
-                debug.Write("Connected.");
+                debug.Write("{0} Connected.", start.Elapsed);
             }
             catch (COMException e)
             {
@@ -58,6 +71,13 @@ namespace uic_etl
 
             Marshal.ReleaseComObject(featureWorkspace);
             Marshal.ReleaseComObject(workspace);
+
+            if (options.Verbose)
+            {
+                start.Stop();
+            }
+
+            debug.Write("{0} finished.", start.Elapsed);
         }
     }
 }
