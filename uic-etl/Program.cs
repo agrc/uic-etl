@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using ESRI.ArcGIS.Geodatabase;
+using uic_etl.commands;
 using uic_etl.models;
 using uic_etl.models.dtos;
 using uic_etl.services;
@@ -78,9 +79,19 @@ namespace uic_etl
             var featureWorkspace = (IFeatureWorkspace)workspace;
             comObjects.Add(featureWorkspace);
 
+            debug.Write("{0} Opening UICFacility feature class.", start.Elapsed);
+
             var uicFacility = featureWorkspace.OpenFeatureClass("UICFacility");
             comObjects.Add(uicFacility);
 
+            debug.Write("{0} Creating UICFacility field map", start.Elapsed);
+
+            var facilityFields = new[]
+            {
+                "GUID", "FacilityID", "CountyFIPS", "NAICSPrimary", "FacilityName", "FacilityAddress", "FacilityCity",
+                "FacilityState", "FacilityZip", "FacilityMilePost", "FacilityType", "NoMigrationPetStatus"
+            };
+            var facilityFieldMap = new FindIndexByFieldNameCommand(uicFacility, facilityFields).Execute();
             debug.Write("{1} Releasing COMOBJECTS: {0}", comObjects.Count, start.Elapsed);
 
             // dispost of objects in reverse order they were added
