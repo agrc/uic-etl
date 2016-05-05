@@ -92,6 +92,23 @@ namespace uic_etl
                 "FacilityState", "FacilityZip", "FacilityMilePost", "FacilityType", "NoMigrationPetStatus"
             };
             var facilityFieldMap = new FindIndexByFieldNameCommand(uicFacility, facilityFields).Execute();
+
+            var queryFilter = new QueryFilterClass
+            {
+                WhereClause = "1=1"
+            };
+            comObjects.Add(queryFilter);
+
+            debug.Write("{0} Quering UICFacility features.", start.Elapsed);
+
+            var facilityCursor = uicFacility.Search(queryFilter, true);
+            comObjects.Add(facilityCursor);
+
+            IFeature feature;
+            while ((feature = facilityCursor.NextFeature()) != null)
+            {
+            }
+
             debug.Write("{1} Releasing COMOBJECTS: {0}", comObjects.Count, start.Elapsed);
 
             // dispost of objects in reverse order they were added
