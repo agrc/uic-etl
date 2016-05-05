@@ -42,7 +42,7 @@ namespace uic_etl
 
             var doc = XmlService.CreateDocument();
 
-            var headerModel =  new HeaderInformation
+            var headerModel = new HeaderInformation
             {
                 Title = "data submission for quarter #1, fy 2010",
                 CreationTime = DateTime.Now.ToString("s"),
@@ -73,10 +73,10 @@ namespace uic_etl
                 Console.Write("uic-etl: ");
                 Console.WriteLine(e.Message);
 
-                return; 
+                return;
             }
 
-            var featureWorkspace = (IFeatureWorkspace)workspace;
+            var featureWorkspace = (IFeatureWorkspace) workspace;
             comObjects.Add(featureWorkspace);
 
             debug.Write("{0} Opening UICFacility feature class.", start.Elapsed);
