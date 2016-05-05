@@ -4,6 +4,8 @@ namespace domain.uic_etl.xml
 {
     public class FacilityDetailModel
     {
+        private string xmlns = "http://www.exchangenetwork.net/schema/uic/2";
+
         public string FacilityIdentifier { get; set; }
         public string LocalityName { get; set; }
         public string FacilitySiteName { get; set; }
