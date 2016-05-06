@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using AutoMapper;
+using domain.uic_etl.sde;
+using domain.uic_etl.xml;
 using ESRI.ArcGIS.Geodatabase;
 using uic_etl.commands;
 using uic_etl.models;
@@ -126,6 +129,7 @@ namespace uic_etl
             }
 
             debug.Write("{0} finished.", start.Elapsed);
+        }
         }
     }
 }
