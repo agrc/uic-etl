@@ -100,14 +100,14 @@ namespace uic_etl
 
             var mapper = AutoMapperService.CreateMappings(facilityFieldMap);
 
+            debug.Write("{0} Quering UICFacility features.", start.Elapsed);
+
             var queryFilter = new QueryFilter
             {
                 WhereClause = "1=1"
             };
 
             comObjects.Add(queryFilter);
-
-            debug.Write("{0} Quering UICFacility features.", start.Elapsed);
 
             var facilityCursor = uicFacility.Search(queryFilter, true);
             comObjects.Add(facilityCursor);
