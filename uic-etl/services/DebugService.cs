@@ -19,14 +19,16 @@ namespace uic_etl.services
             }
 
             Console.Write(" # ");
-            Console.WriteLine(format, args);
+            Console.Write(format, args);
 
             if (format.EndsWith("."))
             {
+                Console.WriteLine();
                 return;
             }
 
             Console.Write("...");
+            Console.WriteLine();
         } 
     }
 }
