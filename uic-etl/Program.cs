@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using AutoMapper;
 using domain.uic_etl.sde;
 using domain.uic_etl.xml;
 using ESRI.ArcGIS.Geodatabase;
@@ -15,7 +14,6 @@ namespace uic_etl
 {
     internal class Program
     {
-        private static MapperConfiguration Mapper;
         private static void Main(string[] args)
         {
             EtlOptions options;
@@ -98,6 +96,10 @@ namespace uic_etl
 
             var facilityFieldMap = new FindIndexByFieldNameCommand(uicFacility, facilityFields).Execute();
 
+            debug.Write("{0} Creating mappings for domain models", start.Elapsed);
+
+            var mapper = AutoMapperService.CreateMappings(facilityFieldMap);
+
             var queryFilter = new QueryFilter
             {
                 WhereClause = "1=1"
@@ -131,21 +133,6 @@ namespace uic_etl
             }
 
             debug.Write("{0} finished.", start.Elapsed);
-        }
-
-        private static MapperConfiguration SetupMappings()
-        {
-             return new MapperConfiguration(_ => _.CreateMap<UicFacilityModel, FacilityDetailModel>()
-                 .ForMember(dest => dest.FacilityIdentifier, opts => opts.MapFrom(src => src.FacilityId))
-                 .ForMember(dest => dest.FacilityPetitionStatusCode, opts => opts.MapFrom(src => src.NoMigrationPetStatus))
-                 .ForMember(dest => dest.FacilitySiteName, opts => opts.MapFrom(src => src.FacilityName))
-                 .ForMember(dest => dest.FacilitySiteTypeCode, opts => opts.MapFrom(src => src.FacilityType))
-                 .ForMember(dest => dest.FacilityStateIdentifier, opts => opts.MapFrom(src => src.FacilityState))
-                 //.ForMember(dest => dest.LocalityName, opts => opts.MapFrom(src => src.))
-                 .ForMember(dest => dest.LocationAddressPostalCode, opts => opts.MapFrom(src => src.FacilityZip))
-                 .ForMember(dest => dest.LocationAddressStateCode, opts => opts.MapFrom(src => src.FacilityState))
-                 .ForMember(dest => dest.LocationAddressText, opts => opts.MapFrom(src => src.FacilityAddress))
-                 );
         }
     }
 }
