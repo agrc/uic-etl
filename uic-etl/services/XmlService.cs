@@ -1,4 +1,5 @@
 ﻿using System.Xml.Linq;
+using domain.uic_etl.xml;
 using uic_etl.models.dtos;
 
 namespace uic_etl.services
@@ -60,6 +61,11 @@ namespace uic_etl.services
                     new XElement(xmlns + "FacilityList")));
 
             return payload;
+        }
+
+        public static void AddFacility(ref XDocument doc, FacilityDetailModel model)
+        {
+            
         }
     }
 }

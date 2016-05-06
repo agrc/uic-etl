@@ -115,7 +115,10 @@ namespace uic_etl
             IFeature feature;
             while ((feature = facilityCursor.NextFeature()) != null)
             {
+                var facility = mapper.Map<IFeature, UicFacilityModel>(feature);
+                var xmlFacility = mapper.Map<UicFacilityModel, FacilityDetailModel>(facility);
 
+                XmlService.AddFacility(ref doc, xmlFacility);
             }
 
             debug.Write("{1} Releasing COMOBJECTS: {0}", comObjects.Count, start.Elapsed);
