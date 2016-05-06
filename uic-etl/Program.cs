@@ -92,8 +92,8 @@ namespace uic_etl
 
             var facilityFields = new[]
             {
-                "GUID", "FacilityID", "CountyFIPS", "NAICSPrimary", "FacilityName", "FacilityAddress", "FacilityCity",
-                "FacilityState", "FacilityZip", "FacilityMilePost", "FacilityType", "NoMigrationPetStatus"
+                "GUID", "FacilityID", "FacilityName", "FacilityAddress", "FacilityCity",
+                "FacilityState", "FacilityZip", "FacilityType", "NoMigrationPetStatus"
             };
 
             var facilityFieldMap = new FindIndexByFieldNameCommand(uicFacility, facilityFields).Execute();
