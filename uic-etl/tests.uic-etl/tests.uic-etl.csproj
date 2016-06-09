@@ -73,6 +73,10 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\domain.uic-etl\domain.uic-etl.csproj">
+      <Project>{E7F4093D-7977-4E7C-BF1F-82D8CA8BB0E5}</Project>
+      <Name>domain.uic-etl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\uic-etl.csproj">
       <Project>{281edc05-ada9-4908-b9b8-b39b544a7d20}</Project>
       <Name>uic-etl</Name>

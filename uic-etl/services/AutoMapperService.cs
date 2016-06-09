@@ -10,45 +10,104 @@ namespace uic_etl.services
 {
     public static class AutoMapperService
     {
-        public static IMapper CreateMappings(IReadOnlyDictionary<string, IndexFieldMap> facilityFieldMap)
+        public static IMapper CreateMappings()
         {
             var config = new MapperConfiguration(_ =>
             {
-                _.CreateMap<UicFacilityModel, FacilityDetailModel>()
-                    .ForMember(dest => dest.FacilityIdentifier, opts => opts.MapFrom(src => src.FacilityId))
-                    .ForMember(dest => dest.FacilityPetitionStatusCode,
-                        opts => opts.MapFrom(src => src.NoMigrationPetStatus))
+                _.CreateMap<FacilitySdeModel, FacilityDetailModel>()
+                    .ForMember(dest => dest.FacilityIdentifier, opts => opts.Ignore())
+                    .ForMember(dest => dest.LocalityName, opts => opts.MapFrom(src => src.FacilityCity))
+                    .ForMember(dest => dest.FacilityPetitionStatusCode, opts => opts.MapFrom(src => src.NoMigrationPetStatus))
                     .ForMember(dest => dest.FacilitySiteName, opts => opts.MapFrom(src => src.FacilityName))
                     .ForMember(dest => dest.FacilitySiteTypeCode, opts => opts.MapFrom(src => src.FacilityType))
-                    .ForMember(dest => dest.FacilityStateIdentifier, opts => opts.MapFrom(src => src.FacilityState))
-                    .ForMember(dest => dest.LocalityName, opts => opts.Ignore())
-                    .ForMember(dest => dest.FacilityViolationDetails, opts => opts.Ignore())
+                    .ForMember(dest => dest.FacilityStateIdentifier, opts => opts.MapFrom(src => src.FacilityId))
+                    .ForMember(dest => dest.FacilityViolationDetail, opts => opts.Ignore())
                     .ForMember(dest => dest.LocationAddressPostalCode, opts => opts.MapFrom(src => src.FacilityZip))
-                    .ForMember(dest => dest.LocationAddressStateCode, opts => opts.MapFrom(src => src.FacilityState))
-                    .ForMember(dest => dest.LocationAddressText, opts => opts.MapFrom(src => src.FacilityAddress));
+                    .ForMember(dest => dest.LocationAddressStateCode, opts => opts.MapFrom(src => src.FacilityId))
+                    .ForMember(dest => dest.LocationAddressText, opts => opts.MapFrom(src => src.FacilityAddress))
+                    .ForMember(dest => dest.Xmlns, opts => opts.Ignore());
 
-                _.CreateMap<IFeature, UicFacilityModel>()
-                    .ForMember(dest => dest.Guid,
-                        opts => opts.ResolveUsing(g => new Guid(g.get_Value(facilityFieldMap["GUID"].Index))))
-                    .ForMember(dest => dest.FacilityId,
-                        opts => opts.MapFrom(src => src.get_Value(facilityFieldMap["FacilityID"].Index)))
-                    .ForMember(dest => dest.FacilityName,
-                        opts => opts.MapFrom(src => src.get_Value(facilityFieldMap["FacilityName"].Index)))
-                    .ForMember(dest => dest.FacilityAddress,
-                        opts => opts.MapFrom(src => src.get_Value(facilityFieldMap["FacilityAddress"].Index)))
-                    .ForMember(dest => dest.FacilityCity,
-                        opts => opts.MapFrom(src => src.get_Value(facilityFieldMap["FacilityCity"].Index)))
-                    .ForMember(dest => dest.FacilityState,
-                        opts => opts.MapFrom(src => src.get_Value(facilityFieldMap["FacilityState"].Index)))
-                    .ForMember(dest => dest.FacilityZip,
-                        opts => opts.MapFrom(src => src.get_Value(facilityFieldMap["FacilityZip"].Index)))
-                    .ForMember(dest => dest.FacilityType,
-                        opts => opts.MapFrom(src => src.get_Value(facilityFieldMap["FacilityType"].Index)))
-                    .ForMember(dest => dest.NoMigrationPetStatus,
-                        opts => opts.MapFrom(src => src.get_Value(facilityFieldMap["NoMigrationPetStatus"].Index)));
+                _.CreateMap<FacilityViolationSdeModel, FacilityViolationDetail>()
+                    .ForMember(dest => dest.ViolationIdentifier, opts => opts.Ignore())
+                    .ForMember(dest => dest.ViolationContaminationCode,
+                        opts => opts.MapFrom(src => src.UsdwContamination))
+                    .ForMember(dest => dest.ViolationEndangeringCode, opts => opts.MapFrom(src => src.Endanger))
+                    .ForMember(dest => dest.ViolationReturnComplianceDate,
+                        opts => opts.MapFrom(src => src.ReturnToComplianceDate))
+                    .ForMember(dest => dest.ViolationSignificantCode,
+                        opts => opts.MapFrom(src => src.SignificantNonCompliance))
+                    .ForMember(dest => dest.ViolationDeterminedDate, opts => opts.MapFrom(src => src.ViolationDate))
+                    .ForMember(dest => dest.ViolationTypeCode, opts => opts.MapFrom(src => src.ViolationType))
+                    .ForMember(dest => dest.ViolationFacilityIdentifier, opts => opts.Ignore())
+                    .ForMember(dest => dest.FacilityId, opts => opts.MapFrom(src => src.FacilityId))
+                    .ForMember(dest => dest.WellId, opts => opts.MapFrom(src => src.WellId));
             });
 
             return config.CreateMapper();
+        }
+
+        public static FacilitySdeModel MapFacilityModel(IFeature row,
+            IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
+        {
+            var model = new FacilitySdeModel
+            {
+                Guid = new Guid((string) row.Value[fieldMap["GUID"].Index]),
+                FacilityName = GuardNull(row.Value[fieldMap["FacilityName"].Index]),
+                FacilityAddress = GuardNull(row.Value[fieldMap["FacilityAddress"].Index]),
+                FacilityCity = GuardNull(row.Value[fieldMap["FacilityCity"].Index]),
+                FacilityId = GuardNull(row.Value[fieldMap["FacilityID"].Index]),
+                FacilityZip = GuardNull(row.Value[fieldMap["FacilityZip"].Index]),
+                FacilityType = GuardNull(row.Value[fieldMap["FacilityType"].Index]), //need to handle db null type
+                NoMigrationPetStatus = GuardNull(row.Value[fieldMap["NoMigrationPetStatus"].Index])
+            };
+
+            return model;
+        }
+
+        public static FacilityViolationSdeModel MapViolationModel(IObject row,
+            IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
+        {
+            var model = new FacilityViolationSdeModel
+            {
+                UsdwContamination = GuardNull(row.Value[fieldMap["USDWContamination"].Index]),
+                Endanger = GuardNull(row.Value[fieldMap["ENDANGER"].Index]),
+                ReturnToComplianceDate = (DateTime)row.Value[fieldMap["ReturnToComplianceDate"].Index],
+                SignificantNonCompliance = GuardNull(row.Value[fieldMap["SignificantNonCompliance"].Index]),
+                ViolationDate = (DateTime)row.Value[fieldMap["ViolationDate"].Index],
+                ViolationType = GuardNull(row.Value[fieldMap["ViolationType"].Index]),
+            };
+
+            var guidString = GuardNull(row.Value[fieldMap["GUID"].Index]);
+            var guid = Guid.Empty;
+
+            if (!string.IsNullOrEmpty(guidString))
+            {
+                guid = new Guid(guidString);
+            }
+
+            model.Guid = guid;
+
+            var wellGuidString = GuardNull(row.Value[fieldMap["Well_FK"].Index]);
+            var wellGuid = Guid.Empty;
+
+            if (!string.IsNullOrEmpty(wellGuidString))
+            {
+                wellGuid = new Guid(wellGuidString);
+            }
+
+            model.WellId = wellGuid;
+
+            return model;
+        }
+
+        private static string GuardNull(this object value)
+        {
+            if (value == null || value == DBNull.Value)
+            {
+                return string.Empty;
+            }
+
+            return (string) value;
         }
     }
 }

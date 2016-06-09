@@ -4,9 +4,14 @@ namespace domain.uic_etl.xml
 {
     public class FacilityDetailModel
     {
-        private string xmlns = "http://www.exchangenetwork.net/schema/uic/2";
+        public string Xmlns = "http://www.exchangenetwork.net/schema/uic/2";
 
-        public string FacilityIdentifier { get; set; }
+        public FacilityDetailModel()
+        {
+            FacilityViolationDetail = new List<FacilityViolationDetail>();
+        }
+
+        public int FacilityIdentifier { get; set; }
         public string LocalityName { get; set; }
         public string FacilitySiteName { get; set; }
         public string FacilityPetitionStatusCode { get; set; }
@@ -15,6 +20,6 @@ namespace domain.uic_etl.xml
         public string LocationAddressText { get; set; }
         public string FacilitySiteTypeCode { get; set; }
         public string LocationAddressPostalCode { get; set; }
-        public List<FacilityViolationDetail> FacilityViolationDetails { get; set; }
+        public List<FacilityViolationDetail> FacilityViolationDetail { get; set; }
     }
 }

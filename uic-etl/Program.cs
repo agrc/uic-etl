@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using AutoMapper;
 using domain.uic_etl.sde;
 using domain.uic_etl.xml;
+using ESRI.ArcGIS.ADF;
 using ESRI.ArcGIS.Geodatabase;
 using uic_etl.commands;
 using uic_etl.models;
@@ -18,6 +21,7 @@ namespace uic_etl
         {
             EtlOptions options;
             IWorkspace workspace;
+            var comObjects = new Stack<object>();
 
             try
             {
@@ -32,16 +36,13 @@ namespace uic_etl
             }
 
             var debug = new DebugService(options.Verbose);
-            Stopwatch start = null;
-            if (options.Verbose)
-            {
-                start = Stopwatch.StartNew();
-            }
-
+            var start = Stopwatch.StartNew();
             debug.Write("Staring: {0}", DateTime.Now.ToString("s"));
 
-            debug.Write("{0} Creating XML document.", start.Elapsed);
+            debug.Write("{0} Creating mappings for domain models", start.Elapsed);
+            var mapper = AutoMapperService.CreateMappings();
 
+            debug.Write("{0} Creating XML document object.", start.Elapsed);
             var doc = XmlService.CreateDocument();
 
             var headerModel = new HeaderInformation
@@ -52,23 +53,17 @@ namespace uic_etl
             };
 
             debug.Write("{1} Creating header property for: {0}", headerModel.Title, start.Elapsed);
-
             XmlService.AppendHeader(ref doc, headerModel);
 
             debug.Write("{0} Creating payload elements", start.Elapsed);
-
             var payload = XmlService.CreatePayloadElements();
-
-            var comObjects = new List<object>();
 
             try
             {
                 debug.Write("{1} Connecting to: {0}", options.SdeConnectionPath, start.Elapsed);
 
                 workspace = WorkspaceService.GetSdeWorkspace(options.SdeConnectionPath);
-                comObjects.Add(workspace);
-
-                debug.Write("{0} Connected.", start.Elapsed);
+                comObjects.Push(workspace);
             }
             catch (COMException e)
             {
@@ -79,61 +74,82 @@ namespace uic_etl
             }
 
             var featureWorkspace = (IFeatureWorkspace) workspace;
-            comObjects.Add(featureWorkspace);
+            comObjects.Push(featureWorkspace);
 
             debug.Write("{0} Opening UICFacility feature class", start.Elapsed);
-
             var uicFacility = featureWorkspace.OpenFeatureClass("UICFacility");
-            comObjects.Add(uicFacility);
+            comObjects.Push(uicFacility);
 
-            debug.Write("{0} Creating UICFacility field mapping", start.Elapsed);
+            debug.Write("Opening FacilityToViolation Relationship Class.");
+            var violationRelation = featureWorkspace.OpenRelationshipClass("FacilityToViolation");
+            comObjects.Push(violationRelation);
 
-            var facilityFields = new[]
-            {
-                "GUID", "FacilityID", "FacilityName", "FacilityAddress", "FacilityCity",
-                "FacilityState", "FacilityZip", "FacilityType", "NoMigrationPetStatus"
-            };
+//            debug.Write("Opening Response Relationship Class.");
+//            var responseRelation = featureWorkspace.OpenRelationshipClass("");
+//            comObjects.Add(responseRelation);
 
-            var facilityFieldMap = new FindIndexByFieldNameCommand(uicFacility, facilityFields).Execute();
-
-            debug.Write("{0} Creating mappings for domain models", start.Elapsed);
-
-            var mapper = AutoMapperService.CreateMappings(facilityFieldMap);
+            debug.Write("{0} Creating field mappings", start.Elapsed);
+            var facilityFieldMap = new FindIndexByFieldNameCommand(uicFacility, FacilitySdeModel.Fields).Execute();
+            var violationFieldMap = new FindIndexByFieldNameCommand(violationRelation, FacilityViolationSdeModel.Fields).Execute();
 
             debug.Write("{0} Quering UICFacility features.", start.Elapsed);
-
             var queryFilter = new QueryFilter
             {
                 WhereClause = "1=1"
+//                WhereClause = "Guid='{268BB302-89F2-4BAA-A19B-45B3C207F236}'"
             };
-
-            comObjects.Add(queryFilter);
+            comObjects.Push(queryFilter);
 
             var facilityCursor = uicFacility.Search(queryFilter, true);
-            comObjects.Add(facilityCursor);
+            comObjects.Push(facilityCursor);
 
+            // Loop over UICFacility
+            var facilityId = 0;
             IFeature feature;
             while ((feature = facilityCursor.NextFeature()) != null)
             {
-                var facility = mapper.Map<IFeature, UicFacilityModel>(feature);
-                var xmlFacility = mapper.Map<UicFacilityModel, FacilityDetailModel>(facility);
+                var violationId = 0;
+                var facility = AutoMapperService.MapFacilityModel(feature, facilityFieldMap);
+                var xmlFacility = mapper.Map<FacilitySdeModel, FacilityDetailModel>(facility);
+                xmlFacility.FacilityIdentifier = facilityId++;
 
-                XmlService.AddFacility(ref doc, xmlFacility);
+                debug.Write("finding violations for facility oid: {0}", feature.Value[0]);
+                var violationCursor = violationRelation.GetObjectsRelatedToObject(feature);
+
+                // Find all UICViolations
+                IObject violationFeature;
+                while((violationFeature = violationCursor.Next()) != null)
+                {
+                    var violation = AutoMapperService.MapViolationModel(violationFeature, violationFieldMap);
+                    var xmlViolation = mapper.Map<FacilityViolationSdeModel, FacilityViolationDetail>(violation);
+                    xmlViolation.ViolationIdentifier = violationId++;
+
+//                    var facilityResponseDetailCursor = responseRelation.GetObjectsRelatedToObject(violationFeature);
+//
+//                    // Find all Violation Responses
+//                    IObject reponseFeature;
+//                    while ((responseFeature = facilityResponseDetailCursor.Next()) != null)
+//                    {
+//                        var responseDetail = AutoMapperService.MapViolationModel(violationFeature, violationFieldMap);
+//                        var xmlResponseDetail = mapper.Map<FacilityViolationSdeModel, FacilityViolationDetail>(violation);
+//
+//                        xmlViolation.FacilityResponseDetails.Add(xmlResponseDetail);
+//                    }
+
+                    xmlFacility.FacilityViolationDetail.Add(xmlViolation);
+                }
+             
+                XmlService.AddFacility(ref payload, xmlFacility);
             }
 
             debug.Write("{1} Releasing COMOBJECTS: {0}", comObjects.Count, start.Elapsed);
 
-            // dispost of objects in reverse order they were added
-            comObjects.Reverse();
             foreach (var item in comObjects)
             {
-                Marshal.ReleaseComObject(item);
+                ComReleaser.ReleaseCOMObject(item);
             }
 
-            if (options.Verbose)
-            {
-                start.Stop();
-            }
+            comObjects.Clear();
 
             debug.Write("{0} finished.", start.Elapsed);
         }

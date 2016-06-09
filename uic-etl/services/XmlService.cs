@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Linq;
+using System.Xml.Linq;
 using domain.uic_etl.xml;
 using uic_etl.models.dtos;
 
@@ -39,7 +40,7 @@ namespace uic_etl.services
 
             doc.Root.Add(new XElement(XName.Get("Header"),
                 new XElement(XName.Get("Author"), "CANDACE CADY"),
-                new XElement(XName.Get("Organization"), "UDEQ -- UDAH DEPARTMENT OF ENVIRONMENTAL QUALITY"),
+                new XElement(XName.Get("Organization"), "UDEQ -- UTAH DEPARTMENT OF ENVIRONMENTAL QUALITY"),
                 new XElement(XName.Get("Title"), model.Title),
                 new XElement(XName.Get("CreationTime"), model.CreationTime),
                 new XElement(XName.Get("Comment"), model.Comments),
@@ -57,15 +58,34 @@ namespace uic_etl.services
             var payload = new XElement(XName.Get("Payload"),
                 new XAttribute(XName.Get("Operation"), "Delete - Insert"),
                 new XElement(xmlns + "UIC", new XAttribute(XNamespace.Xmlns + "xsi", Xsi),
-                    new XElement(xmlns + "PrimacyAgencyCode", "UDEQ"),
-                    new XElement(xmlns + "FacilityList")));
+                    new XElement(xmlns + "PrimacyAgencyCode", "UDEQ")));
 
             return payload;
         }
 
-        public static void AddFacility(ref XDocument doc, FacilityDetailModel model)
+        public static void AddFacility(ref XElement payload, FacilityDetailModel model)
         {
-            
+            var xmlns = XNamespace.Get(model.Xmlns);
+            var payloadXmlns = XNamespace.Get("http://www.w3.org/2001/XMLSchema-instance");
+
+
+            var facilityDetail = new XElement("FacilityList", model.Xmlns,
+                new XElement(XName.Get("FacilityDetail", model.Xmlns),
+                new XElement(xmlns + "FacilityIdentifier", model.FacilityIdentifier),
+                new XElement(xmlns + "LocalityName", model.LocalityName),
+                new XElement(xmlns + "FacilitySiteName", model.FacilitySiteName),
+                new XElement(xmlns + "FacilityPetitionStatusCode", model.FacilityPetitionStatusCode),
+                new XElement(xmlns + "LocationAddressStateCode", model.LocationAddressStateCode),
+                new XElement(xmlns + "FacilityStateIdentifier", model.FacilityStateIdentifier),
+                new XElement(xmlns + "LocationAddressText", model.LocationAddressText),
+                new XElement(xmlns + "FacilitySiteTypeCode", model.FacilitySiteTypeCode),
+                new XElement(xmlns + "LocationAddressPostalCode", model.LocationAddressPostalCode)));
+
+            var node = payload.Descendants(payloadXmlns + "UIC").SingleOrDefault();
+            if (node != null)
+            {
+                node.Add(facilityDetail);
+            }
         }
     }
 }

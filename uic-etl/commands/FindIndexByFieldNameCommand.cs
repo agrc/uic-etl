@@ -13,16 +13,26 @@ namespace uic_etl.commands
         private readonly IEnumerable<string> _fieldsToMap;
         private readonly Dictionary<string, IndexFieldMap> _propertyValueIndexMap;
 
+        public FindIndexByFieldNameCommand()
+        {
+            _propertyValueIndexMap = new Dictionary<string, IndexFieldMap>();
+        }
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="FindIndexByFieldNameCommand" /> class.
         /// </summary>
         /// <param name="layer"> The layer. </param>
         /// <param name="fieldsToMap">The fields to map to an index number</param>
-        public FindIndexByFieldNameCommand(IFeatureClass layer, IEnumerable<string> fieldsToMap)
+        public FindIndexByFieldNameCommand(IFeatureClass layer, IEnumerable<string> fieldsToMap) : this()
         {
             _fieldsToMap = fieldsToMap;
             _fields = layer.Fields;
-            _propertyValueIndexMap = new Dictionary<string, IndexFieldMap>();
+        }
+
+        public FindIndexByFieldNameCommand(IRelationshipClass violationRelation, IEnumerable<string> fieldsToMap) : this()
+        {
+            _fieldsToMap = fieldsToMap;
+            _fields = violationRelation.DestinationClass.Fields;
         }
 
         /// <summary>
