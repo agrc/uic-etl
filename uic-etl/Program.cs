@@ -84,19 +84,20 @@ namespace uic_etl
             var violationRelation = featureWorkspace.OpenRelationshipClass("FacilityToViolation");
             comObjects.Push(violationRelation);
 
-//            debug.Write("Opening Response Relationship Class.");
-//            var responseRelation = featureWorkspace.OpenRelationshipClass("");
-//            comObjects.Add(responseRelation);
+            debug.Write("Opening Response Relationship Class.");
+            var responseRelation = featureWorkspace.OpenRelationshipClass("UICViolationToEnforcement");
+            comObjects.Push(responseRelation);
 
             debug.Write("{0} Creating field mappings", start.Elapsed);
             var facilityFieldMap = new FindIndexByFieldNameCommand(uicFacility, FacilitySdeModel.Fields).Execute();
             var violationFieldMap = new FindIndexByFieldNameCommand(violationRelation, FacilityViolationSdeModel.Fields).Execute();
+            var responseFieldMap = new FindIndexByFieldNameCommand(responseRelation, FacilityEnforcementSdeModel.Fields).Execute();
 
             debug.Write("{0} Quering UICFacility features.", start.Elapsed);
             var queryFilter = new QueryFilter
             {
-                WhereClause = "1=1"
-//                WhereClause = "Guid='{268BB302-89F2-4BAA-A19B-45B3C207F236}'"
+//                WhereClause = "1=1"
+                WhereClause = "Guid='{268BB302-89F2-4BAA-A19B-45B3C207F236}'"
             };
             comObjects.Push(queryFilter);
 
@@ -113,8 +114,9 @@ namespace uic_etl
                 var xmlFacility = mapper.Map<FacilitySdeModel, FacilityDetailModel>(facility);
                 xmlFacility.FacilityIdentifier = facilityId++;
 
-                debug.Write("finding violations for facility oid: {0}", feature.Value[0]);
+                debug.Write("finding violations for facility oid: {0}", feature.OID);
                 var violationCursor = violationRelation.GetObjectsRelatedToObject(feature);
+                comObjects.Push(violationCursor);
 
                 // Find all UICViolations
                 IObject violationFeature;
@@ -124,17 +126,21 @@ namespace uic_etl
                     var xmlViolation = mapper.Map<FacilityViolationSdeModel, FacilityViolationDetail>(violation);
                     xmlViolation.ViolationIdentifier = violationId++;
 
-//                    var facilityResponseDetailCursor = responseRelation.GetObjectsRelatedToObject(violationFeature);
-//
-//                    // Find all Violation Responses
-//                    IObject reponseFeature;
-//                    while ((responseFeature = facilityResponseDetailCursor.Next()) != null)
-//                    {
-//                        var responseDetail = AutoMapperService.MapViolationModel(violationFeature, violationFieldMap);
-//                        var xmlResponseDetail = mapper.Map<FacilityViolationSdeModel, FacilityViolationDetail>(violation);
-//
-//                        xmlViolation.FacilityResponseDetails.Add(xmlResponseDetail);
-//                    }
+                    debug.Write("finding violation responses for violation: {0}", violationFeature.OID);
+                    var facilityResponseDetailCursor = responseRelation.GetObjectsRelatedToObject(violationFeature);
+                    comObjects.Push(facilityResponseDetailCursor);
+
+                    // Find all Violation Responses which are UICEnforcements
+                    var enforcementId = 0;
+                    IObject responseFeature;
+                    while ((responseFeature = facilityResponseDetailCursor.Next()) != null)
+                    {
+                        var responseDetail = AutoMapperService.MapResponseModel(responseFeature, responseFieldMap);
+                        var xmlResponseDetail = mapper.Map<FacilityEnforcementSdeModel, FacilityResponseDetail>(responseDetail);
+                        xmlResponseDetail.ResponseEnforcementIdentifier = enforcementId++;
+
+                        xmlViolation.FacilityResponseDetails.Add(xmlResponseDetail);
+                    }
 
                     xmlFacility.FacilityViolationDetail.Add(xmlViolation);
                 }
@@ -152,6 +158,8 @@ namespace uic_etl
             comObjects.Clear();
 
             debug.Write("{0} finished.", start.Elapsed);
+
+            Console.ReadKey();
         }
     }
 }

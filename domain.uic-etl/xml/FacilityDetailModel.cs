@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace domain.uic_etl.xml
 {
@@ -12,6 +13,7 @@ namespace domain.uic_etl.xml
         }
 
         public int FacilityIdentifier { get; set; }
+        public Guid Guid { get; set; }
         public string LocalityName { get; set; }
         public string FacilitySiteName { get; set; }
         public string FacilityPetitionStatusCode { get; set; }

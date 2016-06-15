@@ -1,14 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml.Linq;
 using domain.uic_etl.xml;
 using uic_etl.services;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace tests.uic_etl
 {
     public class XmlWritingTests
     {
+        private readonly ITestOutputHelper _output;
+
+        public XmlWritingTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         [Fact]
         public void CreateDocument()
         {
@@ -74,7 +83,7 @@ namespace tests.uic_etl
                                        "<UIC xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.exchangenetwork.net/schema/uic/2\">" +
                                        "<PrimacyAgencyCode>UDEQ</PrimacyAgencyCode>" +
                                        "<FacilityList>" +
-                                       "<FacilityDetail xmlns=\"http://www.exchangenetwork.net/schema/uic/2\">" +
+                                       "<FacilityDetail>" +
                                        "<FacilityIdentifier>0</FacilityIdentifier>" +
                                        "<LocalityName>LocalityName</LocalityName>" +
                                        "<FacilitySiteName>FacilitySiteName</FacilitySiteName>" +
@@ -104,6 +113,152 @@ namespace tests.uic_etl
             };
 
             XmlService.AddFacility(ref doc, model);
+
+            Assert.Equal(expected.ToString(), doc.ToString());
+        }
+
+        [Fact]
+        public void AddFacilityListItemPayloadWithViolation()
+        {
+            const string documentXml = "<Payload Operation=\"Delete - Insert\">" +
+                                       "<UIC xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.exchangenetwork.net/schema/uic/2\">" +
+                                       "<PrimacyAgencyCode>UDEQ</PrimacyAgencyCode>" +
+                                       "<FacilityList>" +
+                                       "<FacilityDetail>" +
+                                       "<FacilityIdentifier>0</FacilityIdentifier>" +
+                                       "<LocalityName>LocalityName</LocalityName>" +
+                                       "<FacilitySiteName>FacilitySiteName</FacilitySiteName>" +
+                                       "<FacilityPetitionStatusCode>FacilityPetitionStatusCode</FacilityPetitionStatusCode>" +
+                                       "<LocationAddressStateCode>LocationAddressStateCode</LocationAddressStateCode>" +
+                                       "<FacilityStateIdentifier>FacilityStateIdentifier</FacilityStateIdentifier>" +
+                                       "<LocationAddressText>LocationAddressText</LocationAddressText>" +
+                                       "<FacilitySiteTypeCode>FacilitySiteTypeCode</FacilitySiteTypeCode>" +
+                                       "<LocationAddressPostalCode>LocationAddressPostalCode</LocationAddressPostalCode>" +
+                                       "<FacilityViolationDetail>" +
+                                       "<ViolationIdentifier>0</ViolationIdentifier>" +
+                                       "<ViolationContaminationCode>[UICViolation].USDWContamination</ViolationContaminationCode>" +
+                                       "<ViolationEndangeringCode>[UICViolation].ENDANGER</ViolationEndangeringCode>" +
+                                       "<ViolationReturnComplianceDate>20160104</ViolationReturnComplianceDate>" +
+                                       "<ViolationSignificantCode>[UICViolation].SignificantNonCompliance</ViolationSignificantCode>" +
+                                       "<ViolationDeterminedDate>20160101</ViolationDeterminedDate>" +
+                                       "<ViolationTypeCode>[UICViolation].ViolationType</ViolationTypeCode>" +
+                                       "<ViolationFacilityIdentifier>45c1be51-c4e3-4159-95fb-36f7e9a95585</ViolationFacilityIdentifier>" +
+                                       "</FacilityViolationDetail></FacilityDetail></FacilityList></UIC></Payload>";
+
+            var expected = XDocument.Parse(documentXml);
+
+            var doc = XmlService.CreatePayloadElements();
+            var model = new FacilityDetailModel
+            {
+                Guid = new Guid("45c1be51-c4e3-4159-95fb-36f7e9a95585"),
+                FacilityIdentifier = 0,
+                FacilityPetitionStatusCode = "FacilityPetitionStatusCode",
+                FacilitySiteName = "FacilitySiteName",
+                FacilitySiteTypeCode = "FacilitySiteTypeCode",
+                FacilityStateIdentifier = "FacilityStateIdentifier",
+                FacilityViolationDetail = new List<FacilityViolationDetail>
+                {
+                  new FacilityViolationDetail
+                  {
+                      ViolationContaminationCode = "[UICViolation].USDWContamination",
+                      ViolationDeterminedDate = "20160101",
+                      ViolationEndangeringCode = "[UICViolation].ENDANGER",
+                      ViolationFacilityIdentifier = new Guid("45c1be51-c4e3-4159-95fb-36f7e9a95585"),
+                      ViolationIdentifier = 0,
+                      ViolationReturnComplianceDate = "20160104",
+                      ViolationSignificantCode = "[UICViolation].SignificantNonCompliance",
+                      ViolationTypeCode = "[UICViolation].ViolationType"
+                  }  
+                },
+                LocalityName = "LocalityName",
+                LocationAddressPostalCode = "LocationAddressPostalCode",
+                LocationAddressStateCode = "LocationAddressStateCode",
+                LocationAddressText = "LocationAddressText"
+            };
+
+            XmlService.AddFacility(ref doc, model);
+
+            _output.WriteLine(doc.ToString());
+            _output.WriteLine(expected.ToString());
+
+            Assert.Equal(expected.ToString(), doc.ToString());
+        }
+
+        [Fact]
+        public void AddFacilityListItemPayloadWithViolationAndResponse()
+        {
+            const string documentXml = "<Payload Operation=\"Delete - Insert\">" +
+                                       "<UIC xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.exchangenetwork.net/schema/uic/2\">" +
+                                       "<PrimacyAgencyCode>UDEQ</PrimacyAgencyCode>" +
+                                       "<FacilityList>" +
+                                       "<FacilityDetail>" +
+                                       "<FacilityIdentifier>0</FacilityIdentifier>" +
+                                       "<LocalityName>LocalityName</LocalityName>" +
+                                       "<FacilitySiteName>FacilitySiteName</FacilitySiteName>" +
+                                       "<FacilityPetitionStatusCode>FacilityPetitionStatusCode</FacilityPetitionStatusCode>" +
+                                       "<LocationAddressStateCode>LocationAddressStateCode</LocationAddressStateCode>" +
+                                       "<FacilityStateIdentifier>FacilityStateIdentifier</FacilityStateIdentifier>" +
+                                       "<LocationAddressText>LocationAddressText</LocationAddressText>" +
+                                       "<FacilitySiteTypeCode>FacilitySiteTypeCode</FacilitySiteTypeCode>" +
+                                       "<LocationAddressPostalCode>LocationAddressPostalCode</LocationAddressPostalCode>" +
+                                       "<FacilityViolationDetail>" +
+                                       "<ViolationIdentifier>0</ViolationIdentifier>" +
+                                       "<ViolationContaminationCode>[UICViolation].USDWContamination</ViolationContaminationCode>" +
+                                       "<ViolationEndangeringCode>[UICViolation].ENDANGER</ViolationEndangeringCode>" +
+                                       "<ViolationReturnComplianceDate>20160104</ViolationReturnComplianceDate>" +
+                                       "<ViolationSignificantCode>[UICViolation].SignificantNonCompliance</ViolationSignificantCode>" +
+                                       "<ViolationDeterminedDate>20160101</ViolationDeterminedDate>" +
+                                       "<ViolationTypeCode>[UICViolation].ViolationType</ViolationTypeCode>" +
+                                       "<ViolationFacilityIdentifier>45c1be51-c4e3-4159-95fb-36f7e9a95585</ViolationFacilityIdentifier>" +
+                                       " <FacilityResponseDetail>" +
+                                       "<ResponseEnforcementIdentifier>0</ResponseEnforcementIdentifier>" +
+                                       "<ResponseViolationIdentifier>0001be51-c4e3-4159-95fb-36f7e9a95585</ResponseViolationIdentifier>" +
+                                       "</FacilityResponseDetail></FacilityViolationDetail></FacilityDetail></FacilityList></UIC></Payload>";
+
+            var expected = XDocument.Parse(documentXml);
+
+            var doc = XmlService.CreatePayloadElements();
+            var model = new FacilityDetailModel
+            {
+                Guid = new Guid("45c1be51-c4e3-4159-95fb-36f7e9a95585"),
+                FacilityIdentifier = 0,
+                FacilityPetitionStatusCode = "FacilityPetitionStatusCode",
+                FacilitySiteName = "FacilitySiteName",
+                FacilitySiteTypeCode = "FacilitySiteTypeCode",
+                FacilityStateIdentifier = "FacilityStateIdentifier",
+                FacilityViolationDetail = new List<FacilityViolationDetail>
+                {
+                  new FacilityViolationDetail
+                  {
+                      Guid = new Guid("0001be51-c4e3-4159-95fb-36f7e9a95585"),
+                      ViolationContaminationCode = "[UICViolation].USDWContamination",
+                      ViolationDeterminedDate = "20160101",
+                      ViolationEndangeringCode = "[UICViolation].ENDANGER",
+                      ViolationFacilityIdentifier = new Guid("45c1be51-c4e3-4159-95fb-36f7e9a95585"),
+                      ViolationIdentifier = 0,
+                      ViolationReturnComplianceDate = "20160104",
+                      ViolationSignificantCode = "[UICViolation].SignificantNonCompliance",
+                      ViolationTypeCode = "[UICViolation].ViolationType",
+                      FacilityResponseDetails = new List<FacilityResponseDetail>
+                      {
+                          new FacilityResponseDetail
+                          {
+                              ResponseViolationIdentifier = new Guid("0001be51-c4e3-4159-95fb-36f7e9a95585"),
+                              ResponseEnforcementIdentifier = 0
+                          }
+                      }
+                  }  
+                },
+                LocalityName = "LocalityName",
+                LocationAddressPostalCode = "LocationAddressPostalCode",
+                LocationAddressStateCode = "LocationAddressStateCode",
+                LocationAddressText = "LocationAddressText"
+            };
+
+            XmlService.AddFacility(ref doc, model);
+
+            _output.WriteLine(doc.ToString());
+            _output.WriteLine(expected.ToString());
 
             Assert.Equal(expected.ToString(), doc.ToString());
         }

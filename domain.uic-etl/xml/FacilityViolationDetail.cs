@@ -10,6 +10,7 @@ namespace domain.uic_etl.xml
             FacilityResponseDetails = new List<FacilityResponseDetail>();
         }
 
+        public Guid Guid { get; set; }
         public int ViolationIdentifier { get; set; }
         public string ViolationContaminationCode { get; set; }
         public string ViolationEndangeringCode { get; set; }
@@ -17,7 +18,7 @@ namespace domain.uic_etl.xml
         public string ViolationSignificantCode { get; set; }
         public string ViolationDeterminedDate { get; set; }
         public string ViolationTypeCode { get; set; }
-        public string ViolationFacilityIdentifier { get; set; }
+        public Guid ViolationFacilityIdentifier { get; set; }
         public List<FacilityResponseDetail> FacilityResponseDetails { get; set; }
         public Guid FacilityId { get; set; }
         public Guid WellId { get; set; }

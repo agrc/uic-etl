@@ -65,12 +65,11 @@ namespace uic_etl.services
 
         public static void AddFacility(ref XElement payload, FacilityDetailModel model)
         {
-            var xmlns = XNamespace.Get(model.Xmlns);
-            var payloadXmlns = XNamespace.Get("http://www.w3.org/2001/XMLSchema-instance");
+            XNamespace xmlns = model.Xmlns;
+            XNamespace payloadXmlns = "http://www.exchangenetwork.net/schema/uic/2";
 
-
-            var facilityDetail = new XElement("FacilityList", model.Xmlns,
-                new XElement(XName.Get("FacilityDetail", model.Xmlns),
+            var facilityDetail = new XElement(xmlns + "FacilityList",
+                new XElement(xmlns + "FacilityDetail",
                 new XElement(xmlns + "FacilityIdentifier", model.FacilityIdentifier),
                 new XElement(xmlns + "LocalityName", model.LocalityName),
                 new XElement(xmlns + "FacilitySiteName", model.FacilitySiteName),
@@ -80,6 +79,36 @@ namespace uic_etl.services
                 new XElement(xmlns + "LocationAddressText", model.LocationAddressText),
                 new XElement(xmlns + "FacilitySiteTypeCode", model.FacilitySiteTypeCode),
                 new XElement(xmlns + "LocationAddressPostalCode", model.LocationAddressPostalCode)));
+
+            var violationIdentifier = 0;
+            foreach (var violationModel in model.FacilityViolationDetail)
+            {
+                var violationDetail = new XElement(xmlns + "FacilityViolationDetail",
+                    new XElement(xmlns + "ViolationIdentifier", violationIdentifier++),
+                    new XElement(xmlns + "ViolationContaminationCode", violationModel.ViolationContaminationCode),
+                    new XElement(xmlns + "ViolationEndangeringCode", violationModel.ViolationEndangeringCode),
+                    new XElement(xmlns + "ViolationReturnComplianceDate", violationModel.ViolationReturnComplianceDate),
+                    new XElement(xmlns + "ViolationSignificantCode", violationModel.ViolationSignificantCode),
+                    new XElement(xmlns + "ViolationDeterminedDate", violationModel.ViolationDeterminedDate),
+                    new XElement(xmlns + "ViolationTypeCode", violationModel.ViolationTypeCode),
+                    new XElement(xmlns + "ViolationFacilityIdentifier", violationModel.ViolationFacilityIdentifier));
+
+                var facilityDetailElement = facilityDetail.Element(xmlns + "FacilityDetail");
+                if (facilityDetailElement != null)
+                {
+                    facilityDetailElement.Add(violationDetail);
+                }
+
+                var enforcementIdentfier = 0;
+                foreach (var responseModel in violationModel.FacilityResponseDetails)
+                {
+                    var responseDetail = new XElement(xmlns + "FacilityResponseDetail",
+                        new XElement(xmlns + "ResponseEnforcementIdentifier", enforcementIdentfier++),
+                        new XElement(xmlns + "ResponseViolationIdentifier", responseModel.ResponseViolationIdentifier));
+
+                    violationDetail.Add(responseDetail);
+                }
+            }
 
             var node = payload.Descendants(payloadXmlns + "UIC").SingleOrDefault();
             if (node != null)
