@@ -63,7 +63,7 @@ namespace uic_etl.services
             return payload;
         }
 
-        public static void AddFacility(ref XElement payload, FacilityDetailModel model)
+        public static XElement AddFacility(ref XElement payload, FacilityDetailModel model)
         {
             XNamespace xmlns = model.Xmlns;
             XNamespace payloadXmlns = "http://www.exchangenetwork.net/schema/uic/2";
@@ -115,6 +115,8 @@ namespace uic_etl.services
             {
                 node.Add(facilityDetail);
             }
+
+            return facilityDetail;
         }
     }
 }

@@ -39,25 +39,6 @@ namespace uic_etl
             var start = Stopwatch.StartNew();
             debug.Write("Staring: {0}", DateTime.Now.ToString("s"));
 
-            debug.Write("{0} Creating mappings for domain models", start.Elapsed);
-            var mapper = AutoMapperService.CreateMappings();
-
-            debug.Write("{0} Creating XML document object.", start.Elapsed);
-            var doc = XmlService.CreateDocument();
-
-            var headerModel = new HeaderInformation
-            {
-                Title = "data submission for quarter #1, fy 2010",
-                CreationTime = DateTime.Now.ToString("s"),
-                Comments = "This is a sample"
-            };
-
-            debug.Write("{1} Creating header property for: {0}", headerModel.Title, start.Elapsed);
-            XmlService.AppendHeader(ref doc, headerModel);
-
-            debug.Write("{0} Creating payload elements", start.Elapsed);
-            var payload = XmlService.CreatePayloadElements();
-
             try
             {
                 debug.Write("{1} Connecting to: {0}", options.SdeConnectionPath, start.Elapsed);
@@ -80,18 +61,41 @@ namespace uic_etl
             var uicFacility = featureWorkspace.OpenFeatureClass("UICFacility");
             comObjects.Push(uicFacility);
 
-            debug.Write("Opening FacilityToViolation Relationship Class.");
+            debug.Write("Opening Facility to Violation Relationship Class.");
             var violationRelation = featureWorkspace.OpenRelationshipClass("FacilityToViolation");
             comObjects.Push(violationRelation);
 
-            debug.Write("Opening Response Relationship Class.");
+            debug.Write("Opening Violation to Response Relationship Class.");
             var responseRelation = featureWorkspace.OpenRelationshipClass("UICViolationToEnforcement");
             comObjects.Push(responseRelation);
+
+            debug.Write("Opening Facility to Well Relationship Class.");
+            var wellRelation = featureWorkspace.OpenRelationshipClass("FacilityToWell");
+            comObjects.Push(wellRelation);
 
             debug.Write("{0} Creating field mappings", start.Elapsed);
             var facilityFieldMap = new FindIndexByFieldNameCommand(uicFacility, FacilitySdeModel.Fields).Execute();
             var violationFieldMap = new FindIndexByFieldNameCommand(violationRelation, FacilityViolationSdeModel.Fields).Execute();
             var responseFieldMap = new FindIndexByFieldNameCommand(responseRelation, FacilityEnforcementSdeModel.Fields).Execute();
+
+            debug.Write("{0} Creating mappings for domain models", start.Elapsed);
+            var mapper = AutoMapperService.CreateMappings();
+
+            debug.Write("{0} Creating XML document object.", start.Elapsed);
+            var doc = XmlService.CreateDocument();
+
+            var headerModel = new HeaderInformation
+            {
+                Title = "data submission for quarter #1, fy 2010",
+                CreationTime = DateTime.Now.ToString("s"),
+                Comments = "This is a sample"
+            };
+
+            debug.Write("{1} Creating header property for: {0}", headerModel.Title, start.Elapsed);
+            XmlService.AppendHeader(ref doc, headerModel);
+
+            debug.Write("{0} Creating payload elements", start.Elapsed);
+            var payload = XmlService.CreatePayloadElements();
 
             debug.Write("{0} Quering UICFacility features.", start.Elapsed);
             var queryFilter = new QueryFilter
@@ -145,7 +149,7 @@ namespace uic_etl
                     xmlFacility.FacilityViolationDetail.Add(xmlViolation);
                 }
              
-                XmlService.AddFacility(ref payload, xmlFacility);
+                var facilityDetailElement = XmlService.AddFacility(ref payload, xmlFacility);
             }
 
             debug.Write("{1} Releasing COMOBJECTS: {0}", comObjects.Count, start.Elapsed);
