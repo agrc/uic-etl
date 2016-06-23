@@ -7,7 +7,8 @@ namespace domain.uic_etl.sde
         public static string[] Fields =
         {
             "GUID", "InjectionAquiferExempt", "HighPriority", "WellID",
-            "WellSWPZ", "WellName", "WellSubClass", "Facility_FK", "Authorization_FK"
+            "WellSWPZ", "WellName", "WellSubClass", "Facility_FK", "Authorization_FK",
+            "LocationMethod", "LocationAccuracy"
         };
 
         public Guid Guid { get; set; }
@@ -19,5 +20,7 @@ namespace domain.uic_etl.sde
         public string WellSwpz { get; set; }
         public string WellName { get; set; }
         public int WellSubClass { get; set; }
+        public string LocationAccuracy { get; set; }
+        public string LocationMethod { get; set; }
     }
 }

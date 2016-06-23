@@ -7,7 +7,7 @@ namespace domain.uic_etl.sde
         public static string[] Fields =
         {
             "GUID", "FacilityID", "FacilityName", "FacilityAddress", "FacilityCity",
-            "FacilityState", "FacilityZip", "FacilityType", "NoMigrationPetStatus"
+            "FacilityState", "FacilityZip", "FacilityType", "NoMigrationPetStatus", "CountyFIPS"
         };
 
         public Guid Guid { get; set; }
@@ -18,5 +18,6 @@ namespace domain.uic_etl.sde
         public string FacilityZip { get; set; }
         public string FacilityType { get; set; }
         public string NoMigrationPetStatus { get; set; }
+        public int CountyFips { get; set; }
     }
 }

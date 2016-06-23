@@ -41,27 +41,27 @@
           </FacilityViolationDetail>
         </FacilityDetail>
         <WellDetail xmlns="http://www.exchangenetwork.net/schema/uic/2">
-          <WellIdentifier>MEEP00W01</WellIdentifier>
-          <WellAquiferExemptionInjectionCode>Y</WellAquiferExemptionInjectionCode>
-          <WellTotalDepthNumeric>999</WellTotalDepthNumeric>
-          <WellHighPriorityDesignationCode>N</WellHighPriorityDesignationCode>
-          <WellContactIdentifier>MEEP00C02</WellContactIdentifier>
-          <WellFacilityIdentifier>MEEP000F1</WellFacilityIdentifier>
-          <WellGeologyIdentifier>MEEP00G02</WellGeologyIdentifier>
+          <WellIdentifier>auto increment int</WellIdentifier>
+          <WellAquiferExemptionInjectionCode>[UICWell].InjectionAquiferExempt</WellAquiferExemptionInjectionCode>
+          <WellTotalDepthNumeric>[UICVerticalWellEvent].EventType</WellTotalDepthNumeric>
+          <WellHighPriorityDesignationCode>[UICWell].HighPriority</WellHighPriorityDesignationCode>
+          <WellContactIdentifier>derp</WellContactIdentifier>
+          <WellFacilityIdentifier>[UICWell].Facility_FK</WellFacilityIdentifier>
+          <WellGeologyIdentifier>derp?</WellGeologyIdentifier>
           <WellSiteAreaNameText>12345678901234567890123456789012345678901234567890</WellSiteAreaNameText>
-          <WellPermitIdentifier>MEEP00P02</WellPermitIdentifier>
-          <WellStateIdentifier>aA</WellStateIdentifier>
-          <WellStateTribalCode>F25</WellStateTribalCode>
-          <WellInSourceWaterAreaLocationText>Y</WellInSourceWaterAreaLocationText>
-          <WellName>12345678901234567890123456789012345678901234567890123456789012345678901234567890</WellName>
+          <WellPermitIdentifier>[UICWell].Authorization_FK</WellPermitIdentifier>
+          <WellStateIdentifier>[UICWell].GUID</WellStateIdentifier>
+          <WellStateTribalCode>UT</WellStateTribalCode>
+          <WellInSourceWaterAreaLocationText>[UICWell].SWPZ</WellInSourceWaterAreaLocationText>
+          <WellName>[UICWell].WellName</WellName>
           <WellStatusDetail>
-            <WellStatusIdentifier>MEEP0WS01</WellStatusIdentifier>
-            <WellStatusDate>20020101</WellStatusDate>
-            <WellStatusOperatingStatusCode>AC</WellStatusOperatingStatusCode>
-            <WellStatusWellIdentifier>MEEP00W01</WellStatusWellIdentifier>
+            <WellStatusIdentifier>auto incrementing int</WellStatusIdentifier>
+            <WellStatusDate>[UICWellOperatingStatus].OperatingStatusDate</WellStatusDate>
+            <WellStatusOperatingStatusCode>[UICWellOperatingStatus].OperatingStatusType</WellStatusOperatingStatusCode>
+            <WellStatusWellIdentifier>[UICWellOPeratingStatus].Well_FK</WellStatusWellIdentifier>
           </WellStatusDetail>
           <WellTypeDetail>
-            <WellTypeIdentifier>MEEP0WT02</WellTypeIdentifier>
+            <WellTypeIdentifier>auto incrementing int</WellTypeIdentifier>
             <WellTypeCode>1H</WellTypeCode>
             <WellTypeDate>20020102</WellTypeDate>
             <WellTypeWellIdentifier>MEEP00W01</WellTypeWellIdentifier>

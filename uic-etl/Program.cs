@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Dynamic;
 using System.Runtime.InteropServices;
 using AutoMapper;
 using domain.uic_etl.sde;
@@ -166,27 +167,49 @@ namespace uic_etl
                 comObjects.Push(wellCursor);
 
                 // Find all wells
+                var wellIdentifier = 0;
                 IFeature wellFeature;
                 while ((wellFeature = wellCursor.Next()) != null)
                 {
                     var well = AutoMapperService.MapWellModel(wellFeature, wellFieldMap);
                     var xmlWell = mapper.Map<WellSdeModel, WellDetail>(well);
+                    xmlWell.WellIdentifier = wellIdentifier++;
 
                     var verticalWellCursor = verticalWellRelation.GetObjectsRelatedToObject(wellFeature);
                     comObjects.Push(verticalWellCursor);
+
                     var verticalEventFeature = verticalWellCursor.Next();
                     var verticalEvent = AutoMapperService.MapVerticalWellEventModel(verticalEventFeature, verticalWellFieldMap);
 
-                    xmlWell.EventType = verticalEvent.EventType;
+                    xmlWell.WellTotalDepthNumeric = verticalEvent.EventType;
 
                     var wellStatusCursor = wellStatusRelation.GetObjectsRelatedToObject(wellFeature);
                     comObjects.Push(wellStatusCursor);
 
+                    var wellStatusIdentifier = 0;
                     IObject wellStatusFeature;
                     while ((wellStatusFeature = wellStatusCursor.Next()) != null)
                     {
                         var wellStatus = AutoMapperService.MapWellStatusModel(wellStatusFeature, wellStatusFieldMap);
+                        var xmlWellStatus = mapper.Map<WellStatusSdeModel, WellStatusDetail>(wellStatus);
+                        xmlWellStatus.WellStatusIdentifier = wellStatusIdentifier++;
+
+                        xmlWell.WellStatusDetail.Add(xmlWellStatus);
                     }
+
+                    dynamic x = new ExpandoObject();
+                    x.WellTypeWellIdentifer = well.Guid;
+                    x.WellAddressCounty = facility.CountyFips;
+                    x.LocationAccuracyValueMeasure = well.LocationAccuracy;
+                    x.GeographicReferencePointCode = "026";
+                    x.HorizontalCoordinateReferenceSystemDatumCode = "002";
+                    x.HorizontalCollectionMethodCode = well.LocationMethod;
+                    x.LocationPointLiveAreaCode = "001";
+                    x.SourceMapScaleNumeric = well.LocationAccuracy;
+                    x.LocationWellIdentifier = well.Guid;
+                    // TODO: Convert to lat long
+                    x.LatitudeMeasure = 0; 
+                    x.LongitudeMeasure = 1;
                 }
             }
 

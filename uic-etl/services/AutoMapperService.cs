@@ -51,8 +51,8 @@ namespace uic_etl.services
                     .ForMember(dest=> dest.ResponseEnforcementIdentifier, opts => opts.Ignore());
 
                 _.CreateMap<WellSdeModel, WellDetail>()
+                    .ForMember(dest => dest.WellTotalDepthNumeric, opts => opts.Ignore())
                     .ForMember(dest => dest.WellIdentifier, opts => opts.Ignore())
-                    .ForMember(dest => dest.EventType, opts => opts.Ignore())
                     .ForMember(dest => dest.WellAquiferExemptionInjectionCode, opts => opts.MapFrom(src => src.InjectionAquiferExempt))
                     .ForMember(dest => dest.WellHighPriorityDesignationCode, opts => opts.MapFrom(src => src.HighPriority))
                     .ForMember(dest => dest.WellContactIdentifier, opts => opts.Ignore())// TODO github #4
@@ -75,9 +75,10 @@ namespace uic_etl.services
                     .ForMember(dest => dest.WasteDetail, opts => opts.Ignore());
 
                 _.CreateMap<WellStatusSdeModel, WellStatusDetail>()
+                    .ForMember(dest => dest.WellStatusIdentifier, opts => opts.Ignore())
                     .ForMember(dest => dest.WellStatusDate,
                         opts => opts.MapFrom(src => src.OperatingStatusDate.ToString("yyyMMdd")))
-                    .ForMember(dest => dest.WellId, opts => opts.MapFrom(src => src.WellGuid))
+                    .ForMember(dest => dest.WellStatusWellIdentifier, opts => opts.MapFrom(src => src.WellGuid))
                     .ForMember(dest => dest.WellStatusOperatingStatusCode, opts => opts.MapFrom(src => src.OperatingStatusType));
             });
 
@@ -95,7 +96,8 @@ namespace uic_etl.services
                 FacilityCity = GuardNull(row.Value[fieldMap["FacilityCity"].Index]),
                 FacilityId = GuardNull(row.Value[fieldMap["FacilityID"].Index]),
                 FacilityZip = GuardNull(row.Value[fieldMap["FacilityZip"].Index]),
-                FacilityType = GuardNull(row.Value[fieldMap["FacilityType"].Index]), //need to handle db null type
+                FacilityType = GuardNull(row.Value[fieldMap["FacilityType"].Index]), 
+                CountyFips = (int)row.Value[fieldMap["CountyFIPS"].Index]), 
                 NoMigrationPetStatus = GuardNull(row.Value[fieldMap["NoMigrationPetStatus"].Index])
             };
 
@@ -160,6 +162,8 @@ namespace uic_etl.services
                 InjectionAquiferExempt = GuardNull(row.Value[fieldMap["InjectionAquiferExempt"].Index]),
                 HighPriority = GuardNull(row.Value[fieldMap["HighPriority"].Index]),
                 WellSwpz = GuardNull(row.Value[fieldMap["WellSWPZ"].Index]),
+                LocationAccuracy = GuardNull(row.Value[fieldMap["LocationAccuracy"].Index]),
+                LocationMethod = GuardNull(row.Value[fieldMap["LocationAccuracy"].Index]),
                 WellName = GuardNull(row.Value[fieldMap["WellName"].Index]),
                 WellSubClass = (int)row.Value[fieldMap["WellSubClass"].Index]
             };
@@ -182,7 +186,7 @@ namespace uic_etl.services
             var model = new WellStatusSdeModel
             {
                 OperatingStatusDate = (DateTime)row.Value[fieldMap["OperatingStatusDate"].Index],
-                OperatingStatusType = GuardNull(row.Value[fieldMap["OperatingStatusDate"].Index]),
+                OperatingStatusType = GuardNull(row.Value[fieldMap["OperatingStatusType"].Index]),
                 WellGuid = new Guid((string)row.Value[fieldMap["Well_FK"].Index])
             };
 
