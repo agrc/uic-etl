@@ -73,10 +73,21 @@ namespace uic_etl
             var wellRelation = featureWorkspace.OpenRelationshipClass("FacilityToWell");
             comObjects.Push(wellRelation);
 
+            debug.Write("Opening Vertical Well Event to Well Relationship Class.");
+            var verticalWellRelation = featureWorkspace.OpenRelationshipClass("WellToVerticalWellEvent");
+            comObjects.Push(verticalWellRelation);
+
+            debug.Write("Opening Facility to Well Relationship Class.");
+            var wellStatusRelation = featureWorkspace.OpenRelationshipClass("WellToWellOperatingStatus");
+            comObjects.Push(wellStatusRelation);
+             
             debug.Write("{0} Creating field mappings", start.Elapsed);
             var facilityFieldMap = new FindIndexByFieldNameCommand(uicFacility, FacilitySdeModel.Fields).Execute();
             var violationFieldMap = new FindIndexByFieldNameCommand(violationRelation, FacilityViolationSdeModel.Fields).Execute();
             var responseFieldMap = new FindIndexByFieldNameCommand(responseRelation, FacilityEnforcementSdeModel.Fields).Execute();
+            var wellFieldMap = new FindIndexByFieldNameCommand(wellRelation, WellSdeModel.Fields).Execute();
+            var verticalWellFieldMap = new FindIndexByFieldNameCommand(verticalWellRelation, VerticalWellEventSdeModel.Fields).Execute();
+            var wellStatusFieldMap = new FindIndexByFieldNameCommand(wellStatusRelation, WellStatusSdeModel.Fields).Execute();
 
             debug.Write("{0} Creating mappings for domain models", start.Elapsed);
             var mapper = AutoMapperService.CreateMappings();
@@ -110,16 +121,16 @@ namespace uic_etl
 
             // Loop over UICFacility
             var facilityId = 0;
-            IFeature feature;
-            while ((feature = facilityCursor.NextFeature()) != null)
+            IFeature facilityFeature;
+            while ((facilityFeature = facilityCursor.NextFeature()) != null)
             {
                 var violationId = 0;
-                var facility = AutoMapperService.MapFacilityModel(feature, facilityFieldMap);
+                var facility = AutoMapperService.MapFacilityModel(facilityFeature, facilityFieldMap);
                 var xmlFacility = mapper.Map<FacilitySdeModel, FacilityDetailModel>(facility);
                 xmlFacility.FacilityIdentifier = facilityId++;
 
-                debug.Write("finding violations for facility oid: {0}", feature.OID);
-                var violationCursor = violationRelation.GetObjectsRelatedToObject(feature);
+                debug.Write("finding violations for facility oid: {0}", facilityFeature.OID);
+                var violationCursor = violationRelation.GetObjectsRelatedToObject(facilityFeature);
                 comObjects.Push(violationCursor);
 
                 // Find all UICViolations
@@ -150,6 +161,33 @@ namespace uic_etl
                 }
              
                 var facilityDetailElement = XmlService.AddFacility(ref payload, xmlFacility);
+
+                var wellCursor = wellRelation.GetObjectsRelatedToObject(facilityFeature);
+                comObjects.Push(wellCursor);
+
+                // Find all wells
+                IFeature wellFeature;
+                while ((wellFeature = wellCursor.Next()) != null)
+                {
+                    var well = AutoMapperService.MapWellModel(wellFeature, wellFieldMap);
+                    var xmlWell = mapper.Map<WellSdeModel, WellDetail>(well);
+
+                    var verticalWellCursor = verticalWellRelation.GetObjectsRelatedToObject(wellFeature);
+                    comObjects.Push(verticalWellCursor);
+                    var verticalEventFeature = verticalWellCursor.Next();
+                    var verticalEvent = AutoMapperService.MapVerticalWellEventModel(verticalEventFeature, verticalWellFieldMap);
+
+                    xmlWell.EventType = verticalEvent.EventType;
+
+                    var wellStatusCursor = wellStatusRelation.GetObjectsRelatedToObject(wellFeature);
+                    comObjects.Push(wellStatusCursor);
+
+                    IObject wellStatusFeature;
+                    while ((wellStatusFeature = wellStatusCursor.Next()) != null)
+                    {
+                        var wellStatus = AutoMapperService.MapWellStatusModel(wellStatusFeature, wellStatusFieldMap);
+                    }
+                }
             }
 
             debug.Write("{1} Releasing COMOBJECTS: {0}", comObjects.Count, start.Elapsed);

@@ -43,9 +43,14 @@
     <Compile Include="sde\FacilityEnforcementSdeModel.cs" />
     <Compile Include="sde\FacilitySdeModel.cs" />
     <Compile Include="sde\FacilityViolationSdeModel.cs" />
+    <Compile Include="sde\VerticalWellEvent.cs" />
+    <Compile Include="sde\WellSdeModel.cs" />
+    <Compile Include="sde\WellStatusSdeModel.cs" />
     <Compile Include="xml\FacilityDetailModel.cs" />
     <Compile Include="xml\FacilityResponseDetail.cs" />
     <Compile Include="xml\FacilityViolationDetail.cs" />
+    <Compile Include="xml\WellDetail.cs" />
+    <Compile Include="xml\WellStatusDetail.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

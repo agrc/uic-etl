@@ -49,6 +49,36 @@ namespace uic_etl.services
                 _.CreateMap<FacilityEnforcementSdeModel, FacilityResponseDetail>()
                     .ForMember(dest => dest.ResponseViolationIdentifier, opts => opts.MapFrom(src => src.Guid))
                     .ForMember(dest=> dest.ResponseEnforcementIdentifier, opts => opts.Ignore());
+
+                _.CreateMap<WellSdeModel, WellDetail>()
+                    .ForMember(dest => dest.WellIdentifier, opts => opts.Ignore())
+                    .ForMember(dest => dest.EventType, opts => opts.Ignore())
+                    .ForMember(dest => dest.WellAquiferExemptionInjectionCode, opts => opts.MapFrom(src => src.InjectionAquiferExempt))
+                    .ForMember(dest => dest.WellHighPriorityDesignationCode, opts => opts.MapFrom(src => src.HighPriority))
+                    .ForMember(dest => dest.WellContactIdentifier, opts => opts.Ignore())// TODO github #4
+                    .ForMember(dest => dest.WellFacilityIdentifier, opts => opts.MapFrom(src => src.FacilityGuid))
+                    .ForMember(dest => dest.WellGeologyIdentifier, opts => opts.Ignore()) // TODO github #5
+                    .ForMember(dest => dest.WellSiteAreaNameText, opts => opts.Ignore())
+                    .ForMember(dest => dest.WellPermitIdentifier, opts => opts.MapFrom(src => src.AuthorizationGuid))
+                    .ForMember(dest => dest.WellStateIdentifier, opts => opts.MapFrom(src => src.Guid))
+                    .ForMember(dest => dest.WellStateTribalCode, opts => opts.UseValue("UT"))
+                    .ForMember(dest => dest.WellName, opts => opts.MapFrom(src => src.WellName))
+                    .ForMember(dest => dest.WellTypeCode, opts => opts.MapFrom(src => src.WellSubClass))
+                    .ForMember(dest => dest.WellInSourceWaterAreaLocationText, opts => opts.MapFrom(src => src.WellSwpz))
+                    .ForMember(dest => dest.WellStatusDetail, opts => opts.Ignore())
+                    .ForMember(dest => dest.WellTypeDetail, opts => opts.Ignore())
+                    .ForMember(dest => dest.LocationDetail, opts => opts.Ignore())
+                    .ForMember(dest => dest.WellViolationDetail, opts => opts.Ignore())
+                    .ForMember(dest => dest.MitTestDetail, opts => opts.Ignore())
+                    .ForMember(dest => dest.WellInspectionDetail, opts => opts.Ignore())
+                    .ForMember(dest => dest.EngineeringDetail, opts => opts.Ignore())
+                    .ForMember(dest => dest.WasteDetail, opts => opts.Ignore());
+
+                _.CreateMap<WellStatusSdeModel, WellStatusDetail>()
+                    .ForMember(dest => dest.WellStatusDate,
+                        opts => opts.MapFrom(src => src.OperatingStatusDate.ToString("yyyMMdd")))
+                    .ForMember(dest => dest.WellId, opts => opts.MapFrom(src => src.WellGuid))
+                    .ForMember(dest => dest.WellStatusOperatingStatusCode, opts => opts.MapFrom(src => src.OperatingStatusType));
             });
 
             return config.CreateMapper();
@@ -114,6 +144,46 @@ namespace uic_etl.services
             var model = new FacilityEnforcementSdeModel
             {
                 Guid = new Guid((string) row.Value[fieldMap["Guid"].Index])
+            };
+
+            return model;
+        }
+
+        public static WellSdeModel MapWellModel(IFeature row, IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
+        {
+            var model = new WellSdeModel
+            {
+                Guid = new Guid((string) row.Value[fieldMap["GUID"].Index]),
+                WellId = GuardNull(row.Value[fieldMap["WellID"].Index]),
+                FacilityGuid = new Guid((string)row.Value[fieldMap["Facility_FK"].Index]),
+                AuthorizationGuid = new Guid((string)row.Value[fieldMap["Authorization_FK"].Index]),
+                InjectionAquiferExempt = GuardNull(row.Value[fieldMap["InjectionAquiferExempt"].Index]),
+                HighPriority = GuardNull(row.Value[fieldMap["HighPriority"].Index]),
+                WellSwpz = GuardNull(row.Value[fieldMap["WellSWPZ"].Index]),
+                WellName = GuardNull(row.Value[fieldMap["WellName"].Index]),
+                WellSubClass = (int)row.Value[fieldMap["WellSubClass"].Index]
+            };
+
+            return model;
+        }
+
+        public static VerticalWellEventSdeModel MapVerticalWellEventModel(IObject row, IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
+        {
+            var model = new VerticalWellEventSdeModel
+            {
+                EventType = (int)row.Value[fieldMap["EventType"].Index]
+            };
+
+            return model;
+        }
+
+        public static WellStatusSdeModel MapWellStatusModel(IObject row, IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
+        {
+            var model = new WellStatusSdeModel
+            {
+                OperatingStatusDate = (DateTime)row.Value[fieldMap["OperatingStatusDate"].Index],
+                OperatingStatusType = GuardNull(row.Value[fieldMap["OperatingStatusDate"].Index]),
+                WellGuid = new Guid((string)row.Value[fieldMap["Well_FK"].Index])
             };
 
             return model;
