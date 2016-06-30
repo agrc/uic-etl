@@ -51,6 +51,7 @@
     <Compile Include="xml\FacilityViolationDetail.cs" />
     <Compile Include="xml\WellDetail.cs" />
     <Compile Include="xml\WellStatusDetail.cs" />
+    <Compile Include="xml\WellTypeDetail.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

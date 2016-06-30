@@ -5,8 +5,13 @@ namespace domain.uic_etl.xml
 {
     public class WellDetail
     {
+        public WellDetail()
+        {
+            WellStatusDetail = new List<WellStatusDetail>();
+            WellTypeDetail = new List<WellTypeDetail>();
+        }
+
         public string WellName { get; set; }
-        public string WellTypeCode { get; set; }
         public int WellIdentifier { get; set; }
         public string WellAquiferExemptionInjectionCode { get; set; }
         public string WellTotalDepthNumeric { get; set; }
@@ -19,8 +24,9 @@ namespace domain.uic_etl.xml
         public string WellStateIdentifier { get; set; }
         public string WellStateTribalCode { get; set; }
         public string WellInSourceWaterAreaLocationText { get; set; }
+        public string WellTypeCode { get; set; }
         public List<WellStatusDetail> WellStatusDetail { get; set; }
-        public object[] WellTypeDetail { get; set; }
+        public List<WellTypeDetail> WellTypeDetail { get; set; }
         public object[] LocationDetail { get; set; }
         public object[] WellViolationDetail { get; set; }
         public object[] WellInspectionDetail { get; set; }

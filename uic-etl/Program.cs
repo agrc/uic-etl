@@ -197,6 +197,17 @@ namespace uic_etl
                         xmlWell.WellStatusDetail.Add(xmlWellStatus);
                     }
 
+                    // Add Well Type Details
+                    var wellTypeDetail = new WellTypeDetail
+                    {
+                        WellTypeCode = xmlWell.WellTypeCode,
+                        WellTypeIdentifier = 0,
+                        // WellTypeDate = TODO: github #6
+                        WellTypeWellIdentifier = well.Guid
+                    };
+
+                    xmlWell.WellTypeDetail.Add(wellTypeDetail);
+
                     dynamic x = new ExpandoObject();
                     x.WellTypeWellIdentifer = well.Guid;
                     x.WellAddressCounty = facility.CountyFips;
