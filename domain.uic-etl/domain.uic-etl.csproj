@@ -49,6 +49,7 @@
     <Compile Include="xml\FacilityDetailModel.cs" />
     <Compile Include="xml\FacilityResponseDetail.cs" />
     <Compile Include="xml\FacilityViolationDetail.cs" />
+    <Compile Include="xml\LocationDetailModel.cs" />
     <Compile Include="xml\WellDetail.cs" />
     <Compile Include="xml\WellStatusDetail.cs" />
     <Compile Include="xml\WellTypeDetail.cs" />

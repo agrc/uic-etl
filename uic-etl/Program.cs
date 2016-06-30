@@ -213,25 +213,14 @@ namespace uic_etl
                     xmlWell.WellTypeDetail.Add(wellTypeDetail);
 
                     // location detail
-                    dynamic x = new ExpandoObject();
-                    x.WellTypeWellIdentifer = well.Guid;
-                    x.WellAddressCounty = facility.CountyFips;
-                    x.LocationAccuracyValueMeasure = well.LocationAccuracy;
-                    x.GeographicReferencePointCode = "026";
-                    x.HorizontalCoordinateReferenceSystemDatumCode = "002";
-                    x.HorizontalCollectionMethodCode = well.LocationMethod;
-                    x.LocationPointLiveAreaCode = "001";
-                    x.SourceMapScaleNumeric = well.LocationAccuracy;
-                    x.LocationWellIdentifier = well.Guid;
-                    
-                    
                     var utm = wellFeature.ShapeCopy;
                     
                     utm.Project(newSpatialRefefence);
                     var point = (IPoint) utm;
 
-                    x.LatitudeMeasure = point.Y; 
-                    x.LongitudeMeasure = point.X;
+                    var locationDetail = new LocationDetailModel(well, facility, point.X, point.Y);
+
+                    xmlWell.LocationDetail = locationDetail;
                 }
             }
 
