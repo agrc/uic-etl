@@ -97,7 +97,7 @@ namespace uic_etl.services
                 FacilityId = GuardNull(row.Value[fieldMap["FacilityID"].Index]),
                 FacilityZip = GuardNull(row.Value[fieldMap["FacilityZip"].Index]),
                 FacilityType = GuardNull(row.Value[fieldMap["FacilityType"].Index]), 
-                CountyFips = (int)row.Value[fieldMap["CountyFIPS"].Index]), 
+                CountyFips = (int)row.Value[fieldMap["CountyFIPS"].Index], 
                 NoMigrationPetStatus = GuardNull(row.Value[fieldMap["NoMigrationPetStatus"].Index])
             };
 
