@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Runtime.InteropServices;
-using AutoMapper;
 using domain.uic_etl.sde;
 using domain.uic_etl.xml;
 using ESRI.ArcGIS.ADF;
 using ESRI.ArcGIS.Geodatabase;
+using ESRI.ArcGIS.Geometry;
 using uic_etl.commands;
 using uic_etl.models;
 using uic_etl.models.dtos;
@@ -23,7 +22,7 @@ namespace uic_etl
             EtlOptions options;
             IWorkspace workspace;
             var comObjects = new Stack<object>();
-
+            
             try
             {
                 options = ArgParserService.Parse(args);
@@ -52,6 +51,7 @@ namespace uic_etl
                 Console.Write("uic-etl: ");
                 Console.WriteLine(e.Message);
 
+                Console.ReadKey();
                 return;
             }
 
@@ -89,6 +89,9 @@ namespace uic_etl
             var wellFieldMap = new FindIndexByFieldNameCommand(wellRelation, WellSdeModel.Fields).Execute();
             var verticalWellFieldMap = new FindIndexByFieldNameCommand(verticalWellRelation, VerticalWellEventSdeModel.Fields).Execute();
             var wellStatusFieldMap = new FindIndexByFieldNameCommand(wellStatusRelation, WellStatusSdeModel.Fields).Execute();
+
+            var srFactory = new SpatialReferenceEnvironment();
+            var newSpatialRefefence = srFactory.CreateGeographicCoordinateSystem(4326);
 
             debug.Write("{0} Creating mappings for domain models", start.Elapsed);
             var mapper = AutoMapperService.CreateMappings();
@@ -186,6 +189,7 @@ namespace uic_etl
                     var wellStatusCursor = wellStatusRelation.GetObjectsRelatedToObject(wellFeature);
                     comObjects.Push(wellStatusCursor);
 
+                    // write well status
                     var wellStatusIdentifier = 0;
                     IObject wellStatusFeature;
                     while ((wellStatusFeature = wellStatusCursor.Next()) != null)
@@ -208,6 +212,7 @@ namespace uic_etl
 
                     xmlWell.WellTypeDetail.Add(wellTypeDetail);
 
+                    // location detail
                     dynamic x = new ExpandoObject();
                     x.WellTypeWellIdentifer = well.Guid;
                     x.WellAddressCounty = facility.CountyFips;
@@ -218,9 +223,15 @@ namespace uic_etl
                     x.LocationPointLiveAreaCode = "001";
                     x.SourceMapScaleNumeric = well.LocationAccuracy;
                     x.LocationWellIdentifier = well.Guid;
-                    // TODO: Convert to lat long
-                    x.LatitudeMeasure = 0; 
-                    x.LongitudeMeasure = 1;
+                    
+                    
+                    var utm = wellFeature.ShapeCopy;
+                    
+                    utm.Project(newSpatialRefefence);
+                    var point = (IPoint) utm;
+
+                    x.LatitudeMeasure = point.Y; 
+                    x.LongitudeMeasure = point.X;
                 }
             }
 
