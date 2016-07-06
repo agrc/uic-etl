@@ -80,6 +80,21 @@ namespace uic_etl.services
                         opts => opts.MapFrom(src => src.OperatingStatusDate.ToString("yyyMMdd")))
                     .ForMember(dest => dest.WellStatusWellIdentifier, opts => opts.MapFrom(src => src.WellGuid))
                     .ForMember(dest => dest.WellStatusOperatingStatusCode, opts => opts.MapFrom(src => src.OperatingStatusType));
+
+                _.CreateMap<WellInspectionSdeModel, WellInspectionDetail>()
+                    .ForMember(dest => dest.InspectionIdentifier, opts => opts.Ignore())
+                    .ForMember(dest => dest.InspectionAssistanceCode,
+                        opts => opts.MapFrom(src => src.InspectionAssistance))
+                    .ForMember(dest => dest.InspectionDeficiencyCode, opts => opts.MapFrom(src => src.InspectionDeficiency))
+                    .ForMember(dest => dest.InspectionActionDate, opts => opts.MapFrom(src => src.InspectionDate.ToString("yyyMMdd")))
+                    .ForMember(dest => dest.InspectionIdisComplianceMonitoringReasonCode, opts => opts.MapFrom(src => src.IcisCompMonActReason))
+                    .ForMember(dest => dest.InspectionIcisComplianceMonitoringTypeCode, opts => opts.MapFrom(src => src.IcisCompMonType))
+                    .ForMember(dest => dest.InspectionIcisComplianceActivityTypeCode, opts => opts.MapFrom(src => src.IcisCompActType))
+                    .ForMember(dest => dest.InspectionIcisMoaName, opts => opts.MapFrom(src => src.IcisMoaPriority))
+                    .ForMember(dest => dest.InspectionIcisRegionalPriorityName, opts => opts.MapFrom(src => src.IcisRegionalPriority))
+                    .ForMember(dest => dest.InspectionTypeActionCode, opts => opts.MapFrom(src => src.InspectionType))
+                    .ForMember(dest => dest.InspectionWellIdentifier, opts => opts.MapFrom(src => src.WellFk));
+
             });
 
             return config.CreateMapper();
@@ -193,6 +208,25 @@ namespace uic_etl.services
             return model;
         }
 
+        public static WellInspectionSdeModel MapWellInspectionModel(IObject row,
+            IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
+        {
+            var model = new WellInspectionSdeModel
+            {
+                InspectionAssistance = GuardNull(row.Value[fieldMap["InspectionAssistance"].Index]),
+                InspectionDeficiency = GuardNull(row.Value[fieldMap["InspectionDeficiency"].Index]),
+                InspectionDate = (DateTime)row.Value[fieldMap["InspectionDate"].Index],
+                IcisCompMonActReason = GuardNull(row.Value[fieldMap["ICISCompMonActReason"].Index]),
+                IcisCompMonType = GuardNull(row.Value[fieldMap["ICISCompMonType"].Index]),
+                IcisCompActType = GuardNull(row.Value[fieldMap["ICISCompActType"].Index]),
+                IcisMoaPriority = GuardNull(row.Value[fieldMap["ICISMOAPriority"].Index]),
+                IcisRegionalPriority = GuardNull(row.Value[fieldMap["ICISRegionalPriority"].Index]),
+                InspectionType = GuardNull(row.Value[fieldMap["InspectionType"].Index]),
+                WellFk = new Guid((string)row.Value[fieldMap["Well_FK"].Index])
+            };
+
+            return model;
+        }
         private static string GuardNull(this object value)
         {
             if (value == null || value == DBNull.Value)

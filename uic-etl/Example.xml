@@ -94,17 +94,17 @@
             </WellResponseDetail>
           </WellViolationDetail>
           <WellInspectionDetail>
-            <InspectionIdentifier>MEEP0WI01</InspectionIdentifier>
-            <InspectionAssistanceCode>GN</InspectionAssistanceCode>
-            <InspectionDeficiencyCode>OS</InspectionDeficiencyCode>
-            <InspectionActionDate>20020102</InspectionActionDate>
-            <InspectionICISComplianceMonitoringReasonCode>AP</InspectionICISComplianceMonitoringReasonCode>
-            <InspectionICISComplianceMonitoringTypeCode>CAI</InspectionICISComplianceMonitoringTypeCode>
-            <InspectionICISComplianceActivityTypeCode>IR</InspectionICISComplianceActivityTypeCode>
-            <InspectionICISMOAName>a</InspectionICISMOAName>
-            <InspectionICISRegionalPriorityName>a</InspectionICISRegionalPriorityName>
-            <InspectionTypeActionCode>MI</InspectionTypeActionCode>
-            <InspectionWellIdentifier>MEEP00W01</InspectionWellIdentifier>
+            <InspectionIdentifier>auto increment int</InspectionIdentifier>
+            <InspectionAssistanceCode>[UICInspection].InspectionAssistance | UICComplianceAssistanceDomain</InspectionAssistanceCode>
+            <InspectionDeficiencyCode>[UICInspection].InspectionDeficiency | UICDeficiencyDomain</InspectionDeficiencyCode>
+            <InspectionActionDate>[UICInspection].InspectionDate | yyyMMdd</InspectionActionDate>
+            <InspectionICISComplianceMonitoringReasonCode>[UICInspection].ICISCompMonActReason | UICICISCompMonActReasonDomain</InspectionICISComplianceMonitoringReasonCode>
+            <InspectionICISComplianceMonitoringTypeCode>[UICInspection].ICISCompMonType | UICICISMonitoringTypeDomain</InspectionICISComplianceMonitoringTypeCode>
+            <InspectionICISComplianceActivityTypeCode>[UICInspection].ICISCompActType | UICICISCompActTypeDomain</InspectionICISComplianceActivityTypeCode>
+            <InspectionICISMOAName>[UICInspection].ICISMOAPriority</InspectionICISMOAName>
+            <InspectionICISRegionalPriorityName>[UICInspection].ICISRegionalPriority</InspectionICISRegionalPriorityName>
+            <InspectionTypeActionCode>[UICInspection].InspectionType | UICInspectionTypeDomain</InspectionTypeActionCode>
+            <InspectionWellIdentifier>[UICInspection].Well_FK</InspectionWellIdentifier>
             <CorrectionDetail>
               <CorrectionIdentifier>MEEP0IC01</CorrectionIdentifier>
               <CorrectionActionTypeCode>VE</CorrectionActionTypeCode>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using domain.uic_etl.sde;
 
 namespace domain.uic_etl.xml
 {
@@ -29,7 +30,7 @@ namespace domain.uic_etl.xml
         public List<WellTypeDetail> WellTypeDetail { get; set; }
         public LocationDetailModel LocationDetail { get; set; }
         public object[] WellViolationDetail { get; set; }
-        public object[] WellInspectionDetail { get; set; }
+        public List<WellInspectionDetail> WellInspectionDetail { get; set; }
         public object[] MitTestDetail { get; set; }
         public object[] EngineeringDetail { get; set; }
         public object[] WasteDetail { get; set; }

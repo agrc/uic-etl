@@ -44,6 +44,8 @@
     <Compile Include="sde\FacilitySdeModel.cs" />
     <Compile Include="sde\FacilityViolationSdeModel.cs" />
     <Compile Include="sde\VerticalWellEvent.cs" />
+    <Compile Include="xml\WellInspectionDetail.cs" />
+    <Compile Include="sde\WellInspectionSdeModel.cs" />
     <Compile Include="sde\WellSdeModel.cs" />
     <Compile Include="sde\WellStatusSdeModel.cs" />
     <Compile Include="xml\FacilityDetailModel.cs" />
