@@ -106,10 +106,10 @@
             <InspectionTypeActionCode>[UICInspection].InspectionType | UICInspectionTypeDomain</InspectionTypeActionCode>
             <InspectionWellIdentifier>[UICInspection].Well_FK</InspectionWellIdentifier>
             <CorrectionDetail>
-              <CorrectionIdentifier>MEEP0IC01</CorrectionIdentifier>
-              <CorrectionActionTypeCode>VE</CorrectionActionTypeCode>
-              <CorrectionCommentText>a</CorrectionCommentText>
-              <CorrectionInspectionIdentifier>MEEP0WI01</CorrectionInspectionIdentifier>
+              <CorrectionIdentifier>auto incrementing int</CorrectionIdentifier>
+              <CorrectionActionTypeCode>[UICCorrection].CorrectiveAction | UICCorrectiveActionDomain</CorrectionActionTypeCode>
+              <CorrectionCommentText>[UICCorrection].CorrectionCommentText</CorrectionCommentText>
+              <CorrectionInspectionIdentifier>[UICCorrection].GUID</CorrectionInspectionIdentifier>
             </CorrectionDetail>
           </WellInspectionDetail>
           <MITestDetail>

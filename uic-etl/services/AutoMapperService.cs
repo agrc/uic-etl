@@ -95,6 +95,11 @@ namespace uic_etl.services
                     .ForMember(dest => dest.InspectionTypeActionCode, opts => opts.MapFrom(src => src.InspectionType))
                     .ForMember(dest => dest.InspectionWellIdentifier, opts => opts.MapFrom(src => src.WellFk));
 
+                _.CreateMap<CorrectionSdeModel, CorrectionDetail>()
+                    .ForMember(dest => dest.CorrectionIdentifier, opts => opts.Ignore())
+                    .ForMember(dest => dest.CorrectiveActionTypeCode, opts => opts.MapFrom(src => src.CorrectiveAction))
+                    .ForMember(dest => dest.CorrectionCommentText, opts => opts.MapFrom(src => src.Comments))
+                    .ForMember(dest => dest.CorrectionInspectionIdentifier, opts => opts.MapFrom(src => src.Guid));
             });
 
             return config.CreateMapper();
@@ -227,6 +232,20 @@ namespace uic_etl.services
 
             return model;
         }
+
+        public static CorrectionSdeModel MapCorrectionSdeModel(IObject row,
+            IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
+        {
+            var model = new CorrectionSdeModel
+            {
+                CorrectiveAction = GuardNull(row.Value[fieldMap["CorrectiveAction"].Index]),
+                Comments = GuardNull(row.Value[fieldMap["Comments"].Index]),
+                Guid = new Guid((string) row.Value[fieldMap["GUID"].Index])
+            };
+
+            return model;
+        }
+
         private static string GuardNull(this object value)
         {
             if (value == null || value == DBNull.Value)
