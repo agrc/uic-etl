@@ -100,6 +100,15 @@ namespace uic_etl.services
                     .ForMember(dest => dest.CorrectiveActionTypeCode, opts => opts.MapFrom(src => src.CorrectiveAction))
                     .ForMember(dest => dest.CorrectionCommentText, opts => opts.MapFrom(src => src.Comments))
                     .ForMember(dest => dest.CorrectionInspectionIdentifier, opts => opts.MapFrom(src => src.Guid));
+
+                _.CreateMap<MiTestSdeModel, MiTestDetail>()
+                    .ForMember(dest => dest.MechanicalIntegrityTestIdentifier, opts => opts.Ignore())
+                    .ForMember(dest => dest.MechanicalIntegrityTestCompletedDate, opts => opts.MapFrom(src => src.MitDate.ToString("yyyMMdd")))
+                    .ForMember(dest => dest.MechanicalIntegrityTestResultCode, opts => opts.MapFrom(src => src.MitResult))
+                    .ForMember(dest => dest.MechanicalIntegrityTestTypeCode, opts => opts.MapFrom(src => src.MitType))
+                    .ForMember(dest => dest.MechanicalIntegrityTestRemedialActionDate, opts => opts.MapFrom(src => src.MitRemActDate.ToString("yyyMMdd")))
+                    .ForMember(dest => dest.MechanicalIntegrityTestRemedialActionTypeCode, opts => opts.MapFrom(src => src.MitRemediationAction))
+                    .ForMember(dest => dest.MechanicalIntegrityTestWellIdentifier, opts => opts.MapFrom(src => src.WellFk));
             });
 
             return config.CreateMapper();
@@ -241,6 +250,21 @@ namespace uic_etl.services
                 CorrectiveAction = GuardNull(row.Value[fieldMap["CorrectiveAction"].Index]),
                 Comments = GuardNull(row.Value[fieldMap["Comments"].Index]),
                 Guid = new Guid((string) row.Value[fieldMap["GUID"].Index])
+            };
+
+            return model;
+        }
+
+        public static MiTestSdeModel MapMiTestSdeModel(IObject row, IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
+        {
+            var model = new MiTestSdeModel
+            {
+                MitDate = (DateTime)row.Value[fieldMap["MITDate"].Index],
+                MitResult = GuardNull(row.Value[fieldMap["MITResult"].Index]),
+                MitType = GuardNull(row.Value[fieldMap["MITType"].Index]),
+                MitRemActDate = (DateTime)row.Value[fieldMap["MITRemActDate"].Index],
+                MitRemediationAction = GuardNull(row.Value[fieldMap["MITRemediationAction"].Index]),
+                WellFk = new Guid((string) row.Value[fieldMap["Well_FK"].Index])
             };
 
             return model;

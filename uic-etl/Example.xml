@@ -113,13 +113,13 @@
             </CorrectionDetail>
           </WellInspectionDetail>
           <MITestDetail>
-            <MechanicalIntegrityTestIdentifier>MEEP0MI01</MechanicalIntegrityTestIdentifier>
-            <MechanicalIntegrityTestCompletedDate>20020101</MechanicalIntegrityTestCompletedDate>
-            <MechanicalIntegrityTestResultCode>PS</MechanicalIntegrityTestResultCode>
-            <MechanicalIntegrityTestTypeCode>AP</MechanicalIntegrityTestTypeCode>
-            <MechanicalIntegrityTestRemedialActionDate>20020102</MechanicalIntegrityTestRemedialActionDate>
-            <MechanicalIntegrityTestRemedialActionTypeCode>CS</MechanicalIntegrityTestRemedialActionTypeCode>
-            <MechanicalIntegrityTestWellIdentifier>MEEP00W01</MechanicalIntegrityTestWellIdentifier>
+            <MechanicalIntegrityTestIdentifier>auto incrementing int</MechanicalIntegrityTestIdentifier>
+            <MechanicalIntegrityTestCompletedDate>[UICMIT].MITDate | yyyMMdd</MechanicalIntegrityTestCompletedDate>
+            <MechanicalIntegrityTestResultCode>[UICMIT].MITResult | UICMITResultDomain</MechanicalIntegrityTestResultCode>
+            <MechanicalIntegrityTestTypeCode>[UICMIT].MITType | UICMITTypeDomain</MechanicalIntegrityTestTypeCode>
+            <MechanicalIntegrityTestRemedialActionDate>[UICMIT].MITRemActDate | yyyMMdd</MechanicalIntegrityTestRemedialActionDate>
+            <MechanicalIntegrityTestRemedialActionTypeCode>[UICMIT].MITRemediationAction | MITRemediationActionDomain</MechanicalIntegrityTestRemedialActionTypeCode>
+            <MechanicalIntegrityTestWellIdentifier>[UICMIT].Well_FK</MechanicalIntegrityTestWellIdentifier>
           </MITestDetail>
           <EngineeringDetail>
             <EngineeringIdentifier>MEEP0WE02</EngineeringIdentifier>
