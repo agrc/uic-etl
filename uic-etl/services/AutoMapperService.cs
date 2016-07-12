@@ -109,6 +109,13 @@ namespace uic_etl.services
                     .ForMember(dest => dest.MechanicalIntegrityTestRemedialActionDate, opts => opts.MapFrom(src => src.MitRemActDate.ToString("yyyMMdd")))
                     .ForMember(dest => dest.MechanicalIntegrityTestRemedialActionTypeCode, opts => opts.MapFrom(src => src.MitRemediationAction))
                     .ForMember(dest => dest.MechanicalIntegrityTestWellIdentifier, opts => opts.MapFrom(src => src.WellFk));
+
+                _.CreateMap<WellOperatingSdeModel, EngineeringDetail>()
+                    .ForMember(dest => dest.EngineeringMaximumFlowRateNumeric,
+                        opts => opts.MapFrom(src => src.MaxInjectionRate))
+                    .ForMember(dest => dest.EngineeringPermittedOnsiteInjectionVolumeNumeric, opts => opts.MapFrom(src => src.OnSiteVolume))
+                    .ForMember(dest => dest.EngineeringPermittedOffsiteInjectionVolumeNumeric, opts => opts.MapFrom(src => src.OffSiteVolume))
+                    .ForMember(dest => dest.EngineeringWellIdentifier, opts => opts.MapFrom(src => src.WellFk));
             });
 
             return config.CreateMapper();
@@ -270,6 +277,19 @@ namespace uic_etl.services
             return model;
         }
 
+        public static WellOperatingSdeModel MapWellOperationSdeModel(IObject row,
+            IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
+        {
+            var model = new WellOperatingSdeModel
+            {
+                MaxInjectionRate = double.Parse((string) row.Value[fieldMap["MaxInjectionRate"].Index]),
+                OnSiteVolume = double.Parse((string)row.Value[fieldMap["OnSiteVolume"].Index]),
+                OffSiteVolume = double.Parse((string)row.Value[fieldMap["OffSiteVolume"].Index]),
+                WellFk = new Guid((string)row.Value[fieldMap["Well_FK"].Index])
+            };
+
+            return model;
+        }
         private static string GuardNull(this object value)
         {
             if (value == null || value == DBNull.Value)

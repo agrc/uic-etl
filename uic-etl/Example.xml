@@ -122,11 +122,11 @@
             <MechanicalIntegrityTestWellIdentifier>[UICMIT].Well_FK</MechanicalIntegrityTestWellIdentifier>
           </MITestDetail>
           <EngineeringDetail>
-            <EngineeringIdentifier>MEEP0WE02</EngineeringIdentifier>
-            <EngineeringMaximumFlowRateNumeric>99999.99</EngineeringMaximumFlowRateNumeric>
-            <EngineeringPermittedOnsiteInjectionVolumeNumeric>99.9999</EngineeringPermittedOnsiteInjectionVolumeNumeric>
-            <EngineeringPermittedOffsiteInjectionVolumeNumeric>99.9999</EngineeringPermittedOffsiteInjectionVolumeNumeric>
-            <EngineeringWellIdentifier>MEEP00W01</EngineeringWellIdentifier>
+            <EngineeringIdentifier>auto incrementing int</EngineeringIdentifier>
+            <EngineeringMaximumFlowRateNumeric>[WellOperation].MaxInjectionRate</EngineeringMaximumFlowRateNumeric>
+            <EngineeringPermittedOnsiteInjectionVolumeNumeric>[WellOperation].OnSiteVolume</EngineeringPermittedOnsiteInjectionVolumeNumeric>
+            <EngineeringPermittedOffsiteInjectionVolumeNumeric>[WellOperation].OffSiteVolume</EngineeringPermittedOffsiteInjectionVolumeNumeric>
+            <EngineeringWellIdentifier>[WellOperation].Well_FK</EngineeringWellIdentifier>
           </EngineeringDetail>
           <WasteDetail>
             <WasteIdentifier>MEEP0WW01</WasteIdentifier>
