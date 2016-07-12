@@ -40,16 +40,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="sde\ConsituentClassISdeModel.cs" />
     <Compile Include="sde\CorrectionSdeModel.cs" />
     <Compile Include="sde\FacilityEnforcementSdeModel.cs" />
     <Compile Include="sde\FacilitySdeModel.cs" />
     <Compile Include="sde\FacilityViolationSdeModel.cs" />
     <Compile Include="sde\MiTestSdeModel.cs" />
     <Compile Include="sde\VerticalWellEventSdeModel.cs" />
+    <Compile Include="sde\WasteClassISdeModel.cs" />
     <Compile Include="sde\WellOperatingSdeModel.cs" />
+    <Compile Include="xml\ConstituentDetail.cs" />
     <Compile Include="xml\CorrectionDetail.cs" />
     <Compile Include="xml\EngineeringDetail.cs" />
     <Compile Include="xml\MiTestDetail.cs" />
+    <Compile Include="xml\WasteDetail.cs" />
     <Compile Include="xml\WellInspectionDetail.cs" />
     <Compile Include="sde\WellInspectionSdeModel.cs" />
     <Compile Include="sde\WellSdeModel.cs" />

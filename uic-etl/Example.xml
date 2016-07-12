@@ -129,15 +129,15 @@
             <EngineeringWellIdentifier>[WellOperation].Well_FK</EngineeringWellIdentifier>
           </EngineeringDetail>
           <WasteDetail>
-            <WasteIdentifier>MEEP0WW01</WasteIdentifier>
-            <WasteCode>a</WasteCode>
-            <WasteStreamClassificationCode>a</WasteStreamClassificationCode>
-            <WasteWellIdentifier>MEEP00W01</WasteWellIdentifier>
+            <WasteIdentifier>auto incrementing int</WasteIdentifier>
+            <WasteCode>[WasteClassI].WasteCode</WasteCode>
+            <WasteStreamClassificationCode>[WasteClassI].WasteStream</WasteStreamClassificationCode>
+            <WasteWellIdentifier>[WasteClassI].Well_Fk</WasteWellIdentifier>
             <ConstituentDetail>
-              <ConstituentIdentifier>MEEP0WC01</ConstituentIdentifier>
-              <MeasureValue>999999.99999</MeasureValue>
-              <MeasureUnitCode>PCI/L</MeasureUnitCode>
-              <ConstituentNameText>a</ConstituentNameText>
+              <ConstituentIdentifier>auto incrementing int</ConstituentIdentifier>
+              <MeasureValue>[ConstituentClassI].Concentration</MeasureValue>
+              <MeasureUnitCode>[ContintuentClassI].Unit | EventsUnitsDomain</MeasureUnitCode>
+              <ConstituentNameText>[ConstituentClassI].ConstituentCode</ConstituentNameText>
               <ConstituentWasteIdentifier>MEEP0WW01</ConstituentWasteIdentifier>
             </ConstituentDetail>
           </WasteDetail>

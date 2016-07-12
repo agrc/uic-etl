@@ -116,6 +116,17 @@ namespace uic_etl.services
                     .ForMember(dest => dest.EngineeringPermittedOnsiteInjectionVolumeNumeric, opts => opts.MapFrom(src => src.OnSiteVolume))
                     .ForMember(dest => dest.EngineeringPermittedOffsiteInjectionVolumeNumeric, opts => opts.MapFrom(src => src.OffSiteVolume))
                     .ForMember(dest => dest.EngineeringWellIdentifier, opts => opts.MapFrom(src => src.WellFk));
+
+                _.CreateMap<WasteClassISdeModel, WasteDetail>()
+                    .ForMember(dest => dest.WasteCode, opts => opts.MapFrom(src => src.WasteCode))
+                    .ForMember(dest => dest.WasteStreamClassificationCode, opts => opts.MapFrom(src => src.WasteStream))
+                    .ForMember(dest => dest.WasteWellIdentifier, opts => opts.MapFrom(src => src.WellFk));
+
+                _.CreateMap<ConstituentClassISdeModel, ConstituentDetail>()
+                    .ForMember(dest => dest.MeasureValue, opts => opts.MapFrom(src => src.Concentration))
+                    .ForMember(dest => dest.MeasureUnitCode, opts => opts.MapFrom(src => src.Unit))
+                    .ForMember(dest => dest.ConstituentNameText, opts => opts.MapFrom(src => src.ConstituentCode))
+                    .ForMember(dest => dest.ConstituentWasteIdentifier, opts => opts.MapFrom(src => src.WasteGuid));
             });
 
             return config.CreateMapper();
@@ -290,6 +301,33 @@ namespace uic_etl.services
 
             return model;
         }
+
+        public static WasteClassISdeModel MapWasteClassISdeModel(IObject row,
+            IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
+        {
+            var model = new WasteClassISdeModel
+            {
+                WasteCode = GuardNull(row.Value[fieldMap["WasteCode"].Index]),
+                WasteStream = GuardNull(row.Value[fieldMap["WasteStream"].Index]),
+                WellFk = new Guid((string)row.Value[fieldMap["Well_FK"].Index])
+            };
+
+            return model;
+        }
+
+        public static ConstituentClassISdeModel MapConsituentClassISdeModel(IObject row,
+            IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
+        {
+            var model = new ConstituentClassISdeModel
+            {
+                Concentration = Convert.ToInt32(row.Value[fieldMap["Concentration"].Index]),
+                Unit = Convert.ToInt32(row.Value[fieldMap["Unit"].Index]),
+                ConstituentCode = GuardNull(row.Value[fieldMap["ConstituentCode"].Index])
+            };
+
+            return model;
+        }
+        
         private static string GuardNull(this object value)
         {
             if (value == null || value == DBNull.Value)
