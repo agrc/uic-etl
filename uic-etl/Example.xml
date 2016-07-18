@@ -138,7 +138,7 @@
               <MeasureValue>[ConstituentClassI].Concentration</MeasureValue>
               <MeasureUnitCode>[ContintuentClassI].Unit | EventsUnitsDomain</MeasureUnitCode>
               <ConstituentNameText>[ConstituentClassI].ConstituentCode</ConstituentNameText>
-              <ConstituentWasteIdentifier>MEEP0WW01</ConstituentWasteIdentifier>
+              <ConstituentWasteIdentifier>[ConstituentClassI].ClassIWaste_FK</ConstituentWasteIdentifier>
             </ConstituentDetail>
           </WasteDetail>
         </WellDetail>
