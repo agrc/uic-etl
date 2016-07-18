@@ -145,12 +145,12 @@
       </FacilityList>
       <ContactDetail xmlns="http://www.exchangenetwork.net/schema/uic/2">
         <ContactIdentifier>MEEP00C01</ContactIdentifier>
-        <TelephoneNumberText>123456789012345</TelephoneNumberText>
-        <IndividualFullName>a</IndividualFullName>
-        <ContactCityName>123456789012345678901234567890</ContactCityName>
-        <ContactAddressStateCode>12345678901234567890</ContactAddressStateCode>
-        <ContactAddressText>a</ContactAddressText>
-        <ContactAddressPostalCode>aaaaa</ContactAddressPostalCode>
+        <TelephoneNumberText>[UICContact].ContactPhone</TelephoneNumberText>
+        <IndividualFullName>[UICContact].ContactName</IndividualFullName>
+        <ContactCityName>[UICContact].ContactMailCity</ContactCityName>
+        <ContactAddressStateCode>[UICContact].ContactMailState</ContactAddressStateCode>
+        <ContactAddressText>[UICContact].ContactMailAddress</ContactAddressText>
+        <ContactAddressPostalCode>[UICContact].ZipCode5 + [UICContact].ZipCode4</ContactAddressPostalCode>
       </ContactDetail>
       <PermitDetail xmlns="http://www.exchangenetwork.net/schema/uic/2">
         <PermitIdentifier>MEEP00P02</PermitIdentifier>
