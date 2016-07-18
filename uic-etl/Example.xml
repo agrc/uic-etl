@@ -154,14 +154,14 @@
       </ContactDetail>
       <PermitDetail xmlns="http://www.exchangenetwork.net/schema/uic/2">
         <PermitIdentifier>MEEP00P02</PermitIdentifier>
-        <PermitAORWellNumberNumeric>33008</PermitAORWellNumberNumeric>
-        <PermitAuthorizedStatusCode>IP</PermitAuthorizedStatusCode>
-        <PermitOwnershipTypeCode>PV</PermitOwnershipTypeCode>
-        <PermitAuthorizedIdentifier>Bb1</PermitAuthorizedIdentifier>
+        <PermitAORWellNumberNumeric>[AreaOfReview].sum of CA_Abandon,CA_Repair, CA_Replug, and CA_Other</PermitAORWellNumberNumeric>
+        <PermitAuthorizedStatusCode>[Authorize].AuthorizeType</PermitAuthorizedStatusCode>
+        <PermitOwnershipTypeCode>[Authorize].OwnerSectorType</PermitOwnershipTypeCode>
+        <PermitAuthorizedIdentifier>[Authorize].AuthorizeNumber</PermitAuthorizedIdentifier>
         <PermitActivityDetail>
           <PermitActivityIdentifier>MEEP0PA04</PermitActivityIdentifier>
-          <PermitActivityActionTypeCode>AI</PermitActivityActionTypeCode>
-          <PermitActivityDate>20020101</PermitActivityDate>
+          <PermitActivityActionTypeCode>[AuthorizeAction].AuthorizeActionType</PermitActivityActionTypeCode>
+          <PermitActivityDate>[AuthorizeAction]AuthorizeActionDate</PermitActivityDate>
           <PermitActivityPermitIdentifier>MEEP00P02</PermitActivityPermitIdentifier>
         </PermitActivityDetail>
       </PermitDetail>
