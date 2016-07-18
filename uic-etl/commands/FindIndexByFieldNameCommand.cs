@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using ESRI.ArcGIS.Geodatabase;
+using uic_etl.models;
 using uic_etl.models.dtos;
 
 namespace uic_etl.commands
@@ -43,11 +44,35 @@ namespace uic_etl.commands
         {
             foreach (var field in _fieldsToMap)
             {
-                _propertyValueIndexMap.Add(field,
-                                           new IndexFieldMap(GetIndexForField(field, _fields), field));
+                var mapping = new IndexFieldMap(GetIndexForField(field, _fields), field);
+                mapping.DomainName = GetDomainForField(mapping, _fields);
+
+                _propertyValueIndexMap.Add(field, mapping);
             }
 
             return _propertyValueIndexMap;
+        }
+
+        private static string GetDomainForField(IndexFieldMap mapping, IFields fields)
+        {
+            if (mapping.Index < 0)
+            {
+                return null;
+            }
+
+            var domain = fields.Field[mapping.Index].Domain;
+            
+            if (domain == null)
+            {
+                return null;
+            }
+
+            if (!Cache.DomainDicionary.ContainsKey(domain.Name))
+            {
+                Cache.DomainDicionary.Add(domain.Name, domain as ICodedValueDomain);
+            }
+
+            return domain.Name;
         }
 
         /// <summary>

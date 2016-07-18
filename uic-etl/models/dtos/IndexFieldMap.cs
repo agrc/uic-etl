@@ -1,4 +1,6 @@
-﻿namespace uic_etl.models.dtos
+﻿using ESRI.ArcGIS.Geodatabase;
+
+namespace uic_etl.models.dtos
 {
     /// <summary>
     ///     A mapping holding the column index for the field name
@@ -22,5 +24,7 @@
         /// </summary>
         /// <value> The field. </value>
         public string Field { get; set; }
+
+        public string DomainName { get; set; }
     }
 }
