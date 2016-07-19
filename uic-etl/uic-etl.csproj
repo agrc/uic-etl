@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="commands\FindIndexByFieldNameCommand.cs" />
+    <Compile Include="models\Cache.cs" />
     <Compile Include="models\Configruation.cs" />
     <Compile Include="models\dtos\IndexFieldMap.cs" />
     <Compile Include="models\dtos\HeaderInformation.cs" />

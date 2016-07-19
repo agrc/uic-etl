@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using AutoMapper;
 using domain.uic_etl.sde;
 using domain.uic_etl.xml;
 using ESRI.ArcGIS.Geodatabase;
+using Microsoft.CSharp.RuntimeBinder;
+using uic_etl.models;
 using uic_etl.models.dtos;
 
 namespace uic_etl.services
@@ -138,14 +141,14 @@ namespace uic_etl.services
             var model = new FacilitySdeModel
             {
                 Guid = new Guid((string) row.Value[fieldMap["GUID"].Index]),
-                FacilityName = GuardNull(row.Value[fieldMap["FacilityName"].Index]),
-                FacilityAddress = GuardNull(row.Value[fieldMap["FacilityAddress"].Index]),
-                FacilityCity = GuardNull(row.Value[fieldMap["FacilityCity"].Index]),
-                FacilityId = GuardNull(row.Value[fieldMap["FacilityID"].Index]),
-                FacilityZip = GuardNull(row.Value[fieldMap["FacilityZip"].Index]),
-                FacilityType = GuardNull(row.Value[fieldMap["FacilityType"].Index]), 
-                CountyFips = (int)row.Value[fieldMap["CountyFIPS"].Index], 
-                NoMigrationPetStatus = GuardNull(row.Value[fieldMap["NoMigrationPetStatus"].Index])
+                FacilityName = GetDomainValue(row, fieldMap["FacilityName"]),
+                FacilityAddress = GetDomainValue(row, fieldMap["FacilityAddress"]),
+                FacilityCity = GetDomainValue(row, fieldMap["FacilityCity"]),
+                FacilityId = GetDomainValue(row, fieldMap["FacilityID"]),
+                FacilityZip = GetDomainValue(row, fieldMap["FacilityZip"]),
+                FacilityType = GetDomainValue(row, fieldMap["FacilityType"]), 
+                CountyFips = (int)row.Value[fieldMap["CountyFIPS"].Index],
+                NoMigrationPetStatus = GetDomainValue(row, fieldMap["NoMigrationPetStatus"])
             };
 
             return model;
@@ -336,6 +339,51 @@ namespace uic_etl.services
             }
 
             return (string) value;
+        }
+
+        private static string GetDomainValue(IObject row, IndexFieldMap fieldMap)
+        {
+            var value = GuardNull(row.Value[fieldMap.Index]);
+
+            if (string.IsNullOrEmpty(value))
+            {
+                return value;
+            }
+
+            if (string.IsNullOrEmpty(fieldMap.DomainName))
+            {
+                return value;
+            }
+
+            if (!Cache.DomainDicionary.ContainsKey(fieldMap.DomainName) ||
+                Cache.DomainDicionary[fieldMap.DomainName] == null)
+            {
+                return value;
+            }
+
+            try
+            {
+                if (!((IDomain)Cache.DomainDicionary[fieldMap.DomainName]).MemberOf(value))
+                {
+                    return value;
+                }
+            }
+            catch (RuntimeBinderException)
+            {
+                
+            }
+
+            for (var values = 0; values < Cache.DomainDicionary[fieldMap.DomainName].CodeCount; values++)
+            {
+                if (value != Cache.DomainDicionary[fieldMap.DomainName].Name[values])
+                {
+                    continue;
+                }
+
+                return value;
+            }
+
+            return value;
         }
     }
 }
