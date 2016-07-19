@@ -19,7 +19,7 @@ namespace domain.uic_etl.sde
         public string HighPriority { get; set; }
         public string WellSwpz { get; set; }
         public string WellName { get; set; }
-        public int WellSubClass { get; set; }
+        public string WellSubClass { get; set; }
         public string LocationAccuracy { get; set; }
         public string LocationMethod { get; set; }
     }

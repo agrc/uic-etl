@@ -4,6 +4,6 @@
     {
         public static string[] Fields = {"EventType"};
             
-        public int EventType { get; set; }
+        public string EventType { get; set; }
     }
 }

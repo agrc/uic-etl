@@ -128,7 +128,7 @@ namespace uic_etl.services
                 _.CreateMap<ConstituentClassISdeModel, ConstituentDetail>()
                     .ForMember(dest => dest.MeasureValue, opts => opts.MapFrom(src => src.Concentration))
                     .ForMember(dest => dest.MeasureUnitCode, opts => opts.MapFrom(src => src.Unit))
-                    .ForMember(dest => dest.ConstituentNameText, opts => opts.MapFrom(src => src.ConstituentCode))
+                    .ForMember(dest => dest.ConstituentNameText, opts => opts.MapFrom(src => src.Constituent))
                     .ForMember(dest => dest.ConstituentWasteIdentifier, opts => opts.MapFrom(src => src.WasteGuid));
             });
 
@@ -215,7 +215,7 @@ namespace uic_etl.services
                 LocationAccuracy = GetDomainValue(row, fieldMap["LocationAccuracy"]),
                 LocationMethod = GetDomainValue(row, fieldMap["LocationAccuracy"]),
                 WellName = GetDomainValue(row, fieldMap["WellName"]),
-                WellSubClass = (int)row.Value[fieldMap["WellSubClass"].Index]
+                WellSubClass = GetDomainValue(row, fieldMap["WellSubClass"])
             };
 
             return model;
@@ -225,7 +225,7 @@ namespace uic_etl.services
         {
             var model = new VerticalWellEventSdeModel
             {
-                EventType = (int)row.Value[fieldMap["EventType"].Index]
+                EventType = GetDomainValue(row, fieldMap["EventType"])
             };
 
             return model;
@@ -323,9 +323,9 @@ namespace uic_etl.services
         {
             var model = new ConstituentClassISdeModel
             {
-                Concentration = Convert.ToInt32(row.Value[fieldMap["Concentration"].Index]),
-                Unit = Convert.ToInt32(row.Value[fieldMap["Unit"].Index]),
-                ConstituentCode = GetDomainValue(row, fieldMap["ConstituentCode"])
+                Concentration = Convert.ToDouble(row.Value[fieldMap["Concentration"].Index]),
+                Unit = GetDomainValue(row, fieldMap["Unit"]),
+                Constituent = GetDomainValue(row, fieldMap["Constituent"])
             };
 
             return model;
