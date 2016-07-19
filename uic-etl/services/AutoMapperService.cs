@@ -51,7 +51,7 @@ namespace uic_etl.services
 
                 _.CreateMap<FacilityEnforcementSdeModel, FacilityResponseDetail>()
                     .ForMember(dest => dest.ResponseViolationIdentifier, opts => opts.MapFrom(src => src.Guid))
-                    .ForMember(dest=> dest.ResponseEnforcementIdentifier, opts => opts.Ignore());
+                    .ForMember(dest => dest.ResponseEnforcementIdentifier, opts => opts.Ignore());
 
                 _.CreateMap<WellSdeModel, WellDetail>()
                     .ForMember(dest => dest.WellTotalDepthNumeric, opts => opts.Ignore())
@@ -140,13 +140,13 @@ namespace uic_etl.services
         {
             var model = new FacilitySdeModel
             {
-                Guid = new Guid((string) row.Value[fieldMap["GUID"].Index]),
+                Guid = new Guid((string)row.Value[fieldMap["GUID"].Index]),
                 FacilityName = GetDomainValue(row, fieldMap["FacilityName"]),
                 FacilityAddress = GetDomainValue(row, fieldMap["FacilityAddress"]),
                 FacilityCity = GetDomainValue(row, fieldMap["FacilityCity"]),
                 FacilityId = GetDomainValue(row, fieldMap["FacilityID"]),
                 FacilityZip = GetDomainValue(row, fieldMap["FacilityZip"]),
-                FacilityType = GetDomainValue(row, fieldMap["FacilityType"]), 
+                FacilityType = GetDomainValue(row, fieldMap["FacilityType"]),
                 CountyFips = (int)row.Value[fieldMap["CountyFIPS"].Index],
                 NoMigrationPetStatus = GetDomainValue(row, fieldMap["NoMigrationPetStatus"])
             };
@@ -159,12 +159,12 @@ namespace uic_etl.services
         {
             var model = new FacilityViolationSdeModel
             {
-                UsdwContamination = GuardNull(row.Value[fieldMap["USDWContamination"].Index]),
-                Endanger = GuardNull(row.Value[fieldMap["ENDANGER"].Index]),
-                ReturnToComplianceDate = (DateTime) row.Value[fieldMap["ReturnToComplianceDate"].Index],
-                SignificantNonCompliance = GuardNull(row.Value[fieldMap["SignificantNonCompliance"].Index]),
-                ViolationDate = (DateTime) row.Value[fieldMap["ViolationDate"].Index],
-                ViolationType = GuardNull(row.Value[fieldMap["ViolationType"].Index]),
+                UsdwContamination = GetDomainValue(row, fieldMap["USDWContamination"]),
+                Endanger = GetDomainValue(row, fieldMap["ENDANGER"]),
+                ReturnToComplianceDate = (DateTime)row.Value[fieldMap["ReturnToComplianceDate"].Index],
+                SignificantNonCompliance = GetDomainValue(row, fieldMap["SignificantNonCompliance"]),
+                ViolationDate = (DateTime)row.Value[fieldMap["ViolationDate"].Index],
+                ViolationType = GetDomainValue(row, fieldMap["ViolationType"]),
             };
 
             var guidString = GuardNull(row.Value[fieldMap["GUID"].Index]);
@@ -195,7 +195,7 @@ namespace uic_etl.services
         {
             var model = new FacilityEnforcementSdeModel
             {
-                Guid = new Guid((string) row.Value[fieldMap["Guid"].Index])
+                Guid = new Guid((string)row.Value[fieldMap["Guid"].Index])
             };
 
             return model;
@@ -205,16 +205,16 @@ namespace uic_etl.services
         {
             var model = new WellSdeModel
             {
-                Guid = new Guid((string) row.Value[fieldMap["GUID"].Index]),
-                WellId = GuardNull(row.Value[fieldMap["WellID"].Index]),
+                Guid = new Guid((string)row.Value[fieldMap["GUID"].Index]),
+                WellId = GetDomainValue(row, fieldMap["WellID"]),
                 FacilityGuid = new Guid((string)row.Value[fieldMap["Facility_FK"].Index]),
                 AuthorizationGuid = new Guid((string)row.Value[fieldMap["Authorization_FK"].Index]),
-                InjectionAquiferExempt = GuardNull(row.Value[fieldMap["InjectionAquiferExempt"].Index]),
-                HighPriority = GuardNull(row.Value[fieldMap["HighPriority"].Index]),
-                WellSwpz = GuardNull(row.Value[fieldMap["WellSWPZ"].Index]),
-                LocationAccuracy = GuardNull(row.Value[fieldMap["LocationAccuracy"].Index]),
-                LocationMethod = GuardNull(row.Value[fieldMap["LocationAccuracy"].Index]),
-                WellName = GuardNull(row.Value[fieldMap["WellName"].Index]),
+                InjectionAquiferExempt = GetDomainValue(row, fieldMap["InjectionAquiferExempt"]),
+                HighPriority = GetDomainValue(row, fieldMap["HighPriority"]),
+                WellSwpz = GetDomainValue(row, fieldMap["WellSWPZ"]),
+                LocationAccuracy = GetDomainValue(row, fieldMap["LocationAccuracy"]),
+                LocationMethod = GetDomainValue(row, fieldMap["LocationAccuracy"]),
+                WellName = GetDomainValue(row, fieldMap["WellName"]),
                 WellSubClass = (int)row.Value[fieldMap["WellSubClass"].Index]
             };
 
@@ -236,7 +236,7 @@ namespace uic_etl.services
             var model = new WellStatusSdeModel
             {
                 OperatingStatusDate = (DateTime)row.Value[fieldMap["OperatingStatusDate"].Index],
-                OperatingStatusType = GuardNull(row.Value[fieldMap["OperatingStatusType"].Index]),
+                OperatingStatusType = GetDomainValue(row, fieldMap["OperatingStatusType"]),
                 WellGuid = new Guid((string)row.Value[fieldMap["Well_FK"].Index])
             };
 
@@ -248,15 +248,15 @@ namespace uic_etl.services
         {
             var model = new WellInspectionSdeModel
             {
-                InspectionAssistance = GuardNull(row.Value[fieldMap["InspectionAssistance"].Index]),
-                InspectionDeficiency = GuardNull(row.Value[fieldMap["InspectionDeficiency"].Index]),
+                InspectionAssistance = GetDomainValue(row, fieldMap["InspectionAssistance"]),
+                InspectionDeficiency = GetDomainValue(row, fieldMap["InspectionDeficiency"]),
                 InspectionDate = (DateTime)row.Value[fieldMap["InspectionDate"].Index],
-                IcisCompMonActReason = GuardNull(row.Value[fieldMap["ICISCompMonActReason"].Index]),
-                IcisCompMonType = GuardNull(row.Value[fieldMap["ICISCompMonType"].Index]),
-                IcisCompActType = GuardNull(row.Value[fieldMap["ICISCompActType"].Index]),
-                IcisMoaPriority = GuardNull(row.Value[fieldMap["ICISMOAPriority"].Index]),
-                IcisRegionalPriority = GuardNull(row.Value[fieldMap["ICISRegionalPriority"].Index]),
-                InspectionType = GuardNull(row.Value[fieldMap["InspectionType"].Index]),
+                IcisCompMonActReason = GetDomainValue(row, fieldMap["ICISCompMonActReason"]),
+                IcisCompMonType = GetDomainValue(row, fieldMap["ICISCompMonType"]),
+                IcisCompActType = GetDomainValue(row, fieldMap["ICISCompActType"]),
+                IcisMoaPriority = GetDomainValue(row, fieldMap["ICISMOAPriority"]),
+                IcisRegionalPriority = GetDomainValue(row, fieldMap["ICISRegionalPriority"]),
+                InspectionType = GetDomainValue(row, fieldMap["InspectionType"]),
                 WellFk = new Guid((string)row.Value[fieldMap["Well_FK"].Index])
             };
 
@@ -268,9 +268,9 @@ namespace uic_etl.services
         {
             var model = new CorrectionSdeModel
             {
-                CorrectiveAction = GuardNull(row.Value[fieldMap["CorrectiveAction"].Index]),
-                Comments = GuardNull(row.Value[fieldMap["Comments"].Index]),
-                Guid = new Guid((string) row.Value[fieldMap["GUID"].Index])
+                CorrectiveAction = GetDomainValue(row, fieldMap["CorrectiveAction"]),
+                Comments = GetDomainValue(row, fieldMap["Comments"]),
+                Guid = new Guid((string)row.Value[fieldMap["GUID"].Index])
             };
 
             return model;
@@ -281,11 +281,11 @@ namespace uic_etl.services
             var model = new MiTestSdeModel
             {
                 MitDate = (DateTime)row.Value[fieldMap["MITDate"].Index],
-                MitResult = GuardNull(row.Value[fieldMap["MITResult"].Index]),
-                MitType = GuardNull(row.Value[fieldMap["MITType"].Index]),
+                MitResult = GetDomainValue(row, fieldMap["MITResult"]),
+                MitType = GetDomainValue(row, fieldMap["MITType"]),
                 MitRemActDate = (DateTime)row.Value[fieldMap["MITRemActDate"].Index],
-                MitRemediationAction = GuardNull(row.Value[fieldMap["MITRemediationAction"].Index]),
-                WellFk = new Guid((string) row.Value[fieldMap["Well_FK"].Index])
+                MitRemediationAction = GetDomainValue(row, fieldMap["MITRemediationAction"]),
+                WellFk = new Guid((string)row.Value[fieldMap["Well_FK"].Index])
             };
 
             return model;
@@ -296,7 +296,7 @@ namespace uic_etl.services
         {
             var model = new WellOperatingSdeModel
             {
-                MaxInjectionRate = double.Parse((string) row.Value[fieldMap["MaxInjectionRate"].Index]),
+                MaxInjectionRate = double.Parse((string)row.Value[fieldMap["MaxInjectionRate"].Index]),
                 OnSiteVolume = double.Parse((string)row.Value[fieldMap["OnSiteVolume"].Index]),
                 OffSiteVolume = double.Parse((string)row.Value[fieldMap["OffSiteVolume"].Index]),
                 WellFk = new Guid((string)row.Value[fieldMap["Well_FK"].Index])
@@ -310,8 +310,8 @@ namespace uic_etl.services
         {
             var model = new WasteClassISdeModel
             {
-                WasteCode = GuardNull(row.Value[fieldMap["WasteCode"].Index]),
-                WasteStream = GuardNull(row.Value[fieldMap["WasteStream"].Index]),
+                WasteCode = GetDomainValue(row, fieldMap["WasteCode"]),
+                WasteStream = GetDomainValue(row, fieldMap["WasteStream"]),
                 WellFk = new Guid((string)row.Value[fieldMap["Well_FK"].Index])
             };
 
@@ -325,12 +325,12 @@ namespace uic_etl.services
             {
                 Concentration = Convert.ToInt32(row.Value[fieldMap["Concentration"].Index]),
                 Unit = Convert.ToInt32(row.Value[fieldMap["Unit"].Index]),
-                ConstituentCode = GuardNull(row.Value[fieldMap["ConstituentCode"].Index])
+                ConstituentCode = GetDomainValue(row, fieldMap["ConstituentCode"])
             };
 
             return model;
         }
-        
+
         private static string GuardNull(this object value)
         {
             if (value == null || value == DBNull.Value)
@@ -338,12 +338,12 @@ namespace uic_etl.services
                 return string.Empty;
             }
 
-            return (string) value;
+            return (string)value;
         }
 
         private static string GetDomainValue(IObject row, IndexFieldMap fieldMap)
         {
-            var value = GuardNull(row.Value[fieldMap.Index]);
+            string value = GuardNull(row.Value[fieldMap.Index]);
 
             if (string.IsNullOrEmpty(value))
             {
@@ -370,7 +370,7 @@ namespace uic_etl.services
             }
             catch (RuntimeBinderException)
             {
-                
+
             }
 
             for (var values = 0; values < Cache.DomainDicionary[fieldMap.DomainName].CodeCount; values++)
