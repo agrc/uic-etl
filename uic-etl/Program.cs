@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Dynamic;
 using System.Runtime.InteropServices;
 using domain.uic_etl.sde;
 using domain.uic_etl.xml;
