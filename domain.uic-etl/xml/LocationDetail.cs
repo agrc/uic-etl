@@ -7,13 +7,13 @@ namespace domain.uic_etl.xml
     {
         public LocationDetail(WellSdeModel well, FacilitySdeModel facility, double lon, double lat)
         {
-            WellTypeWellIdentifer = well.Guid;
-            WellAddressCounty = facility.CountyFips;
+            LocationIdentifier = 0;
+            LocationAddressCounty = facility.CountyFips;
             LocationAccuracyValueMeasure = well.LocationAccuracy;
             GeographicReferencePointCode = "026";
             HorizontalCoordinateReferenceSystemDatumCode = "002";
             HorizontalCollectionMethodCode = well.LocationMethod;
-            LocationPointLiveAreaCode = "001";
+            LocationPointLineAreaCode = "001";
             SourceMapScaleNumeric = well.LocationAccuracy;
             LocationWellIdentifier = well.Guid;
             LatitudeMeasure = lat;
@@ -30,13 +30,13 @@ namespace domain.uic_etl.xml
 
         public string LocationAccuracyValueMeasure { get; set; }
 
-        public int WellAddressCounty { get; set; }
+        public int LocationAddressCounty { get; set; }
 
-        public Guid WellTypeWellIdentifer { get; set; }
+        public int LocationIdentifier { get; set; }
 
         public string HorizontalCollectionMethodCode { get; set; }
 
-        public string LocationPointLiveAreaCode { get; set; }
+        public string LocationPointLineAreaCode { get; set; }
 
         public string SourceMapScaleNumeric { get; set; }
 

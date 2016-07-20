@@ -144,6 +144,19 @@ namespace uic_etl.services
                 wellDetail.Add(wellStatusDetail);
             }
 
+            wellDetail.Add(new XElement(Uic + "LocationDetail",
+                new XElement(Uic + "LocationIdentifier", model.LocationDetail.LocationIdentifier),
+                new XElement(Uic + "LocationAddressCounty", model.LocationDetail.LocationAddressCounty),
+                new XElement(Uic + "LocationAccuracyValueMeasure", model.LocationDetail.LocationAccuracyValueMeasure),
+                new XElement(Uic + "GeographicReferencePointCode", model.LocationDetail.GeographicReferencePointCode),
+                new XElement(Uic + "HorizontalCoordinateReferenceSystemDatumCode", model.LocationDetail.HorizontalCoordinateReferenceSystemDatumCode),
+                new XElement(Uic + "HorizontalCollectionMethodCode", model.LocationDetail.HorizontalCollectionMethodCode),
+                new XElement(Uic + "LocationPointLineAreaCode", model.LocationDetail.LocationPointLineAreaCode),
+                new XElement(Uic + "SourceMapScaleNumeric", model.LocationDetail.SourceMapScaleNumeric),
+                new XElement(Uic + "LocationWellIdentifier", model.LocationDetail.LocationWellIdentifier),
+                new XElement(Uic + "LatitudeMeasure", model.LocationDetail.LatitudeMeasure),
+                new XElement(Uic + "LongitudeMeasure", model.LocationDetail.LongitudeMeasure)));
+
             facilityList.Add(wellDetail);
 
             return facilityList;

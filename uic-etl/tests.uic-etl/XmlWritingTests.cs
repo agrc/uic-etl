@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Configuration;
 using System.Xml.Linq;
+using domain.uic_etl.sde;
 using domain.uic_etl.xml;
 using uic_etl.services;
 using Xunit;
@@ -419,5 +420,94 @@ namespace tests.uic_etl
 
             Assert.Equal(expected.ToString(), doc.ToString());
         }
+
+        [Fact]
+        public void AddWellDetailToFacilityListWithLocation()
+        {
+            const string documentXml = "<Payload Operation=\"Delete - Insert\">" +
+                                       "<UIC xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.exchangenetwork.net/schema/uic/2\">" +
+                                       "<PrimacyAgencyCode>UDEQ</PrimacyAgencyCode>" +
+                                       "<FacilityList>" +
+                                       "<FacilityDetail>" +
+                                       "<FacilityIdentifier>0</FacilityIdentifier>" +
+                                       "<LocalityName /><FacilitySiteName /><FacilityPetitionStatusCode /><LocationAddressStateCode />" +
+                                       "<FacilityStateIdentifier /><LocationAddressText /><FacilitySiteTypeCode /><LocationAddressPostalCode />" +
+                                       "</FacilityDetail>" +
+                                       "<WellDetail>" +
+                                       "<WellIdentifier>0</WellIdentifier>" +
+                                       "<WellAquiferExemptionInjectionCode>WellAquiferExemptionInjectionCode</WellAquiferExemptionInjectionCode>" +
+                                       "<WellTotalDepthNumeric>WellTotalDepthNumeric</WellTotalDepthNumeric>" +
+                                       "<WellHighPriorityDesignationCode>WellHighPriorityDesignationCode</WellHighPriorityDesignationCode>" +
+                                       "<WellContactIdentifier>WellContactIdentifier</WellContactIdentifier>" +
+                                       "<WellFacilityIdentifier>WellFacilityIdentifier</WellFacilityIdentifier>" +
+                                       "<WellGeologyIdentifier>WellGeologyIdentifier</WellGeologyIdentifier>" +
+                                       "<WellSiteAreaNameText>WellSiteAreaNameText</WellSiteAreaNameText>" +
+                                       "<WellPermitIdentifier>WellPermitIdentifier</WellPermitIdentifier>" +
+                                       "<WellStateIdentifier>WellStateIdentifier</WellStateIdentifier>" +
+                                       "<WellStateTribalCode>WellStateTribalCode</WellStateTribalCode>" +
+                                       "<WellInSourceWaterAreaLocationText>WellInSourceWaterAreaLocationText</WellInSourceWaterAreaLocationText>" +
+                                       "<WellName>WellName</WellName>" +
+                                       "<LocationDetail>" +
+                                       "<LocationIdentifier>0</LocationIdentifier>" +
+                                       "<LocationAddressCounty>1</LocationAddressCounty>" +
+                                       "<LocationAccuracyValueMeasure>Well.LocationAccuracy</LocationAccuracyValueMeasure>" +
+                                       "<GeographicReferencePointCode>026</GeographicReferencePointCode>" +
+                                       "<HorizontalCoordinateReferenceSystemDatumCode>002</HorizontalCoordinateReferenceSystemDatumCode>" +
+                                       "<HorizontalCollectionMethodCode>Well.LocationMethod</HorizontalCollectionMethodCode>" +
+                                       "<LocationPointLineAreaCode>001</LocationPointLineAreaCode>" +
+                                       "<SourceMapScaleNumeric>Well.LocationAccuracy</SourceMapScaleNumeric>" +
+                                       "<LocationWellIdentifier>45c1be51-c4e3-4159-95fb-36f7e9a95581</LocationWellIdentifier>" +
+                                       "<LatitudeMeasure>50</LatitudeMeasure>" +
+                                       "<LongitudeMeasure>40</LongitudeMeasure>" +
+                                       "</LocationDetail></WellDetail>" +
+                                       "</FacilityList></UIC></Payload>";
+
+            var expected = XDocument.Parse(documentXml);
+            var doc = XmlService.CreatePayloadElements();
+
+            var facility = new FacilityDetail
+            {
+                Guid = new Guid("45c1be51-c4e3-4159-95fb-36f7e9a95585"),
+                FacilityIdentifier = 0
+            };
+            var wellGuid = new Guid("45c1be51-c4e3-4159-95fb-36f7e9a95581");
+
+
+            var facilityList = XmlService.AddFacility(ref doc, facility);
+
+            var well = new WellDetail
+            {
+                WellIdentifier = 0,
+                WellAquiferExemptionInjectionCode = "WellAquiferExemptionInjectionCode",
+                WellTotalDepthNumeric = "WellTotalDepthNumeric",
+                WellHighPriorityDesignationCode = "WellHighPriorityDesignationCode",
+                WellContactIdentifier = "WellContactIdentifier",
+                WellFacilityIdentifier = "WellFacilityIdentifier",
+                WellGeologyIdentifier = "WellGeologyIdentifier",
+                WellSiteAreaNameText = "WellSiteAreaNameText",
+                WellPermitIdentifier = "WellPermitIdentifier",
+                WellStateIdentifier = "WellStateIdentifier",
+                WellStateTribalCode = "WellStateTribalCode",
+                WellInSourceWaterAreaLocationText = "WellInSourceWaterAreaLocationText",
+                WellName = "WellName",
+                LocationDetail = new LocationDetail(new WellSdeModel
+                {
+                    Guid = wellGuid,
+                    LocationAccuracy = "Well.LocationAccuracy",
+                    LocationMethod = "Well.LocationMethod"
+                }, new FacilitySdeModel
+                {
+                    CountyFips = 1
+                }, 40, 50)
+            };
+
+            XmlService.AddWell(ref facilityList, well);
+
+            _output.WriteLine(doc.ToString());
+            _output.WriteLine(expected.ToString());
+
+            Assert.Equal(expected.ToString(), doc.ToString());
+        }
+
     }
 }
