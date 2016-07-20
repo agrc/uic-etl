@@ -130,6 +130,14 @@ namespace uic_etl.services
                     .ForMember(dest => dest.MeasureUnitCode, opts => opts.MapFrom(src => src.Unit))
                     .ForMember(dest => dest.ConstituentNameText, opts => opts.MapFrom(src => src.Constituent))
                     .ForMember(dest => dest.ConstituentWasteIdentifier, opts => opts.MapFrom(src => src.WasteGuid));
+
+                _.CreateMap<ContactSdeModel, ContactDetail>()
+                    .ForMember(dest => dest.TelephoneNumberText, opts => opts.MapFrom(src => src.ContactPhone))
+                    .ForMember(dest => dest.IndividualFullName, opts => opts.MapFrom(src => src.ContactName))
+                    .ForMember(dest => dest.ContactCityName, opts => opts.MapFrom(src => src.ContactMailCity))
+                    .ForMember(dest => dest.ContactAddressStateCode, opts => opts.MapFrom(src => src.ContactMailState))
+                    .ForMember(dest => dest.ContactAddressText, opts => opts.MapFrom(src => src.ContactMailAddress))
+                    .ForMember(dest => dest.ContactAddressPostalCode, opts => opts.MapFrom(src => src.ZipCode5 + src.ZipCode4));
             });
 
             return config.CreateMapper();
@@ -326,6 +334,22 @@ namespace uic_etl.services
                 Concentration = Convert.ToDouble(row.Value[fieldMap["Concentration"].Index]),
                 Unit = GetDomainValue(row, fieldMap["Unit"]),
                 Constituent = GetDomainValue(row, fieldMap["Constituent"])
+            };
+
+            return model;
+        }
+
+        public static ContactSdeModel MapContactSdeModel(IObject row, IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
+        {
+            var model = new ContactSdeModel
+            {
+                ContactPhone = GetDomainValue(row, fieldMap["ContactPhone"]),
+                ContactName = GetDomainValue(row, fieldMap["ContactName"]),
+                ContactMailCity = GetDomainValue(row, fieldMap["ContactMailCity"]),
+                ContactMailState = GetDomainValue(row, fieldMap["ContactMailState"]),
+                ContactMailAddress = GetDomainValue(row, fieldMap["ContactMailAddress"]),
+                ZipCode5 = GetDomainValue(row, fieldMap["ZipCode5"]),
+                ZipCode4 = GetDomainValue(row, fieldMap["ZipCode4"])
             };
 
             return model;
