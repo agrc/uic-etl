@@ -36,6 +36,12 @@ namespace uic_etl.commands
             _fields = violationRelation.DestinationClass.Fields;
         }
 
+        public FindIndexByFieldNameCommand(ITable table, IEnumerable<string> fieldsToMap) : this()
+        {
+            _fieldsToMap = fieldsToMap;
+            _fields = table.Fields;
+        }
+
         /// <summary>
         ///     code to execute when command is run. Iterates over every month and finds the index for the field in teh feature
         ///     class

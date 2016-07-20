@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using domain.uic_etl.sde;
@@ -96,7 +97,11 @@ namespace uic_etl
                 debug.Write("Opening Waste Relationship Class.");
                 var wasteRelation = featureWorkspace.OpenRelationshipClass("ClassIWasteToConstituentClassI");
                 releaser.ManageLifetime(wasteRelation);
-                
+
+                debug.Write("{0} Opening UICContact table", start.Elapsed);
+                var uicContact = featureWorkspace.OpenTable("UICContact");
+                releaser.ManageLifetime(uicContact);
+
                 debug.Write("{0} Creating field mappings", start.Elapsed);
                 var facilityFieldMap = new FindIndexByFieldNameCommand(uicFacility, FacilitySdeModel.Fields).Execute();
                 var violationFieldMap = new FindIndexByFieldNameCommand(violationRelation, ViolationSdeModel.Fields).Execute();
@@ -108,6 +113,7 @@ namespace uic_etl
                 var mechanicalInspectionFieldMap = new FindIndexByFieldNameCommand(wellIntegrityRelation, MiTestSdeModel.Fields).Execute();
                 var deepWellFieldMap = new FindIndexByFieldNameCommand(deepWellRelation, WellOperatingSdeModel.Fields).Execute();
                 var wasteFieldMap = new FindIndexByFieldNameCommand(wasteRelation, WasteClassISdeModel.Fields).Execute();
+                var contactFieldMap = new FindIndexByFieldNameCommand(uicContact, ContactSdeModel.Fields).Execute();
 
                 var srFactory = new SpatialReferenceEnvironment();
                 var newSpatialRefefence = srFactory.CreateGeographicCoordinateSystem(4326);
@@ -135,7 +141,8 @@ namespace uic_etl
                 var queryFilter = new QueryFilter
                 {
 //                WhereClause = "1=1"
-                    WhereClause = "Guid='{268BB302-89F2-4BAA-A19B-45B3C207F236}'"
+                    WhereClause = "Guid='{268BB302-89F2-4BAA-A19B-45B3C207F236}'",
+                    SubFields = string.Join(",", FacilitySdeModel.Fields)
                 };
                 releaser.ManageLifetime(queryFilter);
 
@@ -344,6 +351,23 @@ namespace uic_etl
                             xmlWell.WasteDetail.Add(xmlWaste);
                         }
                     }
+                }
+
+                var contactCursor = uicContact.Search(queryFilter, true);
+                queryFilter.SubFields = string.Join(",", ContactSdeModel.Fields);
+                releaser.ManageLifetime(contactCursor);
+
+                var contacts = new List<ContactDetail>();
+
+                IRow contactFeature;
+                while ((contactFeature = contactCursor.NextRow()) != null)
+                {
+                    releaser.ManageLifetime(contactFeature);
+
+                    var contact = AutoMapperService.MapContactSdeModel(contactFeature, contactFieldMap);
+                    var xmlContact = mapper.Map<ContactSdeModel, ContactDetail>(contact);
+
+                    contacts.Add(xmlContact);
                 }
             }
 

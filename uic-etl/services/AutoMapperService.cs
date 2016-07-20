@@ -339,7 +339,7 @@ namespace uic_etl.services
             return model;
         }
 
-        public static ContactSdeModel MapContactSdeModel(IObject row, IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
+        public static ContactSdeModel MapContactSdeModel(IRow row, IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
         {
             var model = new ContactSdeModel
             {
@@ -363,6 +363,11 @@ namespace uic_etl.services
             }
 
             return (string)value;
+        }
+
+        private static string GetDomainValue(IRow row, IndexFieldMap fieldMap)
+        {
+            return GetDomainValue((IObject)row, fieldMap);
         }
 
         private static string GetDomainValue(IObject row, IndexFieldMap fieldMap)
