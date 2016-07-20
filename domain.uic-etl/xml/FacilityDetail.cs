@@ -5,8 +5,6 @@ namespace domain.uic_etl.xml
 {
     public class FacilityDetail
     {
-        public string Xmlns = "http://www.exchangenetwork.net/schema/uic/2";
-
         public FacilityDetail()
         {
             FacilityViolationDetail = new List<ViolationDetail>();

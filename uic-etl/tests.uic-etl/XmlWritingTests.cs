@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Net.Configuration;
 using System.Xml.Linq;
 using domain.uic_etl.xml;
 using uic_etl.services;
@@ -158,17 +158,17 @@ namespace tests.uic_etl
                 FacilityStateIdentifier = "FacilityStateIdentifier",
                 FacilityViolationDetail = new List<ViolationDetail>
                 {
-                  new ViolationDetail
-                  {
-                      ViolationContaminationCode = "[UICViolation].USDWContamination",
-                      ViolationDeterminedDate = "20160101",
-                      ViolationEndangeringCode = "[UICViolation].ENDANGER",
-                      ViolationFacilityIdentifier = new Guid("45c1be51-c4e3-4159-95fb-36f7e9a95585"),
-                      ViolationIdentifier = 0,
-                      ViolationReturnComplianceDate = "20160104",
-                      ViolationSignificantCode = "[UICViolation].SignificantNonCompliance",
-                      ViolationTypeCode = "[UICViolation].ViolationType"
-                  }  
+                    new ViolationDetail
+                    {
+                        ViolationContaminationCode = "[UICViolation].USDWContamination",
+                        ViolationDeterminedDate = "20160101",
+                        ViolationEndangeringCode = "[UICViolation].ENDANGER",
+                        ViolationFacilityIdentifier = new Guid("45c1be51-c4e3-4159-95fb-36f7e9a95585"),
+                        ViolationIdentifier = 0,
+                        ViolationReturnComplianceDate = "20160104",
+                        ViolationSignificantCode = "[UICViolation].SignificantNonCompliance",
+                        ViolationTypeCode = "[UICViolation].ViolationType"
+                    }
                 },
                 LocalityName = "LocalityName",
                 LocationAddressPostalCode = "LocationAddressPostalCode",
@@ -228,26 +228,26 @@ namespace tests.uic_etl
                 FacilityStateIdentifier = "FacilityStateIdentifier",
                 FacilityViolationDetail = new List<ViolationDetail>
                 {
-                  new ViolationDetail
-                  {
-                      Guid = new Guid("0001be51-c4e3-4159-95fb-36f7e9a95585"),
-                      ViolationContaminationCode = "[UICViolation].USDWContamination",
-                      ViolationDeterminedDate = "20160101",
-                      ViolationEndangeringCode = "[UICViolation].ENDANGER",
-                      ViolationFacilityIdentifier = new Guid("45c1be51-c4e3-4159-95fb-36f7e9a95585"),
-                      ViolationIdentifier = 0,
-                      ViolationReturnComplianceDate = "20160104",
-                      ViolationSignificantCode = "[UICViolation].SignificantNonCompliance",
-                      ViolationTypeCode = "[UICViolation].ViolationType",
-                      ResponseDetails = new List<ResponseDetail>
-                      {
-                          new ResponseDetail
-                          {
-                              ResponseViolationIdentifier = new Guid("0001be51-c4e3-4159-95fb-36f7e9a95585"),
-                              ResponseEnforcementIdentifier = 0
-                          }
-                      }
-                  }  
+                    new ViolationDetail
+                    {
+                        Guid = new Guid("0001be51-c4e3-4159-95fb-36f7e9a95585"),
+                        ViolationContaminationCode = "[UICViolation].USDWContamination",
+                        ViolationDeterminedDate = "20160101",
+                        ViolationEndangeringCode = "[UICViolation].ENDANGER",
+                        ViolationFacilityIdentifier = new Guid("45c1be51-c4e3-4159-95fb-36f7e9a95585"),
+                        ViolationIdentifier = 0,
+                        ViolationReturnComplianceDate = "20160104",
+                        ViolationSignificantCode = "[UICViolation].SignificantNonCompliance",
+                        ViolationTypeCode = "[UICViolation].ViolationType",
+                        ResponseDetails = new List<ResponseDetail>
+                        {
+                            new ResponseDetail
+                            {
+                                ResponseViolationIdentifier = new Guid("0001be51-c4e3-4159-95fb-36f7e9a95585"),
+                                ResponseEnforcementIdentifier = 0
+                            }
+                        }
+                    }
                 },
                 LocalityName = "LocalityName",
                 LocationAddressPostalCode = "LocationAddressPostalCode",
@@ -256,6 +256,163 @@ namespace tests.uic_etl
             };
 
             XmlService.AddFacility(ref doc, model);
+
+            _output.WriteLine(doc.ToString());
+            _output.WriteLine(expected.ToString());
+
+            Assert.Equal(expected.ToString(), doc.ToString());
+        }
+
+        [Fact]
+        public void AddWellDetailToFacilityList()
+        {
+            const string documentXml = "<Payload Operation=\"Delete - Insert\">" +
+                                       "<UIC xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.exchangenetwork.net/schema/uic/2\">" +
+                                       "<PrimacyAgencyCode>UDEQ</PrimacyAgencyCode>" +
+                                       "<FacilityList>" +
+                                       "<FacilityDetail>" +
+                                       "<FacilityIdentifier>0</FacilityIdentifier>" +
+                                       "<LocalityName /><FacilitySiteName /><FacilityPetitionStatusCode /><LocationAddressStateCode />" +
+                                       "<FacilityStateIdentifier /><LocationAddressText /><FacilitySiteTypeCode /><LocationAddressPostalCode />" +
+                                       "</FacilityDetail>" +
+                                       "<WellDetail>" +
+                                       "<WellIdentifier>0</WellIdentifier>" +
+                                       "<WellAquiferExemptionInjectionCode>WellAquiferExemptionInjectionCode</WellAquiferExemptionInjectionCode>" +
+                                       "<WellTotalDepthNumeric>WellTotalDepthNumeric</WellTotalDepthNumeric>" +
+                                       "<WellHighPriorityDesignationCode>WellHighPriorityDesignationCode</WellHighPriorityDesignationCode>" +
+                                       "<WellContactIdentifier>WellContactIdentifier</WellContactIdentifier>" +
+                                       "<WellFacilityIdentifier>WellFacilityIdentifier</WellFacilityIdentifier>" +
+                                       "<WellGeologyIdentifier>WellGeologyIdentifier</WellGeologyIdentifier>" +
+                                       "<WellSiteAreaNameText>WellSiteAreaNameText</WellSiteAreaNameText>" +
+                                       "<WellPermitIdentifier>WellPermitIdentifier</WellPermitIdentifier>" +
+                                       "<WellStateIdentifier>WellStateIdentifier</WellStateIdentifier>" +
+                                       "<WellStateTribalCode>WellStateTribalCode</WellStateTribalCode>" +
+                                       "<WellInSourceWaterAreaLocationText>WellInSourceWaterAreaLocationText</WellInSourceWaterAreaLocationText>" +
+                                       "<WellName>WellName</WellName></WellDetail>" +
+                                       "</FacilityList></UIC></Payload>";
+
+            var expected = XDocument.Parse(documentXml);
+            var doc = XmlService.CreatePayloadElements();
+
+            var facility = new FacilityDetail
+            {
+                Guid = new Guid("45c1be51-c4e3-4159-95fb-36f7e9a95585"),
+                FacilityIdentifier = 0
+            };
+
+            var facilityList = XmlService.AddFacility(ref doc, facility);
+
+            var well = new WellDetail
+            {
+                WellIdentifier = 0,
+                WellAquiferExemptionInjectionCode = "WellAquiferExemptionInjectionCode",
+                WellTotalDepthNumeric = "WellTotalDepthNumeric",
+                WellHighPriorityDesignationCode = "WellHighPriorityDesignationCode",
+                WellContactIdentifier = "WellContactIdentifier",
+                WellFacilityIdentifier = "WellFacilityIdentifier",
+                WellGeologyIdentifier = "WellGeologyIdentifier",
+                WellSiteAreaNameText = "WellSiteAreaNameText",
+                WellPermitIdentifier = "WellPermitIdentifier",
+                WellStateIdentifier = "WellStateIdentifier",
+                WellStateTribalCode = "WellStateTribalCode",
+                WellInSourceWaterAreaLocationText = "WellInSourceWaterAreaLocationText",
+                WellName = "WellName"
+            };
+
+            XmlService.AddWell(ref facilityList, well);
+
+            _output.WriteLine(doc.ToString());
+            _output.WriteLine(expected.ToString());
+
+            Assert.Equal(expected.ToString(), doc.ToString());
+        }
+
+        [Fact]
+        public void AddWellDetailToFacilityListWIthWellStatus()
+        {
+            const string documentXml = "<Payload Operation=\"Delete - Insert\">" +
+                                       "<UIC xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.exchangenetwork.net/schema/uic/2\">" +
+                                       "<PrimacyAgencyCode>UDEQ</PrimacyAgencyCode>" +
+                                       "<FacilityList>" +
+                                       "<FacilityDetail>" +
+                                       "<FacilityIdentifier>0</FacilityIdentifier>" +
+                                       "<LocalityName /><FacilitySiteName /><FacilityPetitionStatusCode /><LocationAddressStateCode />" +
+                                       "<FacilityStateIdentifier /><LocationAddressText /><FacilitySiteTypeCode /><LocationAddressPostalCode />" +
+                                       "</FacilityDetail>" +
+                                       "<WellDetail>" +
+                                       "<WellIdentifier>0</WellIdentifier>" +
+                                       "<WellAquiferExemptionInjectionCode>WellAquiferExemptionInjectionCode</WellAquiferExemptionInjectionCode>" +
+                                       "<WellTotalDepthNumeric>WellTotalDepthNumeric</WellTotalDepthNumeric>" +
+                                       "<WellHighPriorityDesignationCode>WellHighPriorityDesignationCode</WellHighPriorityDesignationCode>" +
+                                       "<WellContactIdentifier>WellContactIdentifier</WellContactIdentifier>" +
+                                       "<WellFacilityIdentifier>WellFacilityIdentifier</WellFacilityIdentifier>" +
+                                       "<WellGeologyIdentifier>WellGeologyIdentifier</WellGeologyIdentifier>" +
+                                       "<WellSiteAreaNameText>WellSiteAreaNameText</WellSiteAreaNameText>" +
+                                       "<WellPermitIdentifier>WellPermitIdentifier</WellPermitIdentifier>" +
+                                       "<WellStateIdentifier>WellStateIdentifier</WellStateIdentifier>" +
+                                       "<WellStateTribalCode>WellStateTribalCode</WellStateTribalCode>" +
+                                       "<WellInSourceWaterAreaLocationText>WellInSourceWaterAreaLocationText</WellInSourceWaterAreaLocationText>" +
+                                       "<WellName>WellName</WellName>" +
+                                       "<WellStatusDetail>" +
+                                       "<WellStatusIdentifier>0</WellStatusIdentifier>" +
+                                       "<WellStatusDate>WellStatusDate</WellStatusDate>" +
+                                       "<WellStatusOperatingStatusCode>WellStatusOperatingStatusCode</WellStatusOperatingStatusCode>" +
+                                       "<WellStatusWellIdentifier>45c1be51-c4e3-4159-95fb-36f7e9a95581</WellStatusWellIdentifier>" +
+                                       "</WellStatusDetail><WellStatusDetail>" +
+                                       "<WellStatusIdentifier>1</WellStatusIdentifier>" +
+                                       "<WellStatusDate>WellStatusDate</WellStatusDate>" +
+                                       "<WellStatusOperatingStatusCode>WellStatusOperatingStatusCode</WellStatusOperatingStatusCode>" +
+                                       "<WellStatusWellIdentifier>45c1be51-c4e3-4159-95fb-36f7e9a95581</WellStatusWellIdentifier>" +
+                                       "</WellStatusDetail></WellDetail>" +
+                                       "</FacilityList></UIC></Payload>";
+
+            var expected = XDocument.Parse(documentXml);
+            var doc = XmlService.CreatePayloadElements();
+
+            var facility = new FacilityDetail
+            {
+                Guid = new Guid("45c1be51-c4e3-4159-95fb-36f7e9a95585"),
+                FacilityIdentifier = 0
+            };
+
+            var facilityList = XmlService.AddFacility(ref doc, facility);
+            var wellGuid = new Guid("45c1be51-c4e3-4159-95fb-36f7e9a95581");
+
+            var well = new WellDetail
+            {
+                WellIdentifier = 0,
+                WellAquiferExemptionInjectionCode = "WellAquiferExemptionInjectionCode",
+                WellTotalDepthNumeric = "WellTotalDepthNumeric",
+                WellHighPriorityDesignationCode = "WellHighPriorityDesignationCode",
+                WellContactIdentifier = "WellContactIdentifier",
+                WellFacilityIdentifier = "WellFacilityIdentifier",
+                WellGeologyIdentifier = "WellGeologyIdentifier",
+                WellSiteAreaNameText = "WellSiteAreaNameText",
+                WellPermitIdentifier = "WellPermitIdentifier",
+                WellStateIdentifier = "WellStateIdentifier",
+                WellStateTribalCode = "WellStateTribalCode",
+                WellInSourceWaterAreaLocationText = "WellInSourceWaterAreaLocationText",
+                WellName = "WellName",
+                WellStatusDetail = new List<WellStatusDetail>
+                {
+                    new WellStatusDetail
+                    {
+                        WellStatusIdentifier = 0,
+                        WellStatusDate = "WellStatusDate",
+                        WellStatusOperatingStatusCode = "WellStatusOperatingStatusCode",
+                        WellStatusWellIdentifier = wellGuid
+                    },
+                     new WellStatusDetail
+                    {
+                        WellStatusIdentifier = 1,
+                        WellStatusDate = "WellStatusDate",
+                        WellStatusOperatingStatusCode = "WellStatusOperatingStatusCode",
+                        WellStatusWellIdentifier = wellGuid
+                    }
+                }
+            };
+
+            XmlService.AddWell(ref facilityList, well);
 
             _output.WriteLine(doc.ToString());
             _output.WriteLine(expected.ToString());

@@ -360,6 +360,8 @@ namespace uic_etl
 
                             xmlWell.WasteDetail.Add(xmlWaste);
                         }
+
+                        XmlService.AddWell(ref facilityDetailElement, xmlWell);
                     }
                 }
 
