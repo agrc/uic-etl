@@ -85,17 +85,29 @@ namespace uic_etl
                 var wellInspectionRelation = featureWorkspace.OpenRelationshipClass("WellToInspection");
                 releaser.ManageLifetime(wellInspectionRelation);
 
+                debug.Write("Opening MI Test Relationship Class.");
+                var wellIntegrityRelation = featureWorkspace.OpenRelationshipClass("WellToIntegrityTest");
+                releaser.ManageLifetime(wellIntegrityRelation);
+
+                debug.Write("Opening Deep Well Relationship Class.");
+                var deepWellRelation = featureWorkspace.OpenRelationshipClass("WellToDeepWellOperation");
+                releaser.ManageLifetime(deepWellRelation);
+
+                debug.Write("Opening Waste Relationship Class.");
+                var wasteRelation = featureWorkspace.OpenRelationshipClass("ClassIWasteToConstituentClassI");
+                releaser.ManageLifetime(wasteRelation);
+                
                 debug.Write("{0} Creating field mappings", start.Elapsed);
                 var facilityFieldMap = new FindIndexByFieldNameCommand(uicFacility, FacilitySdeModel.Fields).Execute();
                 var violationFieldMap = new FindIndexByFieldNameCommand(violationRelation, ViolationSdeModel.Fields).Execute();
                 var responseFieldMap = new FindIndexByFieldNameCommand(responseRelation, EnforcementSdeModel.Fields).Execute();
                 var wellFieldMap = new FindIndexByFieldNameCommand(wellRelation, WellSdeModel.Fields).Execute();
-                var verticalWellFieldMap =
-                    new FindIndexByFieldNameCommand(verticalWellRelation, VerticalWellEventSdeModel.Fields).Execute();
-                var wellStatusFieldMap =
-                    new FindIndexByFieldNameCommand(wellStatusRelation, WellStatusSdeModel.Fields).Execute();
-                var wellInspectionFieldMap =
-                    new FindIndexByFieldNameCommand(wellInspectionRelation, WellInspectionSdeModel.Fields).Execute();
+                var verticalWellFieldMap = new FindIndexByFieldNameCommand(verticalWellRelation, VerticalWellEventSdeModel.Fields).Execute();
+                var wellStatusFieldMap = new FindIndexByFieldNameCommand(wellStatusRelation, WellStatusSdeModel.Fields).Execute();
+                var wellInspectionFieldMap = new FindIndexByFieldNameCommand(wellInspectionRelation, WellInspectionSdeModel.Fields).Execute();
+                var mechanicalInspectionFieldMap = new FindIndexByFieldNameCommand(wellIntegrityRelation, MiTestSdeModel.Fields).Execute();
+                var deepWellFieldMap = new FindIndexByFieldNameCommand(deepWellRelation, WellOperatingSdeModel.Fields).Execute();
+                var wasteFieldMap = new FindIndexByFieldNameCommand(wasteRelation, WasteClassISdeModel.Fields).Execute();
 
                 var srFactory = new SpatialReferenceEnvironment();
                 var newSpatialRefefence = srFactory.CreateGeographicCoordinateSystem(4326);
@@ -197,8 +209,7 @@ namespace uic_etl
                         releaser.ManageLifetime(verticalWellCursor);
 
                         var verticalEventFeature = verticalWellCursor.Next();
-                        var verticalEvent = AutoMapperService.MapVerticalWellEventModel(verticalEventFeature,
-                            verticalWellFieldMap);
+                        var verticalEvent = AutoMapperService.MapVerticalWellEventModel(verticalEventFeature, verticalWellFieldMap);
 
                         xmlWell.WellTotalDepthNumeric = verticalEvent.EventType.ToString();
 
@@ -270,6 +281,8 @@ namespace uic_etl
 
                             xmlWell.WellViolationDetail.Add(xmlViolation);
                         }
+
+                        // well inspection detail
                         var wellInspectionCursor = wellInspectionRelation.GetObjectsRelatedToObject(wellFeature);
                         releaser.ManageLifetime(wellInspectionRelation);
 
@@ -279,10 +292,8 @@ namespace uic_etl
                         {
                             releaser.ManageLifetime(wellInspectionFeature);
 
-                            var wellInspection = AutoMapperService.MapWellInspectionModel(wellInspectionFeature,
-                                wellInspectionFieldMap);
-                            var xmlWellInspection =
-                                mapper.Map<WellInspectionSdeModel, WellInspectionDetail>(wellInspection);
+                            var wellInspection = AutoMapperService.MapWellInspectionModel(wellInspectionFeature, wellInspectionFieldMap);
+                            var xmlWellInspection = mapper.Map<WellInspectionSdeModel, WellInspectionDetail>(wellInspection);
 
                             xmlWellInspection.InspectionIdentifier = wellInspectionIdentifier++;
 
@@ -290,10 +301,48 @@ namespace uic_etl
                         }
 
                         // MI Test detail
+                        var mechanicalIntegrityCursor = wellIntegrityRelation.GetObjectsRelatedToObject(wellFeature);
+                        releaser.ManageLifetime(mechanicalIntegrityCursor);
+
+                        IObject mechanicalIntegrityFeature;
+                        while ((mechanicalIntegrityFeature = mechanicalIntegrityCursor.Next()) != null)
+                        {
+                            releaser.ManageLifetime(mechanicalIntegrityFeature);
+
+                            var mit = AutoMapperService.MapMiTestSdeModel(mechanicalIntegrityFeature, mechanicalInspectionFieldMap);
+                            var xmlMit = mapper.Map<MiTestSdeModel, MiTestDetail>(mit);
+                            xmlWell.MitTestDetail.Add(xmlMit);
+                        }
 
                         // Engineering Detail
+                        var deepWellCursor = deepWellRelation.GetObjectsRelatedToObject(wellFeature);
+                        releaser.ManageLifetime(deepWellCursor);
+
+                        IObject deepWellFeature;
+                        while ((deepWellFeature = deepWellCursor.Next()) != null)
+                        {
+                            releaser.ManageLifetime(deepWellFeature);
+
+                            var deepWell = AutoMapperService.MapWellOperationSdeModel(deepWellFeature, deepWellFieldMap);
+                            var engineeringDetail = mapper.Map<WellOperatingSdeModel, EngineeringDetail>(deepWell);
+
+                            xmlWell.EngineeringDetail.Add(engineeringDetail);
+                        }
 
                         // Waste Detail
+                        var wasteCurser = wasteRelation.GetObjectsRelatedToObject(wellFeature);
+                        releaser.ManageLifetime(wasteCurser);
+
+                        IObject wasteFeature;
+                        while ((wasteFeature = wasteCurser.Next()) != null)
+                        {
+                            releaser.ManageLifetime(wasteFeature);
+
+                            var waste = AutoMapperService.MapWasteClassISdeModel(wasteFeature, wasteFieldMap);
+                            var xmlWaste = mapper.Map<WasteClassISdeModel, WasteDetail>(waste);
+
+                            xmlWell.WasteDetail.Add(xmlWaste);
+                        }
                     }
                 }
             }

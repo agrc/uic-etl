@@ -31,8 +31,8 @@ namespace domain.uic_etl.xml
         public LocationDetailModel LocationDetail { get; set; }
         public List<ViolationDetail> WellViolationDetail { get; set; }
         public List<WellInspectionDetail> WellInspectionDetail { get; set; }
-        public object[] MitTestDetail { get; set; }
-        public object[] EngineeringDetail { get; set; }
-        public object[] WasteDetail { get; set; }
+        public List<MiTestDetail> MitTestDetail { get; set; }
+        public List<EngineeringDetail> EngineeringDetail { get; set; }
+        public List<WasteDetail> WasteDetail { get; set; }
     }
 }
