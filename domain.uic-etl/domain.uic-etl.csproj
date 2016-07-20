@@ -42,9 +42,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="sde\ConsituentClassISdeModel.cs" />
     <Compile Include="sde\CorrectionSdeModel.cs" />
-    <Compile Include="sde\FacilityEnforcementSdeModel.cs" />
+    <Compile Include="sde\EnforcementSdeModel.cs" />
     <Compile Include="sde\FacilitySdeModel.cs" />
-    <Compile Include="sde\FacilityViolationSdeModel.cs" />
+    <Compile Include="sde\ViolationSdeModel.cs" />
     <Compile Include="sde\MiTestSdeModel.cs" />
     <Compile Include="sde\VerticalWellEventSdeModel.cs" />
     <Compile Include="sde\WasteClassISdeModel.cs" />
@@ -59,8 +59,8 @@
     <Compile Include="sde\WellSdeModel.cs" />
     <Compile Include="sde\WellStatusSdeModel.cs" />
     <Compile Include="xml\FacilityDetailModel.cs" />
-    <Compile Include="xml\FacilityResponseDetail.cs" />
-    <Compile Include="xml\FacilityViolationDetail.cs" />
+    <Compile Include="xml\ResponseDetail.cs" />
+    <Compile Include="xml\ViolationDetail.cs" />
     <Compile Include="xml\LocationDetailModel.cs" />
     <Compile Include="xml\WellDetail.cs" />
     <Compile Include="xml\WellStatusDetail.cs" />

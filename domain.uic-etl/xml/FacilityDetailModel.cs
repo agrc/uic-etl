@@ -9,7 +9,7 @@ namespace domain.uic_etl.xml
 
         public FacilityDetailModel()
         {
-            FacilityViolationDetail = new List<FacilityViolationDetail>();
+            FacilityViolationDetail = new List<ViolationDetail>();
         }
 
         public int FacilityIdentifier { get; set; }
@@ -22,6 +22,6 @@ namespace domain.uic_etl.xml
         public string LocationAddressText { get; set; }
         public string FacilitySiteTypeCode { get; set; }
         public string LocationAddressPostalCode { get; set; }
-        public List<FacilityViolationDetail> FacilityViolationDetail { get; set; }
+        public List<ViolationDetail> FacilityViolationDetail { get; set; }
     }
 }

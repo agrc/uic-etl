@@ -105,7 +105,7 @@ namespace tests.uic_etl
                 FacilitySiteName = "FacilitySiteName",
                 FacilitySiteTypeCode = "FacilitySiteTypeCode",
                 FacilityStateIdentifier = "FacilityStateIdentifier",
-                FacilityViolationDetail = new List<FacilityViolationDetail>(),
+                FacilityViolationDetail = new List<ViolationDetail>(),
                 LocalityName = "LocalityName",
                 LocationAddressPostalCode = "LocationAddressPostalCode",
                 LocationAddressStateCode = "LocationAddressStateCode",
@@ -156,9 +156,9 @@ namespace tests.uic_etl
                 FacilitySiteName = "FacilitySiteName",
                 FacilitySiteTypeCode = "FacilitySiteTypeCode",
                 FacilityStateIdentifier = "FacilityStateIdentifier",
-                FacilityViolationDetail = new List<FacilityViolationDetail>
+                FacilityViolationDetail = new List<ViolationDetail>
                 {
-                  new FacilityViolationDetail
+                  new ViolationDetail
                   {
                       ViolationContaminationCode = "[UICViolation].USDWContamination",
                       ViolationDeterminedDate = "20160101",
@@ -226,9 +226,9 @@ namespace tests.uic_etl
                 FacilitySiteName = "FacilitySiteName",
                 FacilitySiteTypeCode = "FacilitySiteTypeCode",
                 FacilityStateIdentifier = "FacilityStateIdentifier",
-                FacilityViolationDetail = new List<FacilityViolationDetail>
+                FacilityViolationDetail = new List<ViolationDetail>
                 {
-                  new FacilityViolationDetail
+                  new ViolationDetail
                   {
                       Guid = new Guid("0001be51-c4e3-4159-95fb-36f7e9a95585"),
                       ViolationContaminationCode = "[UICViolation].USDWContamination",
@@ -239,9 +239,9 @@ namespace tests.uic_etl
                       ViolationReturnComplianceDate = "20160104",
                       ViolationSignificantCode = "[UICViolation].SignificantNonCompliance",
                       ViolationTypeCode = "[UICViolation].ViolationType",
-                      FacilityResponseDetails = new List<FacilityResponseDetail>
+                      ResponseDetails = new List<ResponseDetail>
                       {
-                          new FacilityResponseDetail
+                          new ResponseDetail
                           {
                               ResponseViolationIdentifier = new Guid("0001be51-c4e3-4159-95fb-36f7e9a95585"),
                               ResponseEnforcementIdentifier = 0

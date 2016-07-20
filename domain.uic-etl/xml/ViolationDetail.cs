@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace domain.uic_etl.xml
 {
-    public class FacilityViolationDetail
+    public class ViolationDetail
     {
-        public FacilityViolationDetail()
+        public ViolationDetail()
         {
-            FacilityResponseDetails = new List<FacilityResponseDetail>();
+            ResponseDetails = new List<ResponseDetail>();
         }
 
         public Guid Guid { get; set; }
@@ -19,7 +19,7 @@ namespace domain.uic_etl.xml
         public string ViolationDeterminedDate { get; set; }
         public string ViolationTypeCode { get; set; }
         public Guid ViolationFacilityIdentifier { get; set; }
-        public List<FacilityResponseDetail> FacilityResponseDetails { get; set; }
+        public List<ResponseDetail> ResponseDetails { get; set; }
         public Guid FacilityId { get; set; }
         public Guid WellId { get; set; }
     }

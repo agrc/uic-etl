@@ -100,7 +100,7 @@ namespace uic_etl.services
                 }
 
                 var enforcementIdentfier = 0;
-                foreach (var responseModel in violationModel.FacilityResponseDetails)
+                foreach (var responseModel in violationModel.ResponseDetails)
                 {
                     var responseDetail = new XElement(xmlns + "FacilityResponseDetail",
                         new XElement(xmlns + "ResponseEnforcementIdentifier", enforcementIdentfier++),

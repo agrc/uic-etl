@@ -32,7 +32,7 @@ namespace uic_etl.services
                     .ForMember(dest => dest.LocationAddressText, opts => opts.MapFrom(src => src.FacilityAddress))
                     .ForMember(dest => dest.Xmlns, opts => opts.Ignore());
 
-                _.CreateMap<FacilityViolationSdeModel, FacilityViolationDetail>()
+                _.CreateMap<ViolationSdeModel, ViolationDetail>()
                     .ForMember(dest => dest.ViolationIdentifier, opts => opts.Ignore())
                     .ForMember(dest => dest.ViolationContaminationCode,
                         opts => opts.MapFrom(src => src.UsdwContamination))
@@ -47,9 +47,9 @@ namespace uic_etl.services
                     .ForMember(dest => dest.ViolationFacilityIdentifier, opts => opts.MapFrom(src => src.FacilityId))
                     .ForMember(dest => dest.Guid, opts => opts.MapFrom(src => src.Guid))
                     .ForMember(dest => dest.WellId, opts => opts.MapFrom(src => src.WellId))
-                    .ForMember(dest => dest.FacilityResponseDetails, opts => opts.Ignore());
+                    .ForMember(dest => dest.ResponseDetails, opts => opts.Ignore());
 
-                _.CreateMap<FacilityEnforcementSdeModel, FacilityResponseDetail>()
+                _.CreateMap<EnforcementSdeModel, ResponseDetail>()
                     .ForMember(dest => dest.ResponseViolationIdentifier, opts => opts.MapFrom(src => src.Guid))
                     .ForMember(dest => dest.ResponseEnforcementIdentifier, opts => opts.Ignore());
 
@@ -154,10 +154,10 @@ namespace uic_etl.services
             return model;
         }
 
-        public static FacilityViolationSdeModel MapViolationModel(IObject row,
+        public static ViolationSdeModel MapViolationModel(IObject row,
             IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
         {
-            var model = new FacilityViolationSdeModel
+            var model = new ViolationSdeModel
             {
                 UsdwContamination = GetDomainValue(row, fieldMap["USDWContamination"]),
                 Endanger = GetDomainValue(row, fieldMap["ENDANGER"]),
@@ -190,10 +190,10 @@ namespace uic_etl.services
             return model;
         }
 
-        public static FacilityEnforcementSdeModel MapResponseModel(IObject row,
+        public static EnforcementSdeModel MapResponseModel(IObject row,
             IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
         {
-            var model = new FacilityEnforcementSdeModel
+            var model = new EnforcementSdeModel
             {
                 Guid = new Guid((string)row.Value[fieldMap["Guid"].Index])
             };

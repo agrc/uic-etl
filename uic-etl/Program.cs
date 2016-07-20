@@ -87,10 +87,8 @@ namespace uic_etl
 
                 debug.Write("{0} Creating field mappings", start.Elapsed);
                 var facilityFieldMap = new FindIndexByFieldNameCommand(uicFacility, FacilitySdeModel.Fields).Execute();
-                var violationFieldMap =
-                    new FindIndexByFieldNameCommand(violationRelation, FacilityViolationSdeModel.Fields).Execute();
-                var responseFieldMap =
-                    new FindIndexByFieldNameCommand(responseRelation, FacilityEnforcementSdeModel.Fields).Execute();
+                var violationFieldMap = new FindIndexByFieldNameCommand(violationRelation, ViolationSdeModel.Fields).Execute();
+                var responseFieldMap = new FindIndexByFieldNameCommand(responseRelation, EnforcementSdeModel.Fields).Execute();
                 var wellFieldMap = new FindIndexByFieldNameCommand(wellRelation, WellSdeModel.Fields).Execute();
                 var verticalWellFieldMap =
                     new FindIndexByFieldNameCommand(verticalWellRelation, VerticalWellEventSdeModel.Fields).Execute();
@@ -155,10 +153,10 @@ namespace uic_etl
                         releaser.ManageLifetime(violationFeature);
 
                         var violation = AutoMapperService.MapViolationModel(violationFeature, violationFieldMap);
-                        var xmlViolation = mapper.Map<FacilityViolationSdeModel, FacilityViolationDetail>(violation);
+                        var xmlViolation = mapper.Map<ViolationSdeModel, ViolationDetail>(violation);
                         xmlViolation.ViolationIdentifier = violationId++;
 
-                        debug.Write("finding violation responses for violation: {0}", violationFeature.OID);
+                        debug.Write("finding facility violation responses for violation: {0}", violationFeature.OID);
                         var facilityResponseDetailCursor = responseRelation.GetObjectsRelatedToObject(violationFeature);
                         releaser.ManageLifetime(facilityResponseDetailCursor);
 
@@ -170,11 +168,10 @@ namespace uic_etl
                             releaser.ManageLifetime(responseFeature);
 
                             var responseDetail = AutoMapperService.MapResponseModel(responseFeature, responseFieldMap);
-                            var xmlResponseDetail =
-                                mapper.Map<FacilityEnforcementSdeModel, FacilityResponseDetail>(responseDetail);
+                            var xmlResponseDetail = mapper.Map<EnforcementSdeModel, ResponseDetail>(responseDetail);
                             xmlResponseDetail.ResponseEnforcementIdentifier = enforcementId++;
 
-                            xmlViolation.FacilityResponseDetails.Add(xmlResponseDetail);
+                            xmlViolation.ResponseDetails.Add(xmlResponseDetail);
                         }
 
                         xmlFacility.FacilityViolationDetail.Add(xmlViolation);
@@ -243,10 +240,36 @@ namespace uic_etl
 
                         xmlWell.LocationDetail = locationDetail;
 
-                        // well violation detail?
-                        // uses same table and relationship as facility violations
+                        // well violation detail uses same table and relationship as facility violations
+                        var wellViolationCursor = violationRelation.GetObjectsRelatedToObject(wellFeature);
+                        releaser.ManageLifetime(wellViolationCursor);
 
-                        // well inspection detail?
+                        IObject wellViolationFeature;
+                        while ((wellViolationFeature = wellViolationCursor.Next()) != null)
+                        {
+                            releaser.ManageLifetime(wellViolationFeature);
+
+                            var violation = AutoMapperService.MapViolationModel(wellViolationFeature, violationFieldMap);
+                            var xmlViolation = mapper.Map<ViolationSdeModel, ViolationDetail>(violation);
+
+                            debug.Write("finding well violation responses for violation: {0}", wellViolationFeature.OID);
+                            var wellResponseDetailCursor = responseRelation.GetObjectsRelatedToObject(wellViolationFeature);
+                            releaser.ManageLifetime(wellResponseDetailCursor);
+
+                            IObject responseFeature;
+                            while ((responseFeature = wellResponseDetailCursor.Next()) != null)
+                            {
+                                releaser.ManageLifetime(responseFeature);
+
+                                var responseDetail = AutoMapperService.MapResponseModel(responseFeature, responseFieldMap);
+                                var xmlResponseDetail = mapper.Map<EnforcementSdeModel, ResponseDetail>(responseDetail);
+//                                xmlResponseDetail.ResponseEnforcementIdentifier = enforcementId++;
+
+                                xmlViolation.ResponseDetails.Add(xmlResponseDetail);
+                            }
+
+                            xmlWell.WellViolationDetail.Add(xmlViolation);
+                        }
                         var wellInspectionCursor = wellInspectionRelation.GetObjectsRelatedToObject(wellFeature);
                         releaser.ManageLifetime(wellInspectionRelation);
 

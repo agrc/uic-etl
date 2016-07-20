@@ -2,7 +2,7 @@
 
 namespace domain.uic_etl.sde
 {
-    public class FacilityEnforcementSdeModel
+    public class EnforcementSdeModel
     {
         public static string[] Fields =
         {

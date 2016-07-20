@@ -2,7 +2,7 @@
 
 namespace domain.uic_etl.xml
 {
-    public class FacilityResponseDetail
+    public class ResponseDetail
     {
         public int ResponseEnforcementIdentifier { get; set; }
         public Guid ResponseViolationIdentifier { get; set; }

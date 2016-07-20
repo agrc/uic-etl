@@ -2,7 +2,7 @@ using System;
 
 namespace domain.uic_etl.sde
 {
-    public class FacilityViolationSdeModel
+    public class ViolationSdeModel
     {
         public static string[] Fields =
         {

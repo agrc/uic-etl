@@ -29,7 +29,7 @@ namespace domain.uic_etl.xml
         public List<WellStatusDetail> WellStatusDetail { get; set; }
         public List<WellTypeDetail> WellTypeDetail { get; set; }
         public LocationDetailModel LocationDetail { get; set; }
-        public object[] WellViolationDetail { get; set; }
+        public List<ViolationDetail> WellViolationDetail { get; set; }
         public List<WellInspectionDetail> WellInspectionDetail { get; set; }
         public object[] MitTestDetail { get; set; }
         public object[] EngineeringDetail { get; set; }
