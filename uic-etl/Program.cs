@@ -168,7 +168,7 @@ namespace uic_etl
 
                     var violationId = 0;
                     var facility = AutoMapperService.MapFacilityModel(facilityFeature, facilityFieldMap);
-                    var xmlFacility = mapper.Map<FacilitySdeModel, FacilityDetailModel>(facility);
+                    var xmlFacility = mapper.Map<FacilitySdeModel, FacilityDetail>(facility);
                     xmlFacility.FacilityIdentifier = facilityId++;
 
                     debug.Write("finding violations for facility oid: {0}", facilityFeature.OID);
@@ -264,7 +264,7 @@ namespace uic_etl
                         utm.Project(newSpatialRefefence);
                         var point = (IPoint) utm;
 
-                        var locationDetail = new LocationDetailModel(well, facility, point.X, point.Y);
+                        var locationDetail = new LocationDetail(well, facility, point.X, point.Y);
 
                         xmlWell.LocationDetail = locationDetail;
 

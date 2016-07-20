@@ -63,10 +63,10 @@
     <Compile Include="sde\WellInspectionSdeModel.cs" />
     <Compile Include="sde\WellSdeModel.cs" />
     <Compile Include="sde\WellStatusSdeModel.cs" />
-    <Compile Include="xml\FacilityDetailModel.cs" />
+    <Compile Include="xml\FacilityDetail.cs" />
     <Compile Include="xml\ResponseDetail.cs" />
     <Compile Include="xml\ViolationDetail.cs" />
-    <Compile Include="xml\LocationDetailModel.cs" />
+    <Compile Include="xml\LocationDetail.cs" />
     <Compile Include="xml\WellDetail.cs" />
     <Compile Include="xml\WellStatusDetail.cs" />
     <Compile Include="xml\WellTypeDetail.cs" />

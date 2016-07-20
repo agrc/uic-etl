@@ -17,7 +17,7 @@ namespace uic_etl.services
         {
             var config = new MapperConfiguration(_ =>
             {
-                _.CreateMap<FacilitySdeModel, FacilityDetailModel>()
+                _.CreateMap<FacilitySdeModel, FacilityDetail>()
                     .ForMember(dest => dest.FacilityIdentifier, opts => opts.Ignore())
                     .ForMember(dest => dest.Guid, opts => opts.MapFrom(src => src.Guid))
                     .ForMember(dest => dest.LocalityName, opts => opts.MapFrom(src => src.FacilityCity))

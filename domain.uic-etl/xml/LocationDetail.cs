@@ -3,9 +3,9 @@ using domain.uic_etl.sde;
 
 namespace domain.uic_etl.xml
 {
-    public class LocationDetailModel
+    public class LocationDetail
     {
-        public LocationDetailModel(WellSdeModel well, FacilitySdeModel facility, double lon, double lat)
+        public LocationDetail(WellSdeModel well, FacilitySdeModel facility, double lon, double lat)
         {
             WellTypeWellIdentifer = well.Guid;
             WellAddressCounty = facility.CountyFips;

@@ -28,7 +28,7 @@ namespace domain.uic_etl.xml
         public string WellTypeCode { get; set; }
         public List<WellStatusDetail> WellStatusDetail { get; set; }
         public List<WellTypeDetail> WellTypeDetail { get; set; }
-        public LocationDetailModel LocationDetail { get; set; }
+        public LocationDetail LocationDetail { get; set; }
         public List<ViolationDetail> WellViolationDetail { get; set; }
         public List<WellInspectionDetail> WellInspectionDetail { get; set; }
         public List<MiTestDetail> MitTestDetail { get; set; }

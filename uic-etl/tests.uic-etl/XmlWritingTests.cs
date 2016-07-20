@@ -98,7 +98,7 @@ namespace tests.uic_etl
             var expected = XDocument.Parse(documentXml);
 
             var doc = XmlService.CreatePayloadElements();
-            var model = new FacilityDetailModel
+            var model = new FacilityDetail
             {
                 FacilityIdentifier = 0,
                 FacilityPetitionStatusCode = "FacilityPetitionStatusCode",
@@ -148,7 +148,7 @@ namespace tests.uic_etl
             var expected = XDocument.Parse(documentXml);
 
             var doc = XmlService.CreatePayloadElements();
-            var model = new FacilityDetailModel
+            var model = new FacilityDetail
             {
                 Guid = new Guid("45c1be51-c4e3-4159-95fb-36f7e9a95585"),
                 FacilityIdentifier = 0,
@@ -218,7 +218,7 @@ namespace tests.uic_etl
             var expected = XDocument.Parse(documentXml);
 
             var doc = XmlService.CreatePayloadElements();
-            var model = new FacilityDetailModel
+            var model = new FacilityDetail
             {
                 Guid = new Guid("45c1be51-c4e3-4159-95fb-36f7e9a95585"),
                 FacilityIdentifier = 0,
