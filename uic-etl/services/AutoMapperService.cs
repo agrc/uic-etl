@@ -138,6 +138,13 @@ namespace uic_etl.services
                     .ForMember(dest => dest.ContactAddressStateCode, opts => opts.MapFrom(src => src.ContactMailState))
                     .ForMember(dest => dest.ContactAddressText, opts => opts.MapFrom(src => src.ContactMailAddress))
                     .ForMember(dest => dest.ContactAddressPostalCode, opts => opts.MapFrom(src => src.ZipCode5 + src.ZipCode4));
+
+                _.CreateMap<AuthorizationSdeModel, PermitDetail>()
+                    .ForMember(dest => dest.PermitAuthorizedStatusCode, opts => opts.MapFrom(src => src.AuthorizeType))
+                    .ForMember(dest => dest.PermitOwnershipTypeCode, opts => opts.MapFrom(src => src.OwnerSectorType))
+                    .ForMember(dest => dest.PermitAuthorizedIdentifier, opts => opts.MapFrom(src => src.AuthorizeNumber))
+                    .ForMember(dest => dest.PermitAorWellNumberNumeric, opts => opts.Ignore());
+                    
             });
 
             return config.CreateMapper();
@@ -350,6 +357,31 @@ namespace uic_etl.services
                 ContactMailAddress = GetDomainValue(row, fieldMap["ContactMailAddress"]),
                 ZipCode5 = GetDomainValue(row, fieldMap["ZipCode5"]),
                 ZipCode4 = GetDomainValue(row, fieldMap["ZipCode4"])
+            };
+
+            return model;
+        }
+
+        public static AuthorizationSdeModel MapAuthorizationSdeModel(IRow row, IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
+        {
+            var model = new AuthorizationSdeModel
+            {
+                AuthorizeType = GetDomainValue(row, fieldMap["AuthorizeType"]),
+                OwnerSectorType = GetDomainValue(row, fieldMap["OwnerSectorType"]),
+                AuthorizeNumber = GetDomainValue(row, fieldMap["AuthorizeNumber"])
+            };
+
+            return model;
+        }
+
+        public static AreaOfReviewSdeModel MapAreaOfReviewSdeModel(IRow row, IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
+        {
+            var model = new AreaOfReviewSdeModel
+            {
+                CaAbandon = Convert.ToDouble(row.Value[fieldMap["CA_Abandon"].Index]),
+                CaRepair = Convert.ToDouble(row.Value[fieldMap["CA_Repair"].Index]),
+                CaReplug = Convert.ToDouble(row.Value[fieldMap["CA_Replug"].Index]),
+                CaOther = Convert.ToDouble(row.Value[fieldMap["CA_Other"].Index])
             };
 
             return model;

@@ -102,6 +102,14 @@ namespace uic_etl
                 var uicContact = featureWorkspace.OpenTable("UICContact");
                 releaser.ManageLifetime(uicContact);
 
+                debug.Write("{0} Opening Authorization table", start.Elapsed);
+                var uicAuthorization = featureWorkspace.OpenTable("UICAuthorization");
+                releaser.ManageLifetime(uicAuthorization);
+
+                debug.Write("{0} Opening Area of Review Relationship Class", start.Elapsed);
+                var areaOfReviewRelation = featureWorkspace.OpenRelationshipClass("AuthorizationToAreaOfReview");
+                releaser.ManageLifetime(areaOfReviewRelation);
+
                 debug.Write("{0} Creating field mappings", start.Elapsed);
                 var facilityFieldMap = new FindIndexByFieldNameCommand(uicFacility, FacilitySdeModel.Fields).Execute();
                 var violationFieldMap = new FindIndexByFieldNameCommand(violationRelation, ViolationSdeModel.Fields).Execute();
@@ -114,6 +122,8 @@ namespace uic_etl
                 var deepWellFieldMap = new FindIndexByFieldNameCommand(deepWellRelation, WellOperatingSdeModel.Fields).Execute();
                 var wasteFieldMap = new FindIndexByFieldNameCommand(wasteRelation, WasteClassISdeModel.Fields).Execute();
                 var contactFieldMap = new FindIndexByFieldNameCommand(uicContact, ContactSdeModel.Fields).Execute();
+                var authorizationFieldMap = new FindIndexByFieldNameCommand(uicAuthorization, AuthorizationSdeModel.Fields).Execute();
+                var areaOfReviewFieldMap = new FindIndexByFieldNameCommand(areaOfReviewRelation, AreaOfReviewSdeModel.Fields).Execute();
 
                 var srFactory = new SpatialReferenceEnvironment();
                 var newSpatialRefefence = srFactory.CreateGeographicCoordinateSystem(4326);
@@ -353,8 +363,9 @@ namespace uic_etl
                     }
                 }
 
-                var contactCursor = uicContact.Search(queryFilter, true);
                 queryFilter.SubFields = string.Join(",", ContactSdeModel.Fields);
+
+                var contactCursor = uicContact.Search(queryFilter, true);
                 releaser.ManageLifetime(contactCursor);
 
                 var contacts = new List<ContactDetail>();
@@ -368,6 +379,36 @@ namespace uic_etl
                     var xmlContact = mapper.Map<ContactSdeModel, ContactDetail>(contact);
 
                     contacts.Add(xmlContact);
+                }
+
+                queryFilter.SubFields = string.Join(",", AuthorizationSdeModel.Fields);
+
+                var authorizationCursor = uicAuthorization.Search(queryFilter, true);
+                releaser.ManageLifetime(authorizationCursor);
+
+                var permits = new List<PermitDetail>();
+
+                IRow authorizeFeature;
+                while ((authorizeFeature = authorizationCursor.NextRow()) != null)
+                {
+                    releaser.ManageLifetime(authorizeFeature);
+
+                    var authorize = AutoMapperService.MapAuthorizationSdeModel(authorizeFeature, authorizationFieldMap);
+                    var xmlPermit = mapper.Map<AuthorizationSdeModel, PermitDetail>(authorize);
+
+                    var areaOfReviewCursor = areaOfReviewRelation.GetObjectsRelatedToObject((IObject)authorizeFeature);
+                    releaser.ManageLifetime(areaOfReviewCursor);
+
+                    var areaOfReviewFeature = areaOfReviewCursor.Next();
+                    if (areaOfReviewFeature == null)
+                    {
+                        continue;
+                    }
+
+                    var areaOfReview = AutoMapperService.MapAreaOfReviewSdeModel(areaOfReviewFeature, areaOfReviewFieldMap);
+                    xmlPermit.PermitAorWellNumberNumeric = areaOfReview.PermitAorWellNumberNumeric;
+
+                    permits.Add(xmlPermit);
                 }
             }
 
