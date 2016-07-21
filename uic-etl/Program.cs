@@ -106,6 +106,10 @@ namespace uic_etl
                 var uicAuthorization = featureWorkspace.OpenTable("UICAuthorization");
                 releaser.ManageLifetime(uicAuthorization);
 
+                debug.Write("{0} Opening Authorization Action Relationship Class", start.Elapsed);
+                var authorizationActionRelation = featureWorkspace.OpenRelationshipClass("AuthorizationToAuthorizationAction");
+                releaser.ManageLifetime(authorizationActionRelation);
+
                 debug.Write("{0} Opening Area of Review Relationship Class", start.Elapsed);
                 var areaOfReviewRelation = featureWorkspace.OpenRelationshipClass("AuthorizationToAreaOfReview");
                 releaser.ManageLifetime(areaOfReviewRelation);
@@ -123,6 +127,7 @@ namespace uic_etl
                 var wasteFieldMap = new FindIndexByFieldNameCommand(wasteRelation, WasteClassISdeModel.Fields).Execute();
                 var contactFieldMap = new FindIndexByFieldNameCommand(uicContact, ContactSdeModel.Fields).Execute();
                 var authorizationFieldMap = new FindIndexByFieldNameCommand(uicAuthorization, AuthorizationSdeModel.Fields).Execute();
+                var authorizationActionFieldMap = new FindIndexByFieldNameCommand(authorizationActionRelation, AuthorizationActionSdeModel.Fields).Execute();
                 var areaOfReviewFieldMap = new FindIndexByFieldNameCommand(areaOfReviewRelation, AreaOfReviewSdeModel.Fields).Execute();
 
                 var srFactory = new SpatialReferenceEnvironment();
@@ -200,7 +205,7 @@ namespace uic_etl
                             var xmlResponseDetail = mapper.Map<EnforcementSdeModel, ResponseDetail>(responseDetail);
                             xmlResponseDetail.ResponseEnforcementIdentifier = enforcementId++;
 
-                            xmlViolation.ResponseDetails.Add(xmlResponseDetail);
+                            xmlViolation.ResponseDetail.Add(xmlResponseDetail);
                         }
 
                         xmlFacility.FacilityViolationDetail.Add(xmlViolation);
@@ -293,7 +298,7 @@ namespace uic_etl
                                 var xmlResponseDetail = mapper.Map<EnforcementSdeModel, ResponseDetail>(responseDetail);
 //                                xmlResponseDetail.ResponseEnforcementIdentifier = enforcementId++;
 
-                                xmlViolation.ResponseDetails.Add(xmlResponseDetail);
+                                xmlViolation.ResponseDetail.Add(xmlResponseDetail);
                             }
 
                             xmlWell.WellViolationDetail.Add(xmlViolation);
@@ -398,12 +403,25 @@ namespace uic_etl
                     var authorize = AutoMapperService.MapAuthorizationSdeModel(authorizeFeature, authorizationFieldMap);
                     var xmlPermit = mapper.Map<AuthorizationSdeModel, PermitDetail>(authorize);
 
+                    var authorizationActionCursor = authorizationActionRelation.GetObjectsRelatedToObject((IObject)authorizeFeature);
+                    releaser.ManageLifetime(authorizationActionCursor);
+
+                    IObject authorizationActionFeature;
+                    while ((authorizationActionFeature = authorizationActionCursor.Next()) != null)
+                    {
+                        var authorizationAction = AutoMapperService.MapAuthorizationActionSdeModel(authorizationActionFeature, authorizationActionFieldMap);
+                        var permitActivityDetail = mapper.Map<AuthorizationActionSdeModel, PermitActivityDetail>(authorizationAction);
+
+                        xmlPermit.PermitActivityDetail.Add(permitActivityDetail);
+                    }
+
                     var areaOfReviewCursor = areaOfReviewRelation.GetObjectsRelatedToObject((IObject)authorizeFeature);
                     releaser.ManageLifetime(areaOfReviewCursor);
 
                     var areaOfReviewFeature = areaOfReviewCursor.Next();
                     if (areaOfReviewFeature == null)
                     {
+                        permits.Add(xmlPermit);
                         continue;
                     }
 
@@ -412,6 +430,8 @@ namespace uic_etl
 
                     permits.Add(xmlPermit);
                 }
+
+                XmlService.AppendPayloadElements(ref payload, contacts, permits);
             }
 
             debug.Write("{0} finished.", start.Elapsed);

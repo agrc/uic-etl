@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="sde\AreaOfReview.cs" />
+    <Compile Include="sde\AuthorizationReviewSdeModel.cs" />
     <Compile Include="sde\AuthorizationSdeModel.cs" />
     <Compile Include="sde\ConsituentClassISdeModel.cs" />
     <Compile Include="sde\ContactSdeModel.cs" />
@@ -57,6 +58,7 @@
     <Compile Include="xml\CorrectionDetail.cs" />
     <Compile Include="xml\EngineeringDetail.cs" />
     <Compile Include="xml\MiTestDetail.cs" />
+    <Compile Include="xml\PermitActivityDetail.cs" />
     <Compile Include="xml\PermitDetail.cs" />
     <Compile Include="xml\WasteDetail.cs" />
     <Compile Include="xml\WellInspectionDetail.cs" />

@@ -7,7 +7,7 @@ namespace domain.uic_etl.xml
     {
         public ViolationDetail()
         {
-            ResponseDetails = new List<ResponseDetail>();
+            ResponseDetail = new List<ResponseDetail>();
         }
 
         public Guid Guid { get; set; }
@@ -19,8 +19,8 @@ namespace domain.uic_etl.xml
         public string ViolationDeterminedDate { get; set; }
         public string ViolationTypeCode { get; set; }
         public Guid ViolationFacilityIdentifier { get; set; }
-        public List<ResponseDetail> ResponseDetails { get; set; }
+        public List<ResponseDetail> ResponseDetail { get; set; }
         public Guid FacilityId { get; set; }
-        public Guid WellId { get; set; }
+        public Guid ViolationWellIdentifier { get; set; }
     }
 }

@@ -240,7 +240,7 @@ namespace tests.uic_etl
                         ViolationReturnComplianceDate = "20160104",
                         ViolationSignificantCode = "[UICViolation].SignificantNonCompliance",
                         ViolationTypeCode = "[UICViolation].ViolationType",
-                        ResponseDetails = new List<ResponseDetail>
+                        ResponseDetail = new List<ResponseDetail>
                         {
                             new ResponseDetail
                             {

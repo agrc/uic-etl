@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace domain.uic_etl.xml
 {
     public class WellInspectionDetail
     {
+        public WellInspectionDetail()
+        {
+            CorrectionDetail = new List<CorrectionDetail>();
+        }
         public int InspectionIdentifier { get; set; }
         public string InspectionAssistanceCode { get; set; }
         public string InspectionDeficiencyCode { get; set; }
@@ -15,5 +20,6 @@ namespace domain.uic_etl.xml
         public string InspectionIcisRegionalPriorityName { get; set; }
         public string InspectionTypeActionCode { get; set; }
         public Guid InspectionWellIdentifier { get; set; }
+        public List<CorrectionDetail> CorrectionDetail { get; set; }
     }
 }

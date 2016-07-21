@@ -1,5 +1,7 @@
-﻿using System.Diagnostics.Contracts.Internal;
+﻿using System.Collections.Generic;
+using System.Diagnostics.Contracts.Internal;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using domain.uic_etl.xml;
 using uic_etl.models.dtos;
@@ -63,6 +65,50 @@ namespace uic_etl.services
             return payload;
         }
 
+        public static XElement AppendPayloadElements(ref XElement payload, IEnumerable<ContactDetail> contacts, IEnumerable<PermitDetail> permits)
+        {
+            var node = payload.Descendants(Uic + "UIC").SingleOrDefault();
+
+            foreach (var contact in contacts)
+            {
+                var contactDetail = new XElement(Uic + "ContactDetail",
+                    new XElement(Uic + "", contact.ContactIdentifier),
+                    new XElement(Uic + "", contact.TelephoneNumberText),
+                    new XElement(Uic + "", contact.IndividualFullName),
+                    new XElement(Uic + "", contact.ContactCityName),
+                    new XElement(Uic + "", contact.ContactAddressStateCode),
+                    new XElement(Uic + "", contact.ContactAddressText),
+                    new XElement(Uic + "", contact.ContactAddressPostalCode));
+
+                node.Add(contactDetail);
+            }
+
+            foreach (var permit in permits)
+            {
+                var permitDetail = new XElement(Uic + "PermitDetail",
+                    new XElement(Uic + "", permit.PermitAorWellNumberNumeric),
+                    new XElement(Uic + "", permit.PermitAuthorizedStatusCode),
+                    new XElement(Uic + "", permit.PermitOwnershipTypeCode),
+                    new XElement(Uic + "", permit.PermitAuthorizedIdentifier),
+                    new XElement(Uic + "", permit.PermitIdentifier));
+
+                foreach (var activity in permit.PermitActivityDetail)
+                {
+                    var activityDetail = new XElement(Uic + "PermitActivityDetail",
+                        new XElement(Uic + "", activity.PermitActivityIdentifier),
+                        new XElement(Uic + "", activity.PermitActivityActionTypeCode),
+                        new XElement(Uic + "", activity.PermitActivityDate),
+                        new XElement(Uic + "", activity.PermitActivityPermitIdentifier));
+
+                    permitDetail.Add(activityDetail);
+                }
+
+                node.Add(permitDetail);
+            }
+
+            return node;
+        }
+
         public static XElement AddFacility(ref XElement payload, FacilityDetail model)
         {
             var facilityDetail = new XElement(Uic + "FacilityList",
@@ -97,7 +143,7 @@ namespace uic_etl.services
                 }
 
                 var enforcementIdentfier = 0;
-                foreach (var responseModel in violationModel.ResponseDetails)
+                foreach (var responseModel in violationModel.ResponseDetail)
                 {
                     var responseDetail = new XElement(Uic + "FacilityResponseDetail",
                         new XElement(Uic + "ResponseEnforcementIdentifier", enforcementIdentfier++),
@@ -144,18 +190,122 @@ namespace uic_etl.services
                 wellDetail.Add(wellStatusDetail);
             }
 
-            wellDetail.Add(new XElement(Uic + "LocationDetail",
-                new XElement(Uic + "LocationIdentifier", model.LocationDetail.LocationIdentifier),
-                new XElement(Uic + "LocationAddressCounty", model.LocationDetail.LocationAddressCounty),
-                new XElement(Uic + "LocationAccuracyValueMeasure", model.LocationDetail.LocationAccuracyValueMeasure),
-                new XElement(Uic + "GeographicReferencePointCode", model.LocationDetail.GeographicReferencePointCode),
-                new XElement(Uic + "HorizontalCoordinateReferenceSystemDatumCode", model.LocationDetail.HorizontalCoordinateReferenceSystemDatumCode),
-                new XElement(Uic + "HorizontalCollectionMethodCode", model.LocationDetail.HorizontalCollectionMethodCode),
-                new XElement(Uic + "LocationPointLineAreaCode", model.LocationDetail.LocationPointLineAreaCode),
-                new XElement(Uic + "SourceMapScaleNumeric", model.LocationDetail.SourceMapScaleNumeric),
-                new XElement(Uic + "LocationWellIdentifier", model.LocationDetail.LocationWellIdentifier),
-                new XElement(Uic + "LatitudeMeasure", model.LocationDetail.LatitudeMeasure),
-                new XElement(Uic + "LongitudeMeasure", model.LocationDetail.LongitudeMeasure)));
+            if (model.LocationDetail != null)
+            {
+                wellDetail.Add(new XElement(Uic + "LocationDetail",
+                    new XElement(Uic + "LocationIdentifier", model.LocationDetail.LocationIdentifier),
+                    new XElement(Uic + "LocationAddressCounty", model.LocationDetail.LocationAddressCounty),
+                    new XElement(Uic + "LocationAccuracyValueMeasure", model.LocationDetail.LocationAccuracyValueMeasure),
+                    new XElement(Uic + "GeographicReferencePointCode", model.LocationDetail.GeographicReferencePointCode),
+                    new XElement(Uic + "HorizontalCoordinateReferenceSystemDatumCode", model.LocationDetail.HorizontalCoordinateReferenceSystemDatumCode),
+                    new XElement(Uic + "HorizontalCollectionMethodCode", model.LocationDetail.HorizontalCollectionMethodCode),
+                    new XElement(Uic + "LocationPointLineAreaCode", model.LocationDetail.LocationPointLineAreaCode),
+                    new XElement(Uic + "SourceMapScaleNumeric", model.LocationDetail.SourceMapScaleNumeric),
+                    new XElement(Uic + "LocationWellIdentifier", model.LocationDetail.LocationWellIdentifier),
+                    new XElement(Uic + "LatitudeMeasure", model.LocationDetail.LatitudeMeasure),
+                    new XElement(Uic + "LongitudeMeasure", model.LocationDetail.LongitudeMeasure)));
+            }
+
+            foreach (var violation in model.WellViolationDetail)
+            {
+                var violationDetail = new XElement(Uic + "WellViolationDetail",
+                    new XElement(Uic + "ViolationIdentifier", violation.ViolationIdentifier),
+                    new XElement(Uic + "ViolationContaminationCode", violation.ViolationContaminationCode),
+                    new XElement(Uic + "ViolationEndangeringCode", violation.ViolationEndangeringCode),
+                    new XElement(Uic + "ViolationReturnComplianceDate", violation.ViolationReturnComplianceDate),
+                    new XElement(Uic + "ViolationSignificantCode", violation.ViolationSignificantCode),
+                    new XElement(Uic + "ViolationDeterminedDate", violation.ViolationDeterminedDate),
+                    new XElement(Uic + "ViolationTypeCode", violation.ViolationTypeCode),
+                    new XElement(Uic + "ViolationWellIdentifier", violation.ViolationWellIdentifier));
+
+                foreach (var response in violation.ResponseDetail)
+                {
+                    var responseDetail = new XElement(Uic + "WellViolationDetail",
+                        new XElement(Uic + "ResponseEnforcementIdentifier", response.ResponseEnforcementIdentifier),
+                        new XElement(Uic + "ResponseViolationIdentifier", response.ResponseViolationIdentifier));
+
+                    violationDetail.Add(responseDetail);
+                }
+
+                wellDetail.Add(violationDetail);
+            }
+
+            foreach (var inspection in model.WellInspectionDetail)
+            {
+                var inspectionDetail = new XElement(Uic + "WellInspectionDetail",
+                    new XElement(Uic + "InspectionIdentifier", inspection.InspectionIdentifier),
+                    new XElement(Uic + "InspectionAssistanceCode", inspection.InspectionAssistanceCode),
+                    new XElement(Uic + "InspectionDeficiencyCode", inspection.InspectionDeficiencyCode),
+                    new XElement(Uic + "InspectionActionDate", inspection.InspectionActionDate),
+                    new XElement(Uic + "InspectionIdisComplianceMonitoringReasonCode", inspection.InspectionIdisComplianceMonitoringReasonCode),
+                    new XElement(Uic + "InspectionIcisComplianceMonitoringTypeCode", inspection.InspectionIcisComplianceMonitoringTypeCode),
+                    new XElement(Uic + "InspectionIcisComplianceActivityTypeCode", inspection.InspectionIcisComplianceActivityTypeCode),
+                    new XElement(Uic + "InspectionIcisMoaName", inspection.InspectionIcisMoaName),
+                    new XElement(Uic + "InspectionIcisRegionalPriorityName", inspection.InspectionIcisRegionalPriorityName),
+                    new XElement(Uic + "InspectionTypeActionCode", inspection.InspectionTypeActionCode),
+                    new XElement(Uic + "InspectionWellIdentifier", inspection.InspectionWellIdentifier));
+
+                foreach (var correction in inspection.CorrectionDetail)
+                {
+                    var correctionDetail = new XElement(Uic + "CorrectionDetail",
+                        new XElement(Uic + "CorrectionIdentifier", correction.CorrectionIdentifier),
+                        new XElement(Uic + "CorrectiveActionTypeCode", correction.CorrectiveActionTypeCode),
+                        new XElement(Uic + "CorrectionCommentText", correction.CorrectionCommentText),
+                        new XElement(Uic + "CorrectionInspectionIdentifier", correction.CorrectionInspectionIdentifier));
+
+                    inspectionDetail.Add(correctionDetail);
+                }
+
+                wellDetail.Add(inspectionDetail);
+            }
+
+            foreach (var mitest in model.MitTestDetail)
+            {
+                var mitestDetail = new XElement(Uic + "MITestDetail",
+                    new XElement(Uic + "MechanicalIntegrityTestIdentifier", mitest.MechanicalIntegrityTestIdentifier),
+                    new XElement(Uic + "MechanicalIntegrityTestCompletedDate", mitest.MechanicalIntegrityTestCompletedDate),
+                    new XElement(Uic + "MechanicalIntegrityTestResultCode", mitest.MechanicalIntegrityTestResultCode),
+                    new XElement(Uic + "MechanicalIntegrityTestTypeCode", mitest.MechanicalIntegrityTestTypeCode),
+                    new XElement(Uic + "MechanicalIntegrityTestRemedialActionDate", mitest.MechanicalIntegrityTestRemedialActionDate),
+                    new XElement(Uic + "MechanicalIntegrityTestRemedialActionTypeCode", mitest.MechanicalIntegrityTestRemedialActionTypeCode),
+                    new XElement(Uic + "MechanicalIntegrityTestWellIdentifier", mitest.MechanicalIntegrityTestWellIdentifier));
+
+                wellDetail.Add(mitestDetail);
+            }
+
+            foreach (var engineering in model.EngineeringDetail)
+            {
+                var engineeringDetail = new XElement(Uic + "EngineeringDetail",
+                    new XElement(Uic + "EngineeringWellIdentifier", engineering.EngineeringWellIdentifier),
+                    new XElement(Uic + "EngineeringMaximumFlowRateNumeric", engineering.EngineeringMaximumFlowRateNumeric),
+                    new XElement(Uic + "EngineeringPermittedOnsiteInjectionVolumeNumeric", engineering.EngineeringPermittedOnsiteInjectionVolumeNumeric),
+                    new XElement(Uic + "EngineeringPermittedOffsiteInjectionVolumeNumeric", engineering.EngineeringPermittedOffsiteInjectionVolumeNumeric),
+                    new XElement(Uic + "EngineeringWellIdentifier", engineering.EngineeringWellIdentifier));
+
+                wellDetail.Add(engineeringDetail);
+            }
+
+            foreach (var waste in model.WasteDetail)
+            {
+                var wasteDetail = new XElement(Uic + "WasteDetail",
+                    new XElement(Uic + "WasteIdentifier", waste.WasteIdentifier),
+                    new XElement(Uic + "WasteCode", waste.WasteCode),
+                    new XElement(Uic + "WasteStreamClassificationCode", waste.WasteStreamClassificationCode),
+                    new XElement(Uic + "WasteWellIdentifier", waste.WasteWellIdentifier));
+
+                foreach (var constituent in waste.ConstituentDetail)
+                {
+                    var constituentDetail = new XElement(Uic + "ConstituentDetail",
+                        new XElement(Uic + "ConstituentIdentifier", constituent.ConstituentIdentifier),
+                        new XElement(Uic + "MeasureValue", constituent.MeasureValue),
+                        new XElement(Uic + "MeasureUnitCode", constituent.MeasureUnitCode),
+                        new XElement(Uic + "ConstituentWasteIdentifier", constituent.ConstituentWasteIdentifier));
+
+                    wasteDetail.Add(constituentDetail);
+                }
+
+                wellDetail.Add(wasteDetail);
+            }
 
             facilityList.Add(wellDetail);
 

@@ -45,8 +45,8 @@ namespace uic_etl.services
                     .ForMember(dest => dest.ViolationTypeCode, opts => opts.MapFrom(src => src.ViolationType))
                     .ForMember(dest => dest.ViolationFacilityIdentifier, opts => opts.MapFrom(src => src.FacilityId))
                     .ForMember(dest => dest.Guid, opts => opts.MapFrom(src => src.Guid))
-                    .ForMember(dest => dest.WellId, opts => opts.MapFrom(src => src.WellId))
-                    .ForMember(dest => dest.ResponseDetails, opts => opts.Ignore());
+                    .ForMember(dest => dest.ViolationWellIdentifier, opts => opts.MapFrom(src => src.WellId))
+                    .ForMember(dest => dest.ResponseDetail, opts => opts.Ignore());
 
                 _.CreateMap<EnforcementSdeModel, ResponseDetail>()
                     .ForMember(dest => dest.ResponseViolationIdentifier, opts => opts.MapFrom(src => src.Guid))
@@ -85,8 +85,7 @@ namespace uic_etl.services
 
                 _.CreateMap<WellInspectionSdeModel, WellInspectionDetail>()
                     .ForMember(dest => dest.InspectionIdentifier, opts => opts.Ignore())
-                    .ForMember(dest => dest.InspectionAssistanceCode,
-                        opts => opts.MapFrom(src => src.InspectionAssistance))
+                    .ForMember(dest => dest.InspectionAssistanceCode, opts => opts.MapFrom(src => src.InspectionAssistance))
                     .ForMember(dest => dest.InspectionDeficiencyCode, opts => opts.MapFrom(src => src.InspectionDeficiency))
                     .ForMember(dest => dest.InspectionActionDate, opts => opts.MapFrom(src => src.InspectionDate.ToString("yyyMMdd")))
                     .ForMember(dest => dest.InspectionIdisComplianceMonitoringReasonCode, opts => opts.MapFrom(src => src.IcisCompMonActReason))
@@ -95,7 +94,8 @@ namespace uic_etl.services
                     .ForMember(dest => dest.InspectionIcisMoaName, opts => opts.MapFrom(src => src.IcisMoaPriority))
                     .ForMember(dest => dest.InspectionIcisRegionalPriorityName, opts => opts.MapFrom(src => src.IcisRegionalPriority))
                     .ForMember(dest => dest.InspectionTypeActionCode, opts => opts.MapFrom(src => src.InspectionType))
-                    .ForMember(dest => dest.InspectionWellIdentifier, opts => opts.MapFrom(src => src.WellFk));
+                    .ForMember(dest => dest.InspectionWellIdentifier, opts => opts.MapFrom(src => src.WellFk))
+                    .ForMember(dest => dest.CorrectionDetail, opts => opts.Ignore());
 
                 _.CreateMap<CorrectionSdeModel, CorrectionDetail>()
                     .ForMember(dest => dest.CorrectionIdentifier, opts => opts.Ignore())
@@ -122,13 +122,16 @@ namespace uic_etl.services
                 _.CreateMap<WasteClassISdeModel, WasteDetail>()
                     .ForMember(dest => dest.WasteCode, opts => opts.MapFrom(src => src.WasteCode))
                     .ForMember(dest => dest.WasteStreamClassificationCode, opts => opts.MapFrom(src => src.WasteStream))
-                    .ForMember(dest => dest.WasteWellIdentifier, opts => opts.MapFrom(src => src.WellFk));
+                    .ForMember(dest => dest.WasteWellIdentifier, opts => opts.MapFrom(src => src.WellFk))
+                    .ForMember(dest => dest.WasteIdentifier, opts => opts.Ignore())
+                    .ForMember(dest => dest.ConstituentDetail, opts => opts.Ignore());
 
                 _.CreateMap<ConstituentClassISdeModel, ConstituentDetail>()
                     .ForMember(dest => dest.MeasureValue, opts => opts.MapFrom(src => src.Concentration))
                     .ForMember(dest => dest.MeasureUnitCode, opts => opts.MapFrom(src => src.Unit))
                     .ForMember(dest => dest.ConstituentNameText, opts => opts.MapFrom(src => src.Constituent))
-                    .ForMember(dest => dest.ConstituentWasteIdentifier, opts => opts.MapFrom(src => src.WasteGuid));
+                    .ForMember(dest => dest.ConstituentWasteIdentifier, opts => opts.MapFrom(src => src.WasteGuid))
+                    .ForMember(dest => dest.ConstituentIdentifier, opts => opts.Ignore());
 
                 _.CreateMap<ContactSdeModel, ContactDetail>()
                     .ForMember(dest => dest.TelephoneNumberText, opts => opts.MapFrom(src => src.ContactPhone))
@@ -136,14 +139,22 @@ namespace uic_etl.services
                     .ForMember(dest => dest.ContactCityName, opts => opts.MapFrom(src => src.ContactMailCity))
                     .ForMember(dest => dest.ContactAddressStateCode, opts => opts.MapFrom(src => src.ContactMailState))
                     .ForMember(dest => dest.ContactAddressText, opts => opts.MapFrom(src => src.ContactMailAddress))
-                    .ForMember(dest => dest.ContactAddressPostalCode, opts => opts.MapFrom(src => src.ZipCode5 + src.ZipCode4));
+                    .ForMember(dest => dest.ContactAddressPostalCode, opts => opts.MapFrom(src => src.ZipCode5 + src.ZipCode4))
+                    .ForMember(dest => dest.ContactIdentifier, opts => opts.Ignore());
 
                 _.CreateMap<AuthorizationSdeModel, PermitDetail>()
                     .ForMember(dest => dest.PermitAuthorizedStatusCode, opts => opts.MapFrom(src => src.AuthorizeType))
                     .ForMember(dest => dest.PermitOwnershipTypeCode, opts => opts.MapFrom(src => src.OwnerSectorType))
                     .ForMember(dest => dest.PermitAuthorizedIdentifier, opts => opts.MapFrom(src => src.AuthorizeNumber))
-                    .ForMember(dest => dest.PermitAorWellNumberNumeric, opts => opts.Ignore());
-                    
+                    .ForMember(dest => dest.PermitAorWellNumberNumeric, opts => opts.Ignore())
+                    .ForMember(dest => dest.PermitIdentifier, opts => opts.Ignore())
+                    .ForMember(dest => dest.PermitActivityDetail, opts => opts.Ignore());
+
+                _.CreateMap<AuthorizationActionSdeModel, PermitActivityDetail>()
+                    .ForMember(dest => dest.PermitActivityActionTypeCode, opts => opts.MapFrom(src => src.AuthorizeActionType))
+                    .ForMember(dest => dest.PermitActivityDate, opts => opts.MapFrom(src => src.AuthorizeActionDate))
+                    .ForMember(dest => dest.PermitActivityPermitIdentifier, opts => opts.MapFrom(src => src.Guid))
+                    .ForMember(dest => dest.PermitActivityIdentifier, opts => opts.Ignore());
             });
 
             return config.CreateMapper();
@@ -381,6 +392,18 @@ namespace uic_etl.services
                 CaRepair = Convert.ToDouble(row.Value[fieldMap["CA_Repair"].Index]),
                 CaReplug = Convert.ToDouble(row.Value[fieldMap["CA_Replug"].Index]),
                 CaOther = Convert.ToDouble(row.Value[fieldMap["CA_Other"].Index])
+            };
+
+            return model;
+        }
+
+        public static AuthorizationActionSdeModel MapAuthorizationActionSdeModel(IObject row, IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
+        {
+            var model = new AuthorizationActionSdeModel
+            {
+                AuthorizeActionType = GetDomainValue(row, fieldMap["AuthorizeActionType"]),
+                AuthorizeActionDate = (DateTime)row.Value[fieldMap["AuthorizeActionDate"].Index],
+                Guid = new Guid((string)row.Value[fieldMap["GUID"].Index])
             };
 
             return model;

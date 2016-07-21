@@ -10,6 +10,11 @@ namespace domain.uic_etl.xml
         {
             WellStatusDetail = new List<WellStatusDetail>();
             WellTypeDetail = new List<WellTypeDetail>();
+            WellViolationDetail = new List<ViolationDetail>();
+            WellInspectionDetail = new List<WellInspectionDetail>();
+            MitTestDetail = new List<MiTestDetail>();
+            EngineeringDetail = new List<EngineeringDetail>();
+            WasteDetail = new List<WasteDetail>();
         }
 
         public string WellName { get; set; }

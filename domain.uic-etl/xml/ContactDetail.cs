@@ -2,6 +2,7 @@
 {
     public class ContactDetail
     {
+        public string ContactIdentifier { get; set; }
         public string TelephoneNumberText { get; set; }
         public string IndividualFullName { get; set; }
         public string ContactCityName { get; set; }
