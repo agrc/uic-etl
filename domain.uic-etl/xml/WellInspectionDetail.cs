@@ -9,7 +9,7 @@ namespace domain.uic_etl.xml
         {
             CorrectionDetail = new List<CorrectionDetail>();
         }
-        public int InspectionIdentifier { get; set; }
+        public string InspectionIdentifier { get; set; }
         public string InspectionAssistanceCode { get; set; }
         public string InspectionDeficiencyCode { get; set; }
         public string InspectionActionDate { get; set; }
@@ -19,7 +19,7 @@ namespace domain.uic_etl.xml
         public string InspectionIcisMoaName { get; set; }
         public string InspectionIcisRegionalPriorityName { get; set; }
         public string InspectionTypeActionCode { get; set; }
-        public Guid InspectionWellIdentifier { get; set; }
+        public string InspectionWellIdentifier { get; set; }
         public List<CorrectionDetail> CorrectionDetail { get; set; }
     }
 }

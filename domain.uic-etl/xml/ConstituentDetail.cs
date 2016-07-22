@@ -8,6 +8,6 @@ namespace domain.uic_etl.xml
         public string MeasureValue { get; set; }
         public string MeasureUnitCode { get; set; }
         public string ConstituentNameText { get; set; }
-        public Guid ConstituentWasteIdentifier { get; set; }
+        public string ConstituentWasteIdentifier { get; set; }
     }
 }

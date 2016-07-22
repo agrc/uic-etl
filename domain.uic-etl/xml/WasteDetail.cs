@@ -13,7 +13,7 @@ namespace domain.uic_etl.xml
         public string WasteIdentifier { get; set; }
         public string WasteCode { get; set; }
         public string WasteStreamClassificationCode { get; set; }
-        public Guid WasteWellIdentifier { get; set; }
+        public string WasteWellIdentifier { get; set; }
         public List<ConstituentDetail> ConstituentDetail { get; set; }
     }
 }

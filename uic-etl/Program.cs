@@ -165,16 +165,13 @@ namespace uic_etl
                 releaser.ManageLifetime(facilityCursor);
 
                 // Loop over UICFacility
-                var facilityId = 0;
                 IFeature facilityFeature;
                 while ((facilityFeature = facilityCursor.NextFeature()) != null)
                 {
                     releaser.ManageLifetime(facilityFeature);
 
-                    var violationId = 0;
                     var facility = AutoMapperService.MapFacilityModel(facilityFeature, facilityFieldMap);
                     var xmlFacility = mapper.Map<FacilitySdeModel, FacilityDetail>(facility);
-                    xmlFacility.FacilityIdentifier = facilityId++;
 
                     debug.Write("finding violations for facility oid: {0}", facilityFeature.OID);
                     var violationCursor = violationRelation.GetObjectsRelatedToObject(facilityFeature);
@@ -188,14 +185,12 @@ namespace uic_etl
 
                         var violation = AutoMapperService.MapViolationModel(violationFeature, violationFieldMap);
                         var xmlViolation = mapper.Map<ViolationSdeModel, ViolationDetail>(violation);
-                        xmlViolation.ViolationIdentifier = violationId++;
 
                         debug.Write("finding facility violation responses for violation: {0}", violationFeature.OID);
                         var facilityResponseDetailCursor = responseRelation.GetObjectsRelatedToObject(violationFeature);
                         releaser.ManageLifetime(facilityResponseDetailCursor);
 
                         // Find all Violation Responses which are UICEnforcements
-                        var enforcementId = 0;
                         IObject responseFeature;
                         while ((responseFeature = facilityResponseDetailCursor.Next()) != null)
                         {
@@ -203,7 +198,6 @@ namespace uic_etl
 
                             var responseDetail = AutoMapperService.MapResponseModel(responseFeature, responseFieldMap);
                             var xmlResponseDetail = mapper.Map<EnforcementSdeModel, ResponseDetail>(responseDetail);
-                            xmlResponseDetail.ResponseEnforcementIdentifier = enforcementId++;
 
                             xmlViolation.ResponseDetail.Add(xmlResponseDetail);
                         }
@@ -217,7 +211,6 @@ namespace uic_etl
                     releaser.ManageLifetime(wellCursor);
 
                     // Find all wells
-                    var wellIdentifier = 0;
                     IFeature wellFeature;
                     while ((wellFeature = wellCursor.Next()) != null)
                     {
@@ -225,7 +218,6 @@ namespace uic_etl
 
                         var well = AutoMapperService.MapWellModel(wellFeature, wellFieldMap);
                         var xmlWell = mapper.Map<WellSdeModel, WellDetail>(well);
-                        xmlWell.WellIdentifier = wellIdentifier++;
 
                         var verticalWellCursor = verticalWellRelation.GetObjectsRelatedToObject(wellFeature);
                         releaser.ManageLifetime(verticalWellCursor);
@@ -239,7 +231,6 @@ namespace uic_etl
                         releaser.ManageLifetime(wellStatusCursor);
 
                         // write well status
-                        var wellStatusIdentifier = 0;
                         IObject wellStatusFeature;
                         while ((wellStatusFeature = wellStatusCursor.Next()) != null)
                         {
@@ -247,7 +238,6 @@ namespace uic_etl
 
                             var wellStatus = AutoMapperService.MapWellStatusModel(wellStatusFeature, wellStatusFieldMap);
                             var xmlWellStatus = mapper.Map<WellStatusSdeModel, WellStatusDetail>(wellStatus);
-                            xmlWellStatus.WellStatusIdentifier = wellStatusIdentifier++;
 
                             xmlWell.WellStatusDetail.Add(xmlWellStatus);
                         }
@@ -256,9 +246,8 @@ namespace uic_etl
                         var wellTypeDetail = new WellTypeDetail
                         {
                             WellTypeCode = xmlWell.WellTypeCode,
-                            WellTypeIdentifier = 0,
                             // WellTypeDate = TODO: github #6
-                            WellTypeWellIdentifier = well.Guid
+                            WellTypeWellIdentifier = well.Guid.ToString()
                         };
 
                         xmlWell.WellTypeDetail.Add(wellTypeDetail);
@@ -296,7 +285,6 @@ namespace uic_etl
 
                                 var responseDetail = AutoMapperService.MapResponseModel(responseFeature, responseFieldMap);
                                 var xmlResponseDetail = mapper.Map<EnforcementSdeModel, ResponseDetail>(responseDetail);
-//                                xmlResponseDetail.ResponseEnforcementIdentifier = enforcementId++;
 
                                 xmlViolation.ResponseDetail.Add(xmlResponseDetail);
                             }
@@ -308,7 +296,6 @@ namespace uic_etl
                         var wellInspectionCursor = wellInspectionRelation.GetObjectsRelatedToObject(wellFeature);
                         releaser.ManageLifetime(wellInspectionRelation);
 
-                        var wellInspectionIdentifier = 0;
                         IObject wellInspectionFeature;
                         while ((wellInspectionFeature = wellInspectionCursor.Next()) != null)
                         {
@@ -316,8 +303,6 @@ namespace uic_etl
 
                             var wellInspection = AutoMapperService.MapWellInspectionModel(wellInspectionFeature, wellInspectionFieldMap);
                             var xmlWellInspection = mapper.Map<WellInspectionSdeModel, WellInspectionDetail>(wellInspection);
-
-                            xmlWellInspection.InspectionIdentifier = wellInspectionIdentifier++;
 
                             xmlWell.WellInspectionDetail.Add(xmlWellInspection);
                         }

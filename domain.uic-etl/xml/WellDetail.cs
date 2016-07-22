@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using domain.uic_etl.sde;
+﻿using System.Collections.Generic;
 
 namespace domain.uic_etl.xml
 {
@@ -18,7 +16,7 @@ namespace domain.uic_etl.xml
         }
 
         public string WellName { get; set; }
-        public int WellIdentifier { get; set; }
+        public string WellIdentifier { get; set; }
         public string WellAquiferExemptionInjectionCode { get; set; }
         public string WellTotalDepthNumeric { get; set; }
         public string WellHighPriorityDesignationCode { get; set; }

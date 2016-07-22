@@ -10,6 +10,6 @@ namespace domain.uic_etl.xml
         public string MechanicalIntegrityTestTypeCode { get; set; }
         public string MechanicalIntegrityTestRemedialActionDate { get; set; }
         public string MechanicalIntegrityTestRemedialActionTypeCode { get; set; }
-        public Guid MechanicalIntegrityTestWellIdentifier { get; set; }
+        public string MechanicalIntegrityTestWellIdentifier { get; set; }
     }
 }

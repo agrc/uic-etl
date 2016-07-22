@@ -7,6 +7,6 @@ namespace domain.uic_etl.xml
         public string CorrectionIdentifier { get; set; }
         public string CorrectiveActionTypeCode { get; set; }
         public string CorrectionCommentText { get; set; }
-        public Guid CorrectionInspectionIdentifier { get; set; }
+        public string CorrectionInspectionIdentifier { get; set; }
     }
 }

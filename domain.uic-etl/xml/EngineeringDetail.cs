@@ -7,6 +7,6 @@ namespace domain.uic_etl.xml
         public string EngineeringMaximumFlowRateNumeric { get; set; }
         public string EngineeringPermittedOnsiteInjectionVolumeNumeric { get; set; }
         public string EngineeringPermittedOffsiteInjectionVolumeNumeric { get; set; }
-        public Guid EngineeringWellIdentifier { get; set; }
+        public string EngineeringWellIdentifier { get; set; }
     }
 }

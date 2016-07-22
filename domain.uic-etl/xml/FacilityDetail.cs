@@ -10,7 +10,7 @@ namespace domain.uic_etl.xml
             FacilityViolationDetail = new List<ViolationDetail>();
         }
 
-        public int FacilityIdentifier { get; set; }
+        public string FacilityIdentifier { get; set; }
         public Guid Guid { get; set; }
         public string LocalityName { get; set; }
         public string FacilitySiteName { get; set; }
