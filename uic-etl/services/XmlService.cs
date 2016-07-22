@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.Contracts.Internal;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using domain.uic_etl.xml;
 using uic_etl.models.dtos;
@@ -123,11 +121,10 @@ namespace uic_etl.services
                 new XElement(Uic + "FacilitySiteTypeCode", model.FacilitySiteTypeCode),
                 new XElement(Uic + "LocationAddressPostalCode", model.LocationAddressPostalCode)));
 
-            var violationIdentifier = 0;
             foreach (var violationModel in model.FacilityViolationDetail)
             {
                 var violationDetail = new XElement(Uic + "FacilityViolationDetail",
-                    new XElement(Uic + "ViolationIdentifier", violationIdentifier++),
+                    new XElement(Uic + "ViolationIdentifier", violationModel.ViolationIdentifier),
                     new XElement(Uic + "ViolationContaminationCode", violationModel.ViolationContaminationCode),
                     new XElement(Uic + "ViolationEndangeringCode", violationModel.ViolationEndangeringCode),
                     new XElement(Uic + "ViolationReturnComplianceDate", violationModel.ViolationReturnComplianceDate),
@@ -142,11 +139,10 @@ namespace uic_etl.services
                     facilityDetailElement.Add(violationDetail);
                 }
 
-                var enforcementIdentfier = 0;
                 foreach (var responseModel in violationModel.ResponseDetail)
                 {
                     var responseDetail = new XElement(Uic + "FacilityResponseDetail",
-                        new XElement(Uic + "ResponseEnforcementIdentifier", enforcementIdentfier++),
+                        new XElement(Uic + "ResponseEnforcementIdentifier", responseModel.ResponseEnforcementIdentifier),
                         new XElement(Uic + "ResponseViolationIdentifier", responseModel.ResponseViolationIdentifier));
 
                     violationDetail.Add(responseDetail);
@@ -220,7 +216,7 @@ namespace uic_etl.services
 
                 foreach (var response in violation.ResponseDetail)
                 {
-                    var responseDetail = new XElement(Uic + "WellViolationDetail",
+                    var responseDetail = new XElement(Uic + "WellResponseDetail",
                         new XElement(Uic + "ResponseEnforcementIdentifier", response.ResponseEnforcementIdentifier),
                         new XElement(Uic + "ResponseViolationIdentifier", response.ResponseViolationIdentifier));
 

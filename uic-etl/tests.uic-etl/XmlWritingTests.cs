@@ -85,7 +85,7 @@ namespace tests.uic_etl
                                        "<PrimacyAgencyCode>UDEQ</PrimacyAgencyCode>" +
                                        "<FacilityList>" +
                                        "<FacilityDetail>" +
-                                       "<FacilityIdentifier>0</FacilityIdentifier>" +
+                                       "<FacilityIdentifier>FacilityIdentifier</FacilityIdentifier>" +
                                        "<LocalityName>LocalityName</LocalityName>" +
                                        "<FacilitySiteName>FacilitySiteName</FacilitySiteName>" +
                                        "<FacilityPetitionStatusCode>FacilityPetitionStatusCode</FacilityPetitionStatusCode>" +
@@ -126,7 +126,7 @@ namespace tests.uic_etl
                                        "<PrimacyAgencyCode>UDEQ</PrimacyAgencyCode>" +
                                        "<FacilityList>" +
                                        "<FacilityDetail>" +
-                                       "<FacilityIdentifier>0</FacilityIdentifier>" +
+                                       "<FacilityIdentifier>FacilityIdentifier</FacilityIdentifier>" +
                                        "<LocalityName>LocalityName</LocalityName>" +
                                        "<FacilitySiteName>FacilitySiteName</FacilitySiteName>" +
                                        "<FacilityPetitionStatusCode>FacilityPetitionStatusCode</FacilityPetitionStatusCode>" +
@@ -136,14 +136,14 @@ namespace tests.uic_etl
                                        "<FacilitySiteTypeCode>FacilitySiteTypeCode</FacilitySiteTypeCode>" +
                                        "<LocationAddressPostalCode>LocationAddressPostalCode</LocationAddressPostalCode>" +
                                        "<FacilityViolationDetail>" +
-                                       "<ViolationIdentifier>0</ViolationIdentifier>" +
-                                       "<ViolationContaminationCode>[UICViolation].USDWContamination</ViolationContaminationCode>" +
-                                       "<ViolationEndangeringCode>[UICViolation].ENDANGER</ViolationEndangeringCode>" +
-                                       "<ViolationReturnComplianceDate>20160104</ViolationReturnComplianceDate>" +
-                                       "<ViolationSignificantCode>[UICViolation].SignificantNonCompliance</ViolationSignificantCode>" +
-                                       "<ViolationDeterminedDate>20160101</ViolationDeterminedDate>" +
-                                       "<ViolationTypeCode>[UICViolation].ViolationType</ViolationTypeCode>" +
-                                       "<ViolationFacilityIdentifier>45c1be51-c4e3-4159-95fb-36f7e9a95585</ViolationFacilityIdentifier>" +
+                                       "<ViolationIdentifier>ViolationIdentifier</ViolationIdentifier>" +
+                                       "<ViolationContaminationCode>ViolationContaminationCode</ViolationContaminationCode>" +
+                                       "<ViolationEndangeringCode>ViolationEndangeringCode</ViolationEndangeringCode>" +
+                                       "<ViolationReturnComplianceDate>ViolationReturnComplianceDate</ViolationReturnComplianceDate>" +
+                                       "<ViolationSignificantCode>ViolationSignificantCode</ViolationSignificantCode>" +
+                                       "<ViolationDeterminedDate>ViolationDeterminedDate</ViolationDeterminedDate>" +
+                                       "<ViolationTypeCode>ViolationTypeCode</ViolationTypeCode>" +
+                                       "<ViolationFacilityIdentifier>ViolationFacilityIdentifier</ViolationFacilityIdentifier>" +
                                        "</FacilityViolationDetail></FacilityDetail></FacilityList></UIC></Payload>";
 
             var expected = XDocument.Parse(documentXml);
@@ -152,7 +152,7 @@ namespace tests.uic_etl
             var model = new FacilityDetail
             {
                 Guid = new Guid("45c1be51-c4e3-4159-95fb-36f7e9a95585"),
-                FacilityIdentifier = "ResponseDetail",
+                FacilityIdentifier = "FacilityIdentifier",
                 FacilityPetitionStatusCode = "FacilityPetitionStatusCode",
                 FacilitySiteName = "FacilitySiteName",
                 FacilitySiteTypeCode = "FacilitySiteTypeCode",
@@ -161,14 +161,14 @@ namespace tests.uic_etl
                 {
                     new ViolationDetail
                     {
-                        ViolationContaminationCode = "[UICViolation].USDWContamination",
-                        ViolationDeterminedDate = "20160101",
-                        ViolationEndangeringCode = "[UICViolation].ENDANGER",
+                        ViolationContaminationCode = "ViolationContaminationCode",
+                        ViolationDeterminedDate = "ViolationDeterminedDate",
+                        ViolationEndangeringCode = "ViolationEndangeringCode",
                         ViolationFacilityIdentifier = "ViolationFacilityIdentifier",
-                        ViolationIdentifier = "ResponseDetail",
-                        ViolationReturnComplianceDate = "20160104",
-                        ViolationSignificantCode = "[UICViolation].SignificantNonCompliance",
-                        ViolationTypeCode = "[UICViolation].ViolationType"
+                        ViolationIdentifier = "ViolationIdentifier",
+                        ViolationReturnComplianceDate = "ViolationReturnComplianceDate",
+                        ViolationSignificantCode = "ViolationSignificantCode",
+                        ViolationTypeCode = "ViolationTypeCode"
                     }
                 },
                 LocalityName = "LocalityName",
@@ -193,7 +193,7 @@ namespace tests.uic_etl
                                        "<PrimacyAgencyCode>UDEQ</PrimacyAgencyCode>" +
                                        "<FacilityList>" +
                                        "<FacilityDetail>" +
-                                       "<FacilityIdentifier>0</FacilityIdentifier>" +
+                                       "<FacilityIdentifier>FacilityIdentifier</FacilityIdentifier>" +
                                        "<LocalityName>LocalityName</LocalityName>" +
                                        "<FacilitySiteName>FacilitySiteName</FacilitySiteName>" +
                                        "<FacilityPetitionStatusCode>FacilityPetitionStatusCode</FacilityPetitionStatusCode>" +
@@ -203,17 +203,17 @@ namespace tests.uic_etl
                                        "<FacilitySiteTypeCode>FacilitySiteTypeCode</FacilitySiteTypeCode>" +
                                        "<LocationAddressPostalCode>LocationAddressPostalCode</LocationAddressPostalCode>" +
                                        "<FacilityViolationDetail>" +
-                                       "<ViolationIdentifier>0</ViolationIdentifier>" +
+                                       "<ViolationIdentifier>ViolationIdentifier</ViolationIdentifier>" +
                                        "<ViolationContaminationCode>[UICViolation].USDWContamination</ViolationContaminationCode>" +
                                        "<ViolationEndangeringCode>[UICViolation].ENDANGER</ViolationEndangeringCode>" +
                                        "<ViolationReturnComplianceDate>20160104</ViolationReturnComplianceDate>" +
                                        "<ViolationSignificantCode>[UICViolation].SignificantNonCompliance</ViolationSignificantCode>" +
                                        "<ViolationDeterminedDate>20160101</ViolationDeterminedDate>" +
                                        "<ViolationTypeCode>[UICViolation].ViolationType</ViolationTypeCode>" +
-                                       "<ViolationFacilityIdentifier>45c1be51-c4e3-4159-95fb-36f7e9a95585</ViolationFacilityIdentifier>" +
+                                       "<ViolationFacilityIdentifier>ViolationFacilityIdentifier</ViolationFacilityIdentifier>" +
                                        " <FacilityResponseDetail>" +
-                                       "<ResponseEnforcementIdentifier>0</ResponseEnforcementIdentifier>" +
-                                       "<ResponseViolationIdentifier>0001be51-c4e3-4159-95fb-36f7e9a95585</ResponseViolationIdentifier>" +
+                                       "<ResponseEnforcementIdentifier>ResponseEnforcementIdentifier</ResponseEnforcementIdentifier>" +
+                                       "<ResponseViolationIdentifier>ResponseViolationIdentifier</ResponseViolationIdentifier>" +
                                        "</FacilityResponseDetail></FacilityViolationDetail></FacilityDetail></FacilityList></UIC></Payload>";
 
             var expected = XDocument.Parse(documentXml);
@@ -272,12 +272,12 @@ namespace tests.uic_etl
                                        "<PrimacyAgencyCode>UDEQ</PrimacyAgencyCode>" +
                                        "<FacilityList>" +
                                        "<FacilityDetail>" +
-                                       "<FacilityIdentifier>0</FacilityIdentifier>" +
+                                       "<FacilityIdentifier>FacilityIdentifier</FacilityIdentifier>" +
                                        "<LocalityName /><FacilitySiteName /><FacilityPetitionStatusCode /><LocationAddressStateCode />" +
                                        "<FacilityStateIdentifier /><LocationAddressText /><FacilitySiteTypeCode /><LocationAddressPostalCode />" +
                                        "</FacilityDetail>" +
                                        "<WellDetail>" +
-                                       "<WellIdentifier>0</WellIdentifier>" +
+                                       "<WellIdentifier>WellIdentifier</WellIdentifier>" +
                                        "<WellAquiferExemptionInjectionCode>WellAquiferExemptionInjectionCode</WellAquiferExemptionInjectionCode>" +
                                        "<WellTotalDepthNumeric>WellTotalDepthNumeric</WellTotalDepthNumeric>" +
                                        "<WellHighPriorityDesignationCode>WellHighPriorityDesignationCode</WellHighPriorityDesignationCode>" +
@@ -336,12 +336,12 @@ namespace tests.uic_etl
                                        "<PrimacyAgencyCode>UDEQ</PrimacyAgencyCode>" +
                                        "<FacilityList>" +
                                        "<FacilityDetail>" +
-                                       "<FacilityIdentifier>0</FacilityIdentifier>" +
+                                       "<FacilityIdentifier>FacilityIdentifier</FacilityIdentifier>" +
                                        "<LocalityName /><FacilitySiteName /><FacilityPetitionStatusCode /><LocationAddressStateCode />" +
                                        "<FacilityStateIdentifier /><LocationAddressText /><FacilitySiteTypeCode /><LocationAddressPostalCode />" +
                                        "</FacilityDetail>" +
                                        "<WellDetail>" +
-                                       "<WellIdentifier>0</WellIdentifier>" +
+                                       "<WellIdentifier>WellIdentifier</WellIdentifier>" +
                                        "<WellAquiferExemptionInjectionCode>WellAquiferExemptionInjectionCode</WellAquiferExemptionInjectionCode>" +
                                        "<WellTotalDepthNumeric>WellTotalDepthNumeric</WellTotalDepthNumeric>" +
                                        "<WellHighPriorityDesignationCode>WellHighPriorityDesignationCode</WellHighPriorityDesignationCode>" +
@@ -355,15 +355,15 @@ namespace tests.uic_etl
                                        "<WellInSourceWaterAreaLocationText>WellInSourceWaterAreaLocationText</WellInSourceWaterAreaLocationText>" +
                                        "<WellName>WellName</WellName>" +
                                        "<WellStatusDetail>" +
-                                       "<WellStatusIdentifier>0</WellStatusIdentifier>" +
+                                       "<WellStatusIdentifier>WellStatusIdentifier</WellStatusIdentifier>" +
                                        "<WellStatusDate>WellStatusDate</WellStatusDate>" +
                                        "<WellStatusOperatingStatusCode>WellStatusOperatingStatusCode</WellStatusOperatingStatusCode>" +
-                                       "<WellStatusWellIdentifier>45c1be51-c4e3-4159-95fb-36f7e9a95581</WellStatusWellIdentifier>" +
+                                       "<WellStatusWellIdentifier>WellStatusWellIdentifier</WellStatusWellIdentifier>" +
                                        "</WellStatusDetail><WellStatusDetail>" +
-                                       "<WellStatusIdentifier>1</WellStatusIdentifier>" +
+                                       "<WellStatusIdentifier>WellStatusIdentifier</WellStatusIdentifier>" +
                                        "<WellStatusDate>WellStatusDate</WellStatusDate>" +
                                        "<WellStatusOperatingStatusCode>WellStatusOperatingStatusCode</WellStatusOperatingStatusCode>" +
-                                       "<WellStatusWellIdentifier>45c1be51-c4e3-4159-95fb-36f7e9a95581</WellStatusWellIdentifier>" +
+                                       "<WellStatusWellIdentifier>WellStatusWellIdentifier</WellStatusWellIdentifier>" +
                                        "</WellStatusDetail></WellDetail>" +
                                        "</FacilityList></UIC></Payload>";
 
@@ -428,12 +428,12 @@ namespace tests.uic_etl
                                        "<PrimacyAgencyCode>UDEQ</PrimacyAgencyCode>" +
                                        "<FacilityList>" +
                                        "<FacilityDetail>" +
-                                       "<FacilityIdentifier>0</FacilityIdentifier>" +
+                                       "<FacilityIdentifier>FacilityIdentifier</FacilityIdentifier>" +
                                        "<LocalityName /><FacilitySiteName /><FacilityPetitionStatusCode /><LocationAddressStateCode />" +
                                        "<FacilityStateIdentifier /><LocationAddressText /><FacilitySiteTypeCode /><LocationAddressPostalCode />" +
                                        "</FacilityDetail>" +
                                        "<WellDetail>" +
-                                       "<WellIdentifier>0</WellIdentifier>" +
+                                       "<WellIdentifier>WellIdentifier</WellIdentifier>" +
                                        "<WellAquiferExemptionInjectionCode>WellAquiferExemptionInjectionCode</WellAquiferExemptionInjectionCode>" +
                                        "<WellTotalDepthNumeric>WellTotalDepthNumeric</WellTotalDepthNumeric>" +
                                        "<WellHighPriorityDesignationCode>WellHighPriorityDesignationCode</WellHighPriorityDesignationCode>" +
@@ -447,7 +447,7 @@ namespace tests.uic_etl
                                        "<WellInSourceWaterAreaLocationText>WellInSourceWaterAreaLocationText</WellInSourceWaterAreaLocationText>" +
                                        "<WellName>WellName</WellName>" +
                                        "<LocationDetail>" +
-                                       "<LocationIdentifier>0</LocationIdentifier>" +
+                                       "<LocationIdentifier></LocationIdentifier>" +
                                        "<LocationAddressCounty>1</LocationAddressCounty>" +
                                        "<LocationAccuracyValueMeasure>Well.LocationAccuracy</LocationAccuracyValueMeasure>" +
                                        "<GeographicReferencePointCode>026</GeographicReferencePointCode>" +
@@ -470,7 +470,6 @@ namespace tests.uic_etl
                 FacilityIdentifier = "FacilityIdentifier"
             };
             var wellGuid = new Guid("45c1be51-c4e3-4159-95fb-36f7e9a95581");
-
 
             var facilityList = XmlService.AddFacility(ref doc, facility);
 
@@ -516,12 +515,12 @@ namespace tests.uic_etl
                                        "<PrimacyAgencyCode>UDEQ</PrimacyAgencyCode>" +
                                        "<FacilityList>" +
                                        "<FacilityDetail>" +
-                                       "<FacilityIdentifier>0</FacilityIdentifier>" +
+                                       "<FacilityIdentifier>FacilityIdentifier</FacilityIdentifier>" +
                                        "<LocalityName /><FacilitySiteName /><FacilityPetitionStatusCode /><LocationAddressStateCode />" +
                                        "<FacilityStateIdentifier /><LocationAddressText /><FacilitySiteTypeCode /><LocationAddressPostalCode />" +
                                        "</FacilityDetail>" +
                                        "<WellDetail>" +
-                                       "<WellIdentifier>0</WellIdentifier>" +
+                                       "<WellIdentifier>WellIdentifier</WellIdentifier>" +
                                        "<WellAquiferExemptionInjectionCode>WellAquiferExemptionInjectionCode</WellAquiferExemptionInjectionCode>" +
                                        "<WellTotalDepthNumeric>WellTotalDepthNumeric</WellTotalDepthNumeric>" +
                                        "<WellHighPriorityDesignationCode>WellHighPriorityDesignationCode</WellHighPriorityDesignationCode>" +
