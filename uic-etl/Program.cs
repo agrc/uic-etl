@@ -230,6 +230,7 @@ namespace uic_etl
                         var wellStatusCursor = wellStatusRelation.GetObjectsRelatedToObject(wellFeature);
                         releaser.ManageLifetime(wellStatusCursor);
 
+                        var wellTypeDate = DateTime.MaxValue;
                         // write well status
                         IObject wellStatusFeature;
                         while ((wellStatusFeature = wellStatusCursor.Next()) != null)
@@ -239,16 +240,31 @@ namespace uic_etl
                             var wellStatus = AutoMapperService.MapWellStatusModel(wellStatusFeature, wellStatusFieldMap);
                             var xmlWellStatus = mapper.Map<WellStatusSdeModel, WellStatusDetail>(wellStatus);
 
+                            // get the earliest date
+                            if (wellTypeDate > wellStatus.OperatingStatusDate)
+                            {
+                                wellTypeDate = wellStatus.OperatingStatusDate;
+                            }
+
                             xmlWell.WellStatusDetail.Add(xmlWellStatus);
+                        }
+
+                        var wellTypeDateFormatted = wellTypeDate.ToString("yyyyMMdd");
+
+                        if (wellTypeDate == DateTime.MaxValue)
+                        {
+                            wellTypeDateFormatted = null;
                         }
 
                         // Add Well Type Details
                         var wellTypeDetail = new WellTypeDetail
                         {
                             WellTypeCode = xmlWell.WellTypeCode,
-                            // WellTypeDate = TODO: github #6
+                            WellTypeDate = wellTypeDateFormatted,
                             WellTypeWellIdentifier = well.Guid.ToString()
                         };
+
+
 
                         xmlWell.WellTypeDetail.Add(wellTypeDetail);
 
