@@ -11,6 +11,7 @@ namespace domain.uic_etl.sde
             "ICISRegionalPriority", "InspectionType", "Well_FK"
         };
 
+        public Guid Guid { get; set; }
         public string InspectionAssistance { get; set; }
         public string InspectionDeficiency { get; set; }
         public DateTime InspectionDate { get; set; }

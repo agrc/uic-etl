@@ -1,4 +1,6 @@
-﻿namespace domain.uic_etl.sde
+﻿using System;
+
+namespace domain.uic_etl.sde
 {
     public class ContactSdeModel
     {
@@ -11,5 +13,6 @@
         public string ContactMailAddress { get; set; }
         public string ZipCode5 { get; set; }
         public string ZipCode4 { get; set; }
+        public Guid Guid { get; set; }
     }
 }

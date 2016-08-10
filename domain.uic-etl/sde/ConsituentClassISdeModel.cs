@@ -10,5 +10,6 @@ namespace domain.uic_etl.sde
         public string Unit { get; set; }
         public string Constituent { get; set; }
         public Guid WasteGuid { get; set; }
+        public Guid Guid { get; set; }
     }
 }

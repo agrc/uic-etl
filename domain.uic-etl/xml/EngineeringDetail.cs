@@ -8,5 +8,6 @@ namespace domain.uic_etl.xml
         public string EngineeringPermittedOnsiteInjectionVolumeNumeric { get; set; }
         public string EngineeringPermittedOffsiteInjectionVolumeNumeric { get; set; }
         public string EngineeringWellIdentifier { get; set; }
+        public string EngineeringIdentifier { get; set; }
     }
 }

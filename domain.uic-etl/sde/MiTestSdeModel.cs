@@ -10,6 +10,7 @@ namespace domain.uic_etl.sde
             "MITRemediationAction", "Well_FK"
         };
 
+        public Guid Guid { get; set; }
         public DateTime MitDate { get; set; }
         public string MitResult { get; set; }
         public string MitType { get; set; }

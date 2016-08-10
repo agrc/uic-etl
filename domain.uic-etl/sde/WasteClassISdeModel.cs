@@ -9,5 +9,6 @@ namespace domain.uic_etl.sde
         public string WasteCode { get; set; }
         public string WasteStream { get; set; }
         public Guid WellFk { get; set; }
+        public Guid Guid { get; set; }
     }
 }
