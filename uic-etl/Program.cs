@@ -114,6 +114,10 @@ namespace uic_etl
                 var areaOfReviewRelation = featureWorkspace.OpenRelationshipClass("AuthorizationToAreaOfReview");
                 releaser.ManageLifetime(areaOfReviewRelation);
 
+                debug.Write("{0} Opening Facility to Contact Relationship Class", start.Elapsed);
+                var facilityToContactRelation = featureWorkspace.OpenRelationshipClass("UICFacilityToContact");
+                releaser.ManageLifetime(facilityToContactRelation);
+
                 debug.Write("{0} Creating field mappings", start.Elapsed);
                 var facilityFieldMap = new FindIndexByFieldNameCommand(uicFacility, FacilitySdeModel.Fields).Execute();
                 var violationFieldMap = new FindIndexByFieldNameCommand(violationRelation, ViolationSdeModel.Fields).Execute();
@@ -219,6 +223,30 @@ namespace uic_etl
                         var well = AutoMapperService.MapWellModel(wellFeature, wellFieldMap);
                         var xmlWell = mapper.Map<WellSdeModel, WellDetail>(well);
 
+                        var facilityContactCursor = facilityToContactRelation.GetObjectsRelatedToObject(facilityFeature);
+                        releaser.ManageLifetime(facilityContactCursor);
+
+                        var mostImportantContact = 1000; // this is the 1 higher than 999 or other contact type
+                        var mostImportantContactGuid = Guid.Empty;
+
+                        IRow facilityContactFeature;
+                        while ((facilityContactFeature = facilityContactCursor.Next()) != null)
+                        {
+                            releaser.ManageLifetime(facilityContactFeature);
+
+                            var contact = AutoMapperService.MapContactSdeModel(facilityContactFeature, contactFieldMap);
+
+                            if (contact.ContactType > mostImportantContact)
+                            {
+                                continue;
+                            }
+
+                            mostImportantContact = contact.ContactType;
+                            mostImportantContactGuid = contact.Guid;
+                        }
+
+                        xmlWell.WellContactIdentifier = new GenerateIdentifierCommand(mostImportantContactGuid).Execute();
+
                         var verticalWellCursor = verticalWellRelation.GetObjectsRelatedToObject(wellFeature);
                         releaser.ManageLifetime(verticalWellCursor);
 
@@ -263,8 +291,6 @@ namespace uic_etl
                             WellTypeDate = wellTypeDateFormatted,
                             WellTypeWellIdentifier = well.Guid.ToString()
                         };
-
-
 
                         xmlWell.WellTypeDetail.Add(wellTypeDetail);
 
@@ -404,7 +430,7 @@ namespace uic_etl
                     var authorize = AutoMapperService.MapAuthorizationSdeModel(authorizeFeature, authorizationFieldMap);
                     var xmlPermit = mapper.Map<AuthorizationSdeModel, PermitDetail>(authorize);
 
-                    var authorizationActionCursor = authorizationActionRelation.GetObjectsRelatedToObject((IObject)authorizeFeature);
+                    var authorizationActionCursor = authorizationActionRelation.GetObjectsRelatedToObject((IObject) authorizeFeature);
                     releaser.ManageLifetime(authorizationActionCursor);
 
                     IObject authorizationActionFeature;
@@ -416,7 +442,7 @@ namespace uic_etl
                         xmlPermit.PermitActivityDetail.Add(permitActivityDetail);
                     }
 
-                    var areaOfReviewCursor = areaOfReviewRelation.GetObjectsRelatedToObject((IObject)authorizeFeature);
+                    var areaOfReviewCursor = areaOfReviewRelation.GetObjectsRelatedToObject((IObject) authorizeFeature);
                     releaser.ManageLifetime(areaOfReviewCursor);
 
                     var areaOfReviewFeature = areaOfReviewCursor.Next();
