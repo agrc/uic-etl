@@ -63,8 +63,12 @@ namespace uic_etl
                 releaser.ManageLifetime(uicFacility);
 
                 debug.Write("Opening Facility to Violation Relationship Class.");
-                var violationRelation = featureWorkspace.OpenRelationshipClass("FacilityToViolation");
-                releaser.ManageLifetime(violationRelation);
+                var facilityViolationRelation = featureWorkspace.OpenRelationshipClass("FacilityToViolation");
+                releaser.ManageLifetime(facilityViolationRelation);
+
+                debug.Write("Opening Well to Violation Relationship Class.");
+                var wellViolationRelation = featureWorkspace.OpenRelationshipClass("WellToViolation");
+                releaser.ManageLifetime(wellViolationRelation);
 
                 debug.Write("Opening Violation to Response Relationship Class.");
                 var responseRelation = featureWorkspace.OpenRelationshipClass("UICViolationToEnforcement");
@@ -120,7 +124,7 @@ namespace uic_etl
 
                 debug.Write("{0} Creating field mappings", start.Elapsed);
                 var facilityFieldMap = new FindIndexByFieldNameCommand(uicFacility, FacilitySdeModel.Fields).Execute();
-                var violationFieldMap = new FindIndexByFieldNameCommand(violationRelation, ViolationSdeModel.Fields).Execute();
+                var violationFieldMap = new FindIndexByFieldNameCommand(facilityViolationRelation, ViolationSdeModel.Fields).Execute();
                 var responseFieldMap = new FindIndexByFieldNameCommand(responseRelation, EnforcementSdeModel.Fields).Execute();
                 var wellFieldMap = new FindIndexByFieldNameCommand(wellRelation, WellSdeModel.Fields).Execute();
                 var verticalWellFieldMap = new FindIndexByFieldNameCommand(verticalWellRelation, VerticalWellEventSdeModel.Fields).Execute();
@@ -177,8 +181,8 @@ namespace uic_etl
                     var facility = AutoMapperService.MapFacilityModel(facilityFeature, facilityFieldMap);
                     var xmlFacility = mapper.Map<FacilitySdeModel, FacilityDetail>(facility);
 
-                    debug.Write("finding violations for facility oid: {0}", facilityFeature.OID);
-                    var violationCursor = violationRelation.GetObjectsRelatedToObject(facilityFeature);
+                    debug.Write("finding violations for facility: {0}", facility.Guid);
+                    var violationCursor = facilityViolationRelation.GetObjectsRelatedToObject(facilityFeature);
                     releaser.ManageLifetime(violationCursor);
 
                     // Find all UICViolations
@@ -305,7 +309,7 @@ namespace uic_etl
                         xmlWell.LocationDetail = locationDetail;
 
                         // well violation detail uses same table and relationship as facility violations
-                        var wellViolationCursor = violationRelation.GetObjectsRelatedToObject(wellFeature);
+                        var wellViolationCursor = wellViolationRelation.GetObjectsRelatedToObject(wellFeature);
                         releaser.ManageLifetime(wellViolationCursor);
 
                         IObject wellViolationFeature;
