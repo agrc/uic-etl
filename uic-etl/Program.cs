@@ -304,7 +304,7 @@ namespace uic_etl
                         utm.Project(newSpatialRefefence);
                         var point = (IPoint) utm;
 
-                        var locationDetail = new LocationDetail(well, facility, point.X, point.Y);
+                        var locationDetail = new LocationDetail(well, facility, new GenerateIdentifierCommand(Guid.NewGuid()).Execute(), point.X, point.Y);
 
                         xmlWell.LocationDetail = locationDetail;
 
@@ -463,6 +463,10 @@ namespace uic_etl
                 }
 
                 XmlService.AppendPayloadElements(ref payload, contacts, permits);
+
+                doc.Root.Add(payload);
+
+                doc.Save(string.Format("UTEQ-{0}.xml", DateTime.Now.ToShortDateString().Replace('/', '-')));
             }
 
             debug.Write("{0} finished.", start.Elapsed);
