@@ -14,7 +14,7 @@ namespace domain.uic_etl.sde
         public Guid Guid { get; set; }
         public string InspectionAssistance { get; set; }
         public string InspectionDeficiency { get; set; }
-        public DateTime InspectionDate { get; set; }
+        public DateTime? InspectionDate { get; set; }
         public string IcisCompMonActReason { get; set; }
         public string IcisCompMonType { get; set; }
         public string IcisCompActType { get; set; }

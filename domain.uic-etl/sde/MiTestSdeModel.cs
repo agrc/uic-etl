@@ -11,10 +11,10 @@ namespace domain.uic_etl.sde
         };
 
         public Guid Guid { get; set; }
-        public DateTime MitDate { get; set; }
+        public DateTime? MitDate { get; set; }
         public string MitResult { get; set; }
         public string MitType { get; set; }
-        public DateTime MitRemActDate { get; set; }
+        public DateTime? MitRemActDate { get; set; }
         public string MitRemediationAction { get; set; }
         public Guid WellFk { get; set; }
     }

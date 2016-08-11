@@ -38,11 +38,11 @@ namespace uic_etl.services
                         opts => opts.MapFrom(src => src.UsdwContamination))
                     .ForMember(dest => dest.ViolationEndangeringCode, opts => opts.MapFrom(src => src.Endanger))
                     .ForMember(dest => dest.ViolationReturnComplianceDate,
-                        opts => opts.MapFrom(src => src.ReturnToComplianceDate.ToString("yyyyMMdd")))
+                    opts => opts.MapFrom(src => src.ReturnToComplianceDate.HasValue ? src.ReturnToComplianceDate.Value.ToString("yyyyMMdd") : null))
                     .ForMember(dest => dest.ViolationSignificantCode,
                         opts => opts.MapFrom(src => src.SignificantNonCompliance))
                     .ForMember(dest => dest.ViolationDeterminedDate,
-                        opts => opts.MapFrom(src => src.ViolationDate.ToString("yyyyMMdd")))
+                    opts => opts.MapFrom(src => src.ViolationDate.HasValue ? src.ViolationDate.Value.ToString("yyyyMMdd") : null))
                     .ForMember(dest => dest.ViolationTypeCode, opts => opts.MapFrom(src => src.ViolationType))
                     .ForMember(dest => dest.ViolationFacilityIdentifier, opts => opts.MapFrom(src => src.FacilityId))
                     .ForMember(dest => dest.Guid, opts => opts.MapFrom(src => src.Guid))
@@ -88,7 +88,7 @@ namespace uic_etl.services
                     .ForMember(dest => dest.InspectionIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
                     .ForMember(dest => dest.InspectionAssistanceCode, opts => opts.MapFrom(src => src.InspectionAssistance))
                     .ForMember(dest => dest.InspectionDeficiencyCode, opts => opts.MapFrom(src => src.InspectionDeficiency))
-                    .ForMember(dest => dest.InspectionActionDate, opts => opts.MapFrom(src => src.InspectionDate.ToString("yyyMMdd")))
+                    .ForMember(dest => dest.InspectionActionDate, opts => opts.MapFrom(src => src.InspectionDate.HasValue? src.InspectionDate.Value.ToString("yyyMMdd") : null))
                     .ForMember(dest => dest.InspectionIdisComplianceMonitoringReasonCode, opts => opts.MapFrom(src => src.IcisCompMonActReason))
                     .ForMember(dest => dest.InspectionIcisComplianceMonitoringTypeCode, opts => opts.MapFrom(src => src.IcisCompMonType))
                     .ForMember(dest => dest.InspectionIcisComplianceActivityTypeCode, opts => opts.MapFrom(src => src.IcisCompActType))
@@ -106,10 +106,10 @@ namespace uic_etl.services
 
                 _.CreateMap<MiTestSdeModel, MiTestDetail>()
                     .ForMember(dest => dest.MechanicalIntegrityTestIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
-                    .ForMember(dest => dest.MechanicalIntegrityTestCompletedDate, opts => opts.MapFrom(src => src.MitDate.ToString("yyyMMdd")))
+                    .ForMember(dest => dest.MechanicalIntegrityTestCompletedDate, opts => opts.MapFrom(src => src.MitDate.HasValue ? src.MitDate.Value.ToString("yyyMMdd") : null))
                     .ForMember(dest => dest.MechanicalIntegrityTestResultCode, opts => opts.MapFrom(src => src.MitResult))
                     .ForMember(dest => dest.MechanicalIntegrityTestTypeCode, opts => opts.MapFrom(src => src.MitType))
-                    .ForMember(dest => dest.MechanicalIntegrityTestRemedialActionDate, opts => opts.MapFrom(src => src.MitRemActDate.ToString("yyyMMdd")))
+                    .ForMember(dest => dest.MechanicalIntegrityTestRemedialActionDate, opts => opts.MapFrom(src => src.MitRemActDate.HasValue ? src.MitRemActDate.Value.ToString("yyyMMdd") : null))
                     .ForMember(dest => dest.MechanicalIntegrityTestRemedialActionTypeCode, opts => opts.MapFrom(src => src.MitRemediationAction))
                     .ForMember(dest => dest.MechanicalIntegrityTestWellIdentifier, opts => opts.MapFrom(src => src.WellFk));
 
@@ -187,9 +187,9 @@ namespace uic_etl.services
             {
                 UsdwContamination = GetDomainValue(row, fieldMap["USDWContamination"]),
                 Endanger = GetDomainValue(row, fieldMap["ENDANGER"]),
-                ReturnToComplianceDate = (DateTime)row.Value[fieldMap["ReturnToComplianceDate"].Index],
+                ReturnToComplianceDate = GetDateValue(row.Value[fieldMap["ReturnToComplianceDate"].Index]),
                 SignificantNonCompliance = GetDomainValue(row, fieldMap["SignificantNonCompliance"]),
-                ViolationDate = (DateTime)row.Value[fieldMap["ViolationDate"].Index],
+                ViolationDate = GetDateValue(row.Value[fieldMap["ViolationDate"].Index]),
                 ViolationType = GetDomainValue(row, fieldMap["ViolationType"]),
             };
 
@@ -262,7 +262,7 @@ namespace uic_etl.services
             var model = new WellStatusSdeModel
             {
                 Guid = new Guid((string)row.Value[fieldMap["GUID"].Index]),
-                OperatingStatusDate = (DateTime)row.Value[fieldMap["OperatingStatusDate"].Index],
+                OperatingStatusDate = GetDateValue(row.Value[fieldMap["OperatingStatusDate"].Index]),
                 OperatingStatusType = GetDomainValue(row, fieldMap["OperatingStatusType"]),
                 WellGuid = new Guid((string)row.Value[fieldMap["Well_FK"].Index])
             };
@@ -278,7 +278,7 @@ namespace uic_etl.services
                 Guid = new Guid((string)row.Value[fieldMap["GUID"].Index]),
                 InspectionAssistance = GetDomainValue(row, fieldMap["InspectionAssistance"]),
                 InspectionDeficiency = GetDomainValue(row, fieldMap["InspectionDeficiency"]),
-                InspectionDate = (DateTime)row.Value[fieldMap["InspectionDate"].Index],
+                InspectionDate = GetDateValue(row.Value[fieldMap["InspectionDate"].Index]),
                 IcisCompMonActReason = GetDomainValue(row, fieldMap["ICISCompMonActReason"]),
                 IcisCompMonType = GetDomainValue(row, fieldMap["ICISCompMonType"]),
                 IcisCompActType = GetDomainValue(row, fieldMap["ICISCompActType"]),
@@ -309,10 +309,10 @@ namespace uic_etl.services
             var model = new MiTestSdeModel
             {
                 Guid = new Guid((string)row.Value[fieldMap["GUID"].Index]),
-                MitDate = (DateTime)row.Value[fieldMap["MITDate"].Index],
+                MitDate = GetDateValue(row.Value[fieldMap["MITDate"].Index]),
                 MitResult = GetDomainValue(row, fieldMap["MITResult"]),
                 MitType = GetDomainValue(row, fieldMap["MITType"]),
-                MitRemActDate = (DateTime)row.Value[fieldMap["MITRemActDate"].Index],
+                MitRemActDate = GetDateValue(row.Value[fieldMap["MITRemActDate"].Index]),
                 MitRemediationAction = GetDomainValue(row, fieldMap["MITRemediationAction"]),
                 WellFk = new Guid((string)row.Value[fieldMap["Well_FK"].Index])
             };
@@ -411,7 +411,7 @@ namespace uic_etl.services
             var model = new AuthorizationActionSdeModel
             {
                 AuthorizeActionType = GetDomainValue(row, fieldMap["AuthorizeActionType"]),
-                AuthorizeActionDate = (DateTime)row.Value[fieldMap["AuthorizeActionDate"].Index],
+                AuthorizeActionDate = GetDateValue(row.Value[fieldMap["AuthorizeActionDate"].Index]),
                 Guid = new Guid((string)row.Value[fieldMap["GUID"].Index])
             };
 
@@ -425,7 +425,7 @@ namespace uic_etl.services
                 return string.Empty;
             }
 
-            return (string)value;
+            return value.ToString();
         }
 
         private static string GetDomainValue(IRow row, IndexFieldMap fieldMap)
@@ -476,6 +476,16 @@ namespace uic_etl.services
             }
 
             return value;
+        }
+
+        private static DateTime? GetDateValue(object value)
+        {
+            if (value == null || value == DBNull.Value)
+            {
+                return null;
+            }
+
+            return (DateTime) value;
         }
     }
 }
