@@ -58,7 +58,7 @@ namespace uic_etl.services
                     .ForMember(dest => dest.WellIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
                     .ForMember(dest => dest.WellAquiferExemptionInjectionCode, opts => opts.MapFrom(src => src.InjectionAquiferExempt))
                     .ForMember(dest => dest.WellHighPriorityDesignationCode, opts => opts.MapFrom(src => src.HighPriority))
-                    .ForMember(dest => dest.WellContactIdentifier, opts => opts.Ignore())// TODO github #4
+                    .ForMember(dest => dest.WellContactIdentifier, opts => opts.Ignore())
                     .ForMember(dest => dest.WellFacilityIdentifier, opts => opts.MapFrom(src => src.FacilityGuid))
                     .ForMember(dest => dest.WellGeologyIdentifier, opts => opts.Ignore()) 
                     .ForMember(dest => dest.WellSiteAreaNameText, opts => opts.Ignore())

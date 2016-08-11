@@ -272,7 +272,7 @@ namespace uic_etl.services
             foreach (var engineering in model.EngineeringDetail)
             {
                 var engineeringDetail = new XElement(Uic + "EngineeringDetail",
-                    new XElement(Uic + "EngineeringWellIdentifier", engineering.EngineeringWellIdentifier),
+                    new XElement(Uic + "EngineeringIdentifier", engineering.EngineeringIdentifier),
                     new XElement(Uic + "EngineeringMaximumFlowRateNumeric", engineering.EngineeringMaximumFlowRateNumeric),
                     new XElement(Uic + "EngineeringPermittedOnsiteInjectionVolumeNumeric", engineering.EngineeringPermittedOnsiteInjectionVolumeNumeric),
                     new XElement(Uic + "EngineeringPermittedOffsiteInjectionVolumeNumeric", engineering.EngineeringPermittedOffsiteInjectionVolumeNumeric),
