@@ -5,9 +5,9 @@ namespace domain.uic_etl.xml
 {
     public class LocationDetail
     {
-        public LocationDetail(WellSdeModel well, FacilitySdeModel facility, double lon, double lat)
+        public LocationDetail(WellSdeModel well, FacilitySdeModel facility, string identifier, double lon, double lat)
         {
-            LocationIdentifier = "";
+            LocationIdentifier = identifier;
             LocationAddressCounty = facility.CountyFips;
             LocationAccuracyValueMeasure = well.LocationAccuracy;
             GeographicReferencePointCode = "026";
