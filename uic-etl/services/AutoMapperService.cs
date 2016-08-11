@@ -435,6 +435,11 @@ namespace uic_etl.services
 
         private static string GetDomainValue(IObject row, IndexFieldMap fieldMap)
         {
+            if (row == null)
+            {
+                return null;
+            }
+
             string value = GuardNull(row.Value[fieldMap.Index]);
 
             if (string.IsNullOrEmpty(value))
