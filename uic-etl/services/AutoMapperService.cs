@@ -385,9 +385,9 @@ namespace uic_etl.services
             var model = new AuthorizationSdeModel
             {
                 Guid = new Guid((string)row.Value[fieldMap["GUID"].Index]),
-                AuthorizeType = GetDomainValue(row, fieldMap["AuthorizeType"]),
+                AuthorizeType = GetDomainValue(row, fieldMap["AuthorizationType"]),
                 OwnerSectorType = GetDomainValue(row, fieldMap["OwnerSectorType"]),
-                AuthorizeNumber = GetDomainValue(row, fieldMap["AuthorizeNumber"])
+                AuthorizeNumber = GetDomainValue(row, fieldMap["AuthorizationID"])
             };
 
             return model;

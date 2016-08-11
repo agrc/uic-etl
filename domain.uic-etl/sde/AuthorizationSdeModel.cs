@@ -5,7 +5,7 @@ namespace domain.uic_etl.sde
 {
     public class AuthorizationSdeModel
     {
-        public static string[] Fields = { "GUID", "AuthorizeType", "OwnerSectorType", "AuthorizeNumber" };
+        public static string[] Fields = { "GUID", "AuthorizationType", "OwnerSectorType", "AuthorizationID" };
         private string _ownerSectorType;
 
         public string AuthorizeType { get; set; }
