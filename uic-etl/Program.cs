@@ -99,7 +99,7 @@ namespace uic_etl
                 releaser.ManageLifetime(deepWellRelation);
 
                 debug.Write("Opening Waste Relationship Class.");
-                var wasteRelation = featureWorkspace.OpenRelationshipClass("ClassIWasteToConstituentClassI");
+                var wasteRelation = featureWorkspace.OpenRelationshipClass("WellToClassIWaste");
                 releaser.ManageLifetime(wasteRelation);
 
                 debug.Write("{0} Opening UICContact table", start.Elapsed);
