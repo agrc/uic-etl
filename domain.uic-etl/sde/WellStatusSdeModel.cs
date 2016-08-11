@@ -5,7 +5,7 @@ namespace domain.uic_etl.sde
 {
     public class WellStatusSdeModel
     {
-        public static string[] Fields = {"Guid", "OperatingStatusDate", "OperatingStatusType", "Well_FK"};
+        public static string[] Fields = {"GUID", "OperatingStatusDate", "OperatingStatusType", "Well_FK"};
         private string _operatingStatusType;
 
         public Guid Guid { get; set; }
