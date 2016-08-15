@@ -410,8 +410,8 @@ namespace uic_etl.services
         {
             var model = new AuthorizationActionSdeModel
             {
-                AuthorizeActionType = GetDomainValue(row, fieldMap["AuthorizeActionType"]),
-                AuthorizeActionDate = GetDateValue(row.Value[fieldMap["AuthorizeActionDate"].Index]),
+                AuthorizeActionType = GetDomainValue(row, fieldMap["AuthorizationActionType"]),
+                AuthorizeActionDate = GetDateValue(row.Value[fieldMap["AuthorizationActionDate"].Index]),
                 Guid = new Guid((string)row.Value[fieldMap["GUID"].Index])
             };
 
