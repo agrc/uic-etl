@@ -60,7 +60,7 @@ namespace uic_etl.services
                     .ForMember(dest => dest.WellHighPriorityDesignationCode, opts => opts.MapFrom(src => src.HighPriority))
                     .ForMember(dest => dest.WellContactIdentifier, opts => opts.Ignore())
                     .ForMember(dest => dest.WellFacilityIdentifier, opts => opts.MapFrom(src => src.FacilityGuid))
-                    .ForMember(dest => dest.WellGeologyIdentifier, opts => opts.Ignore()) 
+                    .ForMember(dest => dest.WellGeologyIdentifier, opts => opts.Ignore())
                     .ForMember(dest => dest.WellSiteAreaNameText, opts => opts.Ignore())
                     .ForMember(dest => dest.WellPermitIdentifier, opts => opts.MapFrom(src => src.AuthorizationGuid))
                     .ForMember(dest => dest.WellStateIdentifier, opts => opts.MapFrom(src => src.Guid))
@@ -88,7 +88,7 @@ namespace uic_etl.services
                     .ForMember(dest => dest.InspectionIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
                     .ForMember(dest => dest.InspectionAssistanceCode, opts => opts.MapFrom(src => src.InspectionAssistance))
                     .ForMember(dest => dest.InspectionDeficiencyCode, opts => opts.MapFrom(src => src.InspectionDeficiency))
-                    .ForMember(dest => dest.InspectionActionDate, opts => opts.MapFrom(src => src.InspectionDate.HasValue? src.InspectionDate.Value.ToString("yyyMMdd") : null))
+                    .ForMember(dest => dest.InspectionActionDate, opts => opts.MapFrom(src => src.InspectionDate.HasValue ? src.InspectionDate.Value.ToString("yyyMMdd") : null))
                     .ForMember(dest => dest.InspectionIdisComplianceMonitoringReasonCode, opts => opts.MapFrom(src => src.IcisCompMonActReason))
                     .ForMember(dest => dest.InspectionIcisComplianceMonitoringTypeCode, opts => opts.MapFrom(src => src.IcisCompMonType))
                     .ForMember(dest => dest.InspectionIcisComplianceActivityTypeCode, opts => opts.MapFrom(src => src.IcisCompActType))
@@ -490,7 +490,7 @@ namespace uic_etl.services
                 return null;
             }
 
-            return (DateTime) value;
+            return (DateTime)value;
         }
     }
 }
