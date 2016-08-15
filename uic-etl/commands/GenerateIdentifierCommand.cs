@@ -8,7 +8,7 @@ namespace uic_etl.commands
     public class GenerateIdentifierCommand
     {
         private readonly Guid _guid;
-        private const string PrimacyCode = "UTEC";
+        private const string PrimacyCode = "UTEQ";
 
         public GenerateIdentifierCommand(Guid guid)
         {
@@ -17,7 +17,7 @@ namespace uic_etl.commands
 
         public string Execute()
         {
-            return string.Format("{0}{1}", PrimacyCode, _guid.ToString("N").Substring(17, 15));
+            return string.Format("{0}{1}", PrimacyCode, _guid.ToString("N").Substring(16, 16));
         } 
     }
 }
