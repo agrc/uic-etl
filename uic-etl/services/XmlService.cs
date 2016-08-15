@@ -10,11 +10,10 @@ namespace uic_etl.services
     {
         private static readonly XNamespace Xsi = XNamespace.Get("http://www.w3.org/2001/XMLSchema-instance");
         private static readonly XNamespace Uic = "http://www.exchangenetwork.net/schema/uic/2";
+        private static readonly XNamespace Exchange = "http://www.exchangenetwork.net/schema/v1.0/ExchangeNetworkDocument.xsd";
 
         public static XDocument CreateDocument()
         {
-            var xmlns = XNamespace.Get("http://www.exchangenetwork.net/schema/v1.0/ExchangeNetworkDocument.xsd");
-
             var schemaLocation = XNamespace.Get("xmlns http://www.exchangenetwork.net/schema/v1.0/ExchangeNetworkDocument.xsd");
 
             var doc = new XDocument
@@ -22,7 +21,7 @@ namespace uic_etl.services
                 Declaration = new XDeclaration("1.0", "UTF-8", null)
             };
 
-            var root = new XElement(xmlns + "Document",
+            var root = new XElement(Exchange + "Document",
                 new XAttribute(Xsi + "schemaLocation", schemaLocation),
                 new XAttribute(XNamespace.Xmlns + "xsi", Xsi),
                 new XAttribute(XName.Get("Id"), "6a43a7c5-0510-41ff-a15d-39657d55153d"));
@@ -39,26 +38,26 @@ namespace uic_etl.services
                 return;
             }
 
-            doc.Root.Add(new XElement(XName.Get("Header"),
-                new XElement(XName.Get("Author"), "CANDACE CADY"),
-                new XElement(XName.Get("Organization"), "UDEQ -- UTAH DEPARTMENT OF ENVIRONMENTAL QUALITY"),
-                new XElement(XName.Get("Title"), model.Title),
-                new XElement(XName.Get("CreationTime"), model.CreationTime),
-                new XElement(XName.Get("Comment"), model.Comments),
-                new XElement(XName.Get("DataService"), "UIC"),
-                new XElement(XName.Get("ContactInfo"), "CANDACE CADY 195 NORTH 1950 WEST, SALT LAKE CITY UT 84114, (801) 536-4352"),
-                new XElement(XName.Get("Notification"), "AGRC@UTAH.GOV"),
-                new XElement(XName.Get("Sensitivity"), "UNCLASSIFIED")));
+            doc.Root.Add(new XElement(Exchange + "Header",
+                new XElement(Exchange + "Author", "CANDACE CADY"),
+                new XElement(Exchange + "Organization", "UDEQ -- UTAH DEPARTMENT OF ENVIRONMENTAL QUALITY"),
+                new XElement(Exchange + "Title", model.Title),
+                new XElement(Exchange + "CreationTime", model.CreationTime),
+                new XElement(Exchange + "Comment", model.Comments),
+                new XElement(Exchange + "DataService", "UIC"),
+                new XElement(Exchange + "ContactInfo", "CANDACE CADY 195 NORTH 1950 WEST, SALT LAKE CITY UT 84114, (801) 536-4352"),
+                new XElement(Exchange + "Notification", "AGRC@UTAH.GOV"),
+                new XElement(Exchange + "Sensitivity", "UNCLASSIFIED")));
         }
 
         public static XElement CreatePayloadElements()
         {
             XNamespace xmlns = "http://www.exchangenetwork.net/schema/uic/2";
 
-            var payload = new XElement(XName.Get("Payload"),
-                new XAttribute(XName.Get("Operation"), "Delete - Insert"),
-                new XElement(xmlns + "UIC", new XAttribute(XNamespace.Xmlns + "xsi", Xsi),
-                    new XElement(xmlns + "PrimacyAgencyCode", "UDEQ")));
+            var payload = new XElement(Exchange + "Payload",
+               new XAttribute("Operation", "Delete - Insert"),
+               new XElement(xmlns + "UIC", new XAttribute(XNamespace.Xmlns + "xsi", Xsi),
+                   new XElement(xmlns + "PrimacyAgencyCode", "UDEQ")));
 
             return payload;
         }
@@ -111,15 +110,15 @@ namespace uic_etl.services
         {
             var facilityDetail = new XElement(Uic + "FacilityList",
                 new XElement(Uic + "FacilityDetail",
-                new XElement(Uic + "FacilityIdentifier", model.FacilityIdentifier),
-                new XElement(Uic + "LocalityName", model.LocalityName),
-                new XElement(Uic + "FacilitySiteName", model.FacilitySiteName),
-                new XElement(Uic + "FacilityPetitionStatusCode", model.FacilityPetitionStatusCode),
-                new XElement(Uic + "LocationAddressStateCode", model.LocationAddressStateCode),
-                new XElement(Uic + "FacilityStateIdentifier", model.FacilityStateIdentifier),
-                new XElement(Uic + "LocationAddressText", model.LocationAddressText),
-                new XElement(Uic + "FacilitySiteTypeCode", model.FacilitySiteTypeCode),
-                new XElement(Uic + "LocationAddressPostalCode", model.LocationAddressPostalCode)));
+                    new XElement(Uic + "FacilityIdentifier", model.FacilityIdentifier),
+                    new XElement(Uic + "LocalityName", model.LocalityName),
+                    new XElement(Uic + "FacilitySiteName", model.FacilitySiteName),
+                    new XElement(Uic + "FacilityPetitionStatusCode", model.FacilityPetitionStatusCode),
+                    new XElement(Uic + "LocationAddressStateCode", model.LocationAddressStateCode),
+                    new XElement(Uic + "FacilityStateIdentifier", model.FacilityStateIdentifier),
+                    new XElement(Uic + "LocationAddressText", model.LocationAddressText),
+                    new XElement(Uic + "FacilitySiteTypeCode", model.FacilitySiteTypeCode),
+                    new XElement(Uic + "LocationAddressPostalCode", model.LocationAddressPostalCode)));
 
             foreach (var violationModel in model.FacilityViolationDetail)
             {

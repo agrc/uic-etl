@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Configuration;
 using System.Xml.Linq;
 using domain.uic_etl.sde;
 using domain.uic_etl.xml;
+using uic_etl.models.dtos;
 using uic_etl.services;
 using Xunit;
 using Xunit.Abstractions;
@@ -31,6 +31,9 @@ namespace tests.uic_etl
             var expected = XDocument.Parse(documentXml);
 
             var doc = XmlService.CreateDocument();
+
+            _output.WriteLine(doc.ToString());
+            _output.WriteLine(expected.ToString());
 
             Assert.Equal(expected.ToString(), doc.ToString());
         }
@@ -64,6 +67,41 @@ namespace tests.uic_etl
         }
 
         [Fact]
+        public void CreateHeaderInDocument()
+        {
+            const string documentXml =
+                "<Document xsi:schemaLocation=\"xmlns http://www.exchangenetwork.net/schema/v1.0/ExchangeNetworkDocument.xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Id=\"6a43a7c5-0510-41ff-a15d-39657d55153d\" xmlns=\"http://www.exchangenetwork.net/schema/v1.0/ExchangeNetworkDocument.xsd\">" +
+                "<Header>" +
+                "<Author>CANDACE CADY</Author>" +
+                "<Organization>UDEQ -- UTAH DEPARTMENT OF ENVIRONMENTAL QUALITY</Organization>" +
+                "<Title>data submission for quarter #1, fy 2010</Title>" +
+                "<CreationTime>2016-08-15T16:20:32</CreationTime>" +
+                "<Comment>This is a sample</Comment>" +
+                "<DataService>UIC</DataService>" +
+                "<ContactInfo>CANDACE CADY 195 NORTH 1950 WEST, SALT LAKE CITY UT 84114, (801) 536-4352</ContactInfo>" +
+                "<Notification>AGRC@UTAH.GOV</Notification>" +
+                "<Sensitivity>UNCLASSIFIED</Sensitivity>" +
+                "</Header></Document>";
+
+            var doc = XmlService.CreateDocument();
+            var headerModel = new HeaderInformation
+            {
+                Title = "data submission for quarter #1, fy 2010",
+                CreationTime = new DateTime(2016, 8, 15, 16, 20, 32).ToString("s"),
+                Comments = "This is a sample"
+            };
+
+            XmlService.AppendHeader(ref doc, headerModel);
+
+            var expected = XDocument.Parse(documentXml);
+
+            _output.WriteLine(doc.ToString());
+            _output.WriteLine(expected.ToString());
+
+            Assert.Equal(expected.ToString(), doc.ToString());
+        }
+
+        [Fact]
         public void CreatePayload()
         {
             const string documentXml = "<Payload Operation=\"Delete - Insert\">" +
@@ -75,6 +113,46 @@ namespace tests.uic_etl
             var doc = XmlService.CreatePayloadElements();
 
             Assert.Equal(expected.ToString(), doc.ToString());
+        }
+
+        [Fact]
+        public void CreatePayloadInDocument()
+        {
+            const string documentXml =
+                 "<Document xsi:schemaLocation=\"xmlns http://www.exchangenetwork.net/schema/v1.0/ExchangeNetworkDocument.xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Id=\"6a43a7c5-0510-41ff-a15d-39657d55153d\" xmlns=\"http://www.exchangenetwork.net/schema/v1.0/ExchangeNetworkDocument.xsd\">" +
+                 "<Header>" +
+                 "<Author>CANDACE CADY</Author>" +
+                 "<Organization>UDEQ -- UTAH DEPARTMENT OF ENVIRONMENTAL QUALITY</Organization>" +
+                 "<Title>data submission for quarter #1, fy 2010</Title>" +
+                 "<CreationTime>2016-08-15T16:20:32</CreationTime>" +
+                 "<Comment>This is a sample</Comment>" +
+                 "<DataService>UIC</DataService>" +
+                 "<ContactInfo>CANDACE CADY 195 NORTH 1950 WEST, SALT LAKE CITY UT 84114, (801) 536-4352</ContactInfo>" +
+                 "<Notification>AGRC@UTAH.GOV</Notification>" +
+                 "<Sensitivity>UNCLASSIFIED</Sensitivity>" +
+                 "</Header><Payload Operation=\"Delete - Insert\">" +
+                 "<UIC xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.exchangenetwork.net/schema/uic/2\">" +
+                 "<PrimacyAgencyCode>UDEQ</PrimacyAgencyCode></UIC></Payload>" +
+                 "</Document>";
+
+            var doc = XmlService.CreateDocument();
+            var headerModel = new HeaderInformation
+            {
+                Title = "data submission for quarter #1, fy 2010",
+                CreationTime = new DateTime(2016, 8, 15, 16, 20, 32).ToString("s"),
+                Comments = "This is a sample"
+            };
+
+            XmlService.AppendHeader(ref doc, headerModel);
+            var payload = XmlService.CreatePayloadElements();
+            doc.Root.Add(payload);
+
+            var expected = XDocument.Parse(documentXml);
+
+            _output.WriteLine(doc.ToString());
+            _output.WriteLine(expected.ToString());
+
+            Assert.Equal(expected.ToString(), doc.ToString()); 
         }
 
         [Fact]
@@ -447,7 +525,7 @@ namespace tests.uic_etl
                                        "<WellInSourceWaterAreaLocationText>WellInSourceWaterAreaLocationText</WellInSourceWaterAreaLocationText>" +
                                        "<WellName>WellName</WellName>" +
                                        "<LocationDetail>" +
-                                       "<LocationIdentifier></LocationIdentifier>" +
+                                       "<LocationIdentifier>UTEQA6EC842436CD9606</LocationIdentifier>" +
                                        "<LocationAddressCounty>1</LocationAddressCounty>" +
                                        "<LocationAccuracyValueMeasure>Well.LocationAccuracy</LocationAccuracyValueMeasure>" +
                                        "<GeographicReferencePointCode>026</GeographicReferencePointCode>" +
@@ -496,7 +574,7 @@ namespace tests.uic_etl
                 }, new FacilitySdeModel
                 {
                     CountyFips = 1
-                }, 40, 50)
+                }, "UTEQA6EC842436CD9606", 40, 50)
             };
 
             XmlService.AddWell(ref facilityList, well);
