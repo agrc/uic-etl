@@ -17,7 +17,7 @@ namespace uic_etl.commands
 
         public string Execute()
         {
-            return string.Format("{0}{1}", PrimacyCode, _guid.ToString("N").Substring(16, 16));
+            return string.Format("{0}{1}", PrimacyCode, _guid.ToString("N").Substring(16, 16)).ToUpper();
         } 
     }
 }
