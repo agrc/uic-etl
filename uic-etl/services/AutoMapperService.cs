@@ -25,7 +25,7 @@ namespace uic_etl.services
                     .ForMember(dest => dest.FacilityPetitionStatusCode,
                         opts => opts.MapFrom(src => src.NoMigrationPetStatus))
                     .ForMember(dest => dest.FacilitySiteName, opts => opts.MapFrom(src => src.FacilityName))
-                    .ForMember(dest => dest.FacilitySiteTypeCode, opts => opts.MapFrom(src => src.FacilityType))
+                    .ForMember(dest => dest.FacilitySiteTypeCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.FacilityType) ? "U" : src.FacilityType))
                     .ForMember(dest => dest.FacilityStateIdentifier, opts => opts.MapFrom(src => src.FacilityId))
                     .ForMember(dest => dest.FacilityViolationDetail, opts => opts.Ignore())
                     .ForMember(dest => dest.LocationAddressPostalCode, opts => opts.MapFrom(src => src.FacilityZip))
