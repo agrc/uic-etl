@@ -185,6 +185,17 @@ namespace uic_etl.services
                 wellDetail.Add(wellStatusDetail);
             }
 
+            foreach (var wellType in model.WellTypeDetail)
+            {
+                var wellTypeDetail = new XElement(Uic + "WellTypeDetail",
+                   new XElement(Uic + "WellTypeIdentifier",wellType.WellTypeIdentifier),
+                   new XElement(Uic + "WellTypeCode", wellType.WellTypeCode),
+                   new XElement(Uic + "WellTypeDate", wellType.WellTypeDate),
+                   new XElement(Uic + "WellTypeWellIdentifier", wellType.WellTypeWellIdentifier));
+
+                wellDetail.Add(wellTypeDetail);
+            }
+
             if (model.LocationDetail != null)
             {
                 wellDetail.Add(new XElement(Uic + "LocationDetail",

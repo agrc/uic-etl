@@ -302,7 +302,7 @@ namespace uic_etl
                         {
                             WellTypeCode = xmlWell.WellTypeCode,
                             WellTypeDate = wellTypeDateFormatted,
-                            WellTypeWellIdentifier = well.Guid.ToString()
+                            WellTypeWellIdentifier = new GenerateIdentifierCommand(well.Guid).Execute()
                         };
 
                         xmlWell.WellTypeDetail.Add(wellTypeDetail);
