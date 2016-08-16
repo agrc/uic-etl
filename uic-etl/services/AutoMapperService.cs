@@ -89,7 +89,7 @@ namespace uic_etl.services
                     .ForMember(dest => dest.InspectionIcisComplianceActivityTypeCode, opts => opts.MapFrom(src => src.IcisCompActType))
                     .ForMember(dest => dest.InspectionIcisMoaName, opts => opts.MapFrom(src => src.IcisMoaPriority))
                     .ForMember(dest => dest.InspectionIcisRegionalPriorityName, opts => opts.MapFrom(src => src.IcisRegionalPriority))
-                    .ForMember(dest => dest.InspectionTypeActionCode, opts => opts.MapFrom(src => src.InspectionType))
+                    .ForMember(dest => dest.InspectionTypeActionCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.InspectionType) ? "OT" : src.InspectionType))
                     .ForMember(dest => dest.InspectionWellIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.WellFk).Execute()))
                     .ForMember(dest => dest.CorrectionDetail, opts => opts.Ignore());
 
