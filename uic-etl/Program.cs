@@ -483,7 +483,11 @@ namespace uic_etl
 
                 doc.Root.Add(payload);
 
-                doc.Save(string.Format("UTEQ-{0}.xml", DateTime.Now.ToShortDateString().Replace('/', '-')));
+                using (var w = new XmlTextWriter(string.Format("UTEQ-{0}.xml", DateTime.Now.ToShortDateString().Replace('/', '-')), new UTF8Encoding(false)))
+                {
+                    w.Formatting = Formatting.Indented;
+                    doc.Save(w);
+                }
             }
 
             debug.Write("{0} finished.", start.Elapsed);
