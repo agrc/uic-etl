@@ -104,7 +104,7 @@ namespace uic_etl.services
                     .ForMember(dest => dest.MechanicalIntegrityTestCompletedDate, opts => opts.MapFrom(src => src.MitDate.HasValue ? src.MitDate.Value.ToString("yyyMMdd") : DateTime.MinValue.ToString("yyyMMdd")))
                     .ForMember(dest => dest.MechanicalIntegrityTestResultCode, opts => opts.MapFrom(src => src.MitResult))
                     .ForMember(dest => dest.MechanicalIntegrityTestTypeCode, opts => opts.MapFrom(src => src.MitType))
-                    .ForMember(dest => dest.MechanicalIntegrityTestRemedialActionTypeCode, opts => opts.MapFrom(src => src.MitRemediationAction))
+                    .ForMember(dest => dest.MechanicalIntegrityTestRemedialActionTypeCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.MitRemediationAction) ? "OT" : src.MitRemediationAction))
                     .ForMember(dest => dest.MechanicalIntegrityTestRemedialActionDate, opts => opts.MapFrom(src => src.MitRemActDate.HasValue ? src.MitRemActDate.Value.ToString("yyyMMdd") : DateTime.MinValue.ToString("yyyMMdd")))
                     .ForMember(dest => dest.MechanicalIntegrityTestWellIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.WellFk).Execute()));
 
