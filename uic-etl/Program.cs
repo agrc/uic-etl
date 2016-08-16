@@ -260,7 +260,7 @@ namespace uic_etl
                         var verticalEventFeature = verticalWellCursor.Next();
                         var verticalEvent = AutoMapperService.MapVerticalWellEventModel(verticalEventFeature, verticalWellFieldMap);
 
-                        xmlWell.WellTotalDepthNumeric = verticalEvent.EventType;
+                        xmlWell.WellTotalDepthNumeric = string.IsNullOrEmpty(verticalEvent.Length) ? "0" : verticalEvent.Length;
 
                         var wellStatusCursor = wellStatusRelation.GetObjectsRelatedToObject(wellFeature);
                         releaser.ManageLifetime(wellStatusCursor);

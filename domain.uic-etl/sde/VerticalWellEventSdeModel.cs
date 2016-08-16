@@ -2,8 +2,8 @@
 {
     public class VerticalWellEventSdeModel
     {
-        public static string[] Fields = {"EventType"};
+        public static string[] Fields = {"Length"};
             
-        public string EventType { get; set; }
+        public string Length { get; set; }
     }
 }

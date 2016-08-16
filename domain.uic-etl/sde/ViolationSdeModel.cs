@@ -17,7 +17,7 @@ namespace domain.uic_etl.sde
         public string SignificantNonCompliance { get; set; }
         public DateTime? ViolationDate { get; set; }
         public string ViolationType { get; set; }
-        public Guid FacilityId { get; set; }
+        public string FacilityId { get; set; }
         public Guid WellId { get; set; }
     }
 }
