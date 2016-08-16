@@ -282,9 +282,9 @@ namespace uic_etl
                             var xmlWellStatus = mapper.Map<WellStatusSdeModel, WellStatusDetail>(wellStatus);
 
                             // get the earliest date
-                            if (wellTypeDate > wellStatus.OperatingStatusDate)
+                            if (wellStatus.OperatingStatusDate.HasValue && wellTypeDate > wellStatus.OperatingStatusDate)
                             {
-                                wellTypeDate = wellStatus.OperatingStatusDate;
+                                wellTypeDate = wellStatus.OperatingStatusDate.Value;
                             }
 
                             xmlWell.WellStatusDetail.Add(xmlWellStatus);

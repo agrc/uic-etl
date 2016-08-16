@@ -75,8 +75,7 @@ namespace uic_etl.services
 
                 _.CreateMap<WellStatusSdeModel, WellStatusDetail>()
                     .ForMember(dest => dest.WellStatusIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
-                    .ForMember(dest => dest.WellStatusDate,
-                        opts => opts.MapFrom(src => src.OperatingStatusDate.ToString("yyyMMdd")))
+                    .ForMember(dest => dest.WellStatusDate, opts => opts.MapFrom(src => src.OperatingStatusDate.HasValue ? src.OperatingStatusDate.Value.ToString("yyyMMdd") : null))
                     .ForMember(dest => dest.WellStatusWellIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.WellGuid).Execute()))
                     .ForMember(dest => dest.WellStatusOperatingStatusCode, opts => opts.MapFrom(src => src.OperatingStatusType));
 

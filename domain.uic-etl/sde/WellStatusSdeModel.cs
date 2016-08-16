@@ -9,7 +9,7 @@ namespace domain.uic_etl.sde
         private string _operatingStatusType;
 
         public Guid Guid { get; set; }
-        public DateTime OperatingStatusDate { get; set; }
+        public DateTime? OperatingStatusDate { get; set; }
 
         public string OperatingStatusType
         {
