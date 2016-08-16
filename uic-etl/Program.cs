@@ -300,6 +300,7 @@ namespace uic_etl
                         // Add Well Type Details
                         var wellTypeDetail = new WellTypeDetail
                         {
+                            WellTypeIdentifier = xmlWell.WellIdentifier,
                             WellTypeCode = xmlWell.WellTypeCode,
                             WellTypeDate = wellTypeDateFormatted,
                             WellTypeWellIdentifier = new GenerateIdentifierCommand(well.Guid).Execute()
