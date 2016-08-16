@@ -308,7 +308,7 @@ namespace uic_etl
                         utm.Project(newSpatialRefefence);
                         var point = (IPoint) utm;
 
-                        var locationDetail = new LocationDetail(well, facility, new GenerateIdentifierCommand(Guid.NewGuid()).Execute(), point.X, point.Y);
+                        var locationDetail = new LocationDetail(well, facility, point.X, point.Y, guid => new GenerateIdentifierCommand(guid).Execute());
 
                         xmlWell.LocationDetail = locationDetail;
 

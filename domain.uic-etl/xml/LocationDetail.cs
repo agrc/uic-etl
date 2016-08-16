@@ -5,9 +5,9 @@ namespace domain.uic_etl.xml
 {
     public class LocationDetail
     {
-        public LocationDetail(WellSdeModel well, FacilitySdeModel facility, string identifier, double lon, double lat)
+        public LocationDetail(WellSdeModel well, FacilitySdeModel facility, double lon, double lat, Func<Guid, string> generateIdentifierFunc)
         {
-            LocationIdentifier = identifier;
+            LocationIdentifier = generateIdentifierFunc(Guid.NewGuid());
             LocationAddressCounty = facility.CountyFips;
             LocationAccuracyValueMeasure = well.LocationAccuracy;
             GeographicReferencePointCode = "026";
@@ -15,7 +15,7 @@ namespace domain.uic_etl.xml
             HorizontalCollectionMethodCode = well.LocationMethod;
             LocationPointLineAreaCode = "001";
             SourceMapScaleNumeric = well.LocationAccuracy;
-            LocationWellIdentifier = well.Guid.ToString();
+            LocationWellIdentifier = generateIdentifierFunc(well.Guid);
             LatitudeMeasure = lat;
             LongitudeMeasure = lon;
         }
