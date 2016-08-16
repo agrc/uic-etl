@@ -193,6 +193,7 @@ namespace uic_etl
 
                         var violation = AutoMapperService.MapViolationModel(violationFeature, violationFieldMap);
                         var xmlViolation = mapper.Map<ViolationSdeModel, ViolationDetail>(violation);
+                        xmlViolation.ViolationFacilityIdentifier = xmlFacility.FacilityIdentifier;
 
                         debug.Write("{1} finding facility violation responses for violation: {0}", violationFeature.OID, start.Elapsed);
                         var facilityResponseDetailCursor = responseRelation.GetObjectsRelatedToObject(violationFeature);
