@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Xml;
+using System.Xml.Linq;
 using domain.uic_etl.sde;
 using domain.uic_etl.xml;
 using ESRI.ArcGIS.ADF;
