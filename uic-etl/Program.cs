@@ -228,6 +228,7 @@ namespace uic_etl
 
                         var well = AutoMapperService.MapWellModel(wellFeature, wellFieldMap);
                         var xmlWell = mapper.Map<WellSdeModel, WellDetail>(well);
+                        xmlWell.WellSiteAreaNameText = xmlFacility.FacilitySiteName;
 
                         var facilityContactCursor = facilityToContactRelation.GetObjectsRelatedToObject(facilityFeature);
                         releaser.ManageLifetime(facilityContactCursor);
