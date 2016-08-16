@@ -13,7 +13,7 @@ namespace domain.uic_etl.xml
         public string InspectionAssistanceCode { get; set; }
         public string InspectionDeficiencyCode { get; set; }
         public string InspectionActionDate { get; set; }
-        public string InspectionIdisComplianceMonitoringReasonCode { get; set; }
+        public string InspectionIcisComplianceMonitoringReasonCode { get; set; }
         public string InspectionIcisComplianceMonitoringTypeCode { get; set; }
         public string InspectionIcisComplianceActivityTypeCode { get; set; }
         public string InspectionIcisMoaName { get; set; }
