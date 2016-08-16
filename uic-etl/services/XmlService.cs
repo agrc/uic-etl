@@ -243,11 +243,11 @@ namespace uic_etl.services
                     new XElement(Uic + "InspectionAssistanceCode", inspection.InspectionAssistanceCode),
                     new XElement(Uic + "InspectionDeficiencyCode", inspection.InspectionDeficiencyCode),
                     new XElement(Uic + "InspectionActionDate", inspection.InspectionActionDate),
-                    new XElement(Uic + "InspectionIdisComplianceMonitoringReasonCode", inspection.InspectionIdisComplianceMonitoringReasonCode),
-                    new XElement(Uic + "InspectionIcisComplianceMonitoringTypeCode", inspection.InspectionIcisComplianceMonitoringTypeCode),
-                    new XElement(Uic + "InspectionIcisComplianceActivityTypeCode", inspection.InspectionIcisComplianceActivityTypeCode),
-                    new XElement(Uic + "InspectionIcisMoaName", inspection.InspectionIcisMoaName),
-                    new XElement(Uic + "InspectionIcisRegionalPriorityName", inspection.InspectionIcisRegionalPriorityName),
+                    new XElement(Uic + "InspectionICISComplianceMonitoringReasonCode", inspection.InspectionIcisComplianceMonitoringReasonCode),
+                    new XElement(Uic + "InspectionICISComplianceMonitoringTypeCode", inspection.InspectionIcisComplianceMonitoringTypeCode),
+                    new XElement(Uic + "InspectionICISComplianceActivityTypeCode", inspection.InspectionIcisComplianceActivityTypeCode),
+                    new XElement(Uic + "InspectionICISMOAName", inspection.InspectionIcisMoaName),
+                    new XElement(Uic + "InspectionICISRegionalPriorityName", inspection.InspectionIcisRegionalPriorityName),
                     new XElement(Uic + "InspectionTypeActionCode", inspection.InspectionTypeActionCode),
                     new XElement(Uic + "InspectionWellIdentifier", inspection.InspectionWellIdentifier));
 
