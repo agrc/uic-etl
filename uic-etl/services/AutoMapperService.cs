@@ -148,7 +148,7 @@ namespace uic_etl.services
 
                 _.CreateMap<AuthorizationActionSdeModel, PermitActivityDetail>()
                     .ForMember(dest => dest.PermitActivityActionTypeCode, opts => opts.MapFrom(src => src.AuthorizeActionType))
-                    .ForMember(dest => dest.PermitActivityDate, opts => opts.MapFrom(src => src.AuthorizeActionDate))
+                    .ForMember(dest => dest.PermitActivityDate, opts => opts.MapFrom(src => src.AuthorizeActionDate.HasValue ? src.AuthorizeActionDate.Value.ToString("yyyyMMdd") : DateTime.MinValue.ToString("yyyyMMdd")))
                     .ForMember(dest => dest.PermitActivityPermitIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
                     .ForMember(dest => dest.PermitActivityIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()));
             });
