@@ -69,13 +69,13 @@ namespace uic_etl.services
             foreach (var contact in contacts)
             {
                 var contactDetail = new XElement(Uic + "ContactDetail",
-                    new XElement(Uic + "", contact.ContactIdentifier),
-                    new XElement(Uic + "", contact.TelephoneNumberText),
-                    new XElement(Uic + "", contact.IndividualFullName),
-                    new XElement(Uic + "", contact.ContactCityName),
-                    new XElement(Uic + "", contact.ContactAddressStateCode),
-                    new XElement(Uic + "", contact.ContactAddressText),
-                    new XElement(Uic + "", contact.ContactAddressPostalCode));
+                    new XElement(Uic + "ContactIdentifier", contact.ContactIdentifier),
+                    new XElement(Uic + "TelephoneNumberText", contact.TelephoneNumberText),
+                    new XElement(Uic + "IndividualFullName", contact.IndividualFullName),
+                    new XElement(Uic + "ContactCityName", contact.ContactCityName),
+                    new XElement(Uic + "ContactCityName", contact.ContactAddressStateCode),
+                    new XElement(Uic + "ContactAddressText", contact.ContactAddressText),
+                    new XElement(Uic + "ContactAddressPostalCode", contact.ContactAddressPostalCode));
 
                 node.Add(contactDetail);
             }
@@ -83,19 +83,19 @@ namespace uic_etl.services
             foreach (var permit in permits)
             {
                 var permitDetail = new XElement(Uic + "PermitDetail",
-                    new XElement(Uic + "", permit.PermitAorWellNumberNumeric),
-                    new XElement(Uic + "", permit.PermitAuthorizedStatusCode),
-                    new XElement(Uic + "", permit.PermitOwnershipTypeCode),
-                    new XElement(Uic + "", permit.PermitAuthorizedIdentifier),
-                    new XElement(Uic + "", permit.PermitIdentifier));
+                    new XElement(Uic + "PermitAORWellNumberNumeric", permit.PermitAorWellNumberNumeric),
+                    new XElement(Uic + "PermitAuthorizedStatusCode", permit.PermitAuthorizedStatusCode),
+                    new XElement(Uic + "PermitAuthorizedStatusCode", permit.PermitOwnershipTypeCode),
+                    new XElement(Uic + "PermitAuthorizedIdentifier", permit.PermitAuthorizedIdentifier),
+                    new XElement(Uic + "PermitIdentifier", permit.PermitIdentifier));
 
                 foreach (var activity in permit.PermitActivityDetail)
                 {
                     var activityDetail = new XElement(Uic + "PermitActivityDetail",
-                        new XElement(Uic + "", activity.PermitActivityIdentifier),
-                        new XElement(Uic + "", activity.PermitActivityActionTypeCode),
-                        new XElement(Uic + "", activity.PermitActivityDate),
-                        new XElement(Uic + "", activity.PermitActivityPermitIdentifier));
+                        new XElement(Uic + "PermitActivityIdentifier", activity.PermitActivityIdentifier),
+                        new XElement(Uic + "PermitActivityActionTypeCode", activity.PermitActivityActionTypeCode),
+                        new XElement(Uic + "PermitActivityDate", activity.PermitActivityDate),
+                        new XElement(Uic + "PermitActivityPermitIdentifier", activity.PermitActivityPermitIdentifier));
 
                     permitDetail.Add(activityDetail);
                 }
