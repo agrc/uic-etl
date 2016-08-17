@@ -97,7 +97,7 @@
             <InspectionIdentifier>auto increment int</InspectionIdentifier>
             <InspectionAssistanceCode>[UICInspection].InspectionAssistance | UICComplianceAssistanceDomain</InspectionAssistanceCode>
             <InspectionDeficiencyCode>[UICInspection].InspectionDeficiency | UICDeficiencyDomain</InspectionDeficiencyCode>
-            <InspectionActionDate>[UICInspection].InspectionDate | yyyMMdd</InspectionActionDate>
+            <InspectionActionDate>[UICInspection].InspectionDate | yyyyMMdd</InspectionActionDate>
             <InspectionICISComplianceMonitoringReasonCode>[UICInspection].ICISCompMonActReason | UICICISCompMonActReasonDomain</InspectionICISComplianceMonitoringReasonCode>
             <InspectionICISComplianceMonitoringTypeCode>[UICInspection].ICISCompMonType | UICICISMonitoringTypeDomain</InspectionICISComplianceMonitoringTypeCode>
             <InspectionICISComplianceActivityTypeCode>[UICInspection].ICISCompActType | UICICISCompActTypeDomain</InspectionICISComplianceActivityTypeCode>
@@ -114,10 +114,10 @@
           </WellInspectionDetail>
           <MITestDetail>
             <MechanicalIntegrityTestIdentifier>auto incrementing int</MechanicalIntegrityTestIdentifier>
-            <MechanicalIntegrityTestCompletedDate>[UICMIT].MITDate | yyyMMdd</MechanicalIntegrityTestCompletedDate>
+            <MechanicalIntegrityTestCompletedDate>[UICMIT].MITDate | yyyyMMdd</MechanicalIntegrityTestCompletedDate>
             <MechanicalIntegrityTestResultCode>[UICMIT].MITResult | UICMITResultDomain</MechanicalIntegrityTestResultCode>
             <MechanicalIntegrityTestTypeCode>[UICMIT].MITType | UICMITTypeDomain</MechanicalIntegrityTestTypeCode>
-            <MechanicalIntegrityTestRemedialActionDate>[UICMIT].MITRemActDate | yyyMMdd</MechanicalIntegrityTestRemedialActionDate>
+            <MechanicalIntegrityTestRemedialActionDate>[UICMIT].MITRemActDate | yyyyMMdd</MechanicalIntegrityTestRemedialActionDate>
             <MechanicalIntegrityTestRemedialActionTypeCode>[UICMIT].MITRemediationAction | MITRemediationActionDomain</MechanicalIntegrityTestRemedialActionTypeCode>
             <MechanicalIntegrityTestWellIdentifier>[UICMIT].Well_FK</MechanicalIntegrityTestWellIdentifier>
           </MITestDetail>
