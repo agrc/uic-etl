@@ -211,6 +211,8 @@ namespace uic_etl
                             var responseDetail = AutoMapperService.MapResponseModel(responseFeature, responseFieldMap);
                             var xmlResponseDetail = mapper.Map<EnforcementSdeModel, ResponseDetail>(responseDetail);
 
+                            xmlResponseDetail.ResponseViolationIdentifier = xmlViolation.ViolationIdentifier;
+
                             xmlViolation.ResponseDetail.Add(xmlResponseDetail);
                         }
 
@@ -342,6 +344,8 @@ namespace uic_etl
 
                                 var responseDetail = AutoMapperService.MapResponseModel(responseFeature, responseFieldMap);
                                 var xmlResponseDetail = mapper.Map<EnforcementSdeModel, ResponseDetail>(responseDetail);
+
+                                xmlResponseDetail.ResponseViolationIdentifier = xmlViolation.ViolationIdentifier;
 
                                 xmlViolation.ResponseDetail.Add(xmlResponseDetail);
                             }

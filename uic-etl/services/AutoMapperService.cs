@@ -46,7 +46,7 @@ namespace uic_etl.services
                     .ForMember(dest => dest.ResponseDetail, opts => opts.Ignore());
 
                 _.CreateMap<EnforcementSdeModel, ResponseDetail>()
-                    .ForMember(dest => dest.ResponseViolationIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
+                    .ForMember(dest => dest.ResponseViolationIdentifier, opts => opts.Ignore())
                     .ForMember(dest => dest.ResponseEnforcementIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()));
 
                 _.CreateMap<WellSdeModel, WellDetail>()
