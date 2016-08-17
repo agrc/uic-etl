@@ -73,7 +73,7 @@ namespace uic_etl.services
                     new XElement(Uic + "TelephoneNumberText", contact.TelephoneNumberText),
                     new XElement(Uic + "IndividualFullName", contact.IndividualFullName),
                     new XElement(Uic + "ContactCityName", contact.ContactCityName),
-                    new XElement(Uic + "ContactCityName", contact.ContactAddressStateCode),
+                    new XElement(Uic + "ContactAddressStateCode", contact.ContactAddressStateCode),
                     new XElement(Uic + "ContactAddressText", contact.ContactAddressText),
                     new XElement(Uic + "ContactAddressPostalCode", contact.ContactAddressPostalCode));
 
