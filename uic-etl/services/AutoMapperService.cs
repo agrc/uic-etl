@@ -390,13 +390,17 @@ namespace uic_etl.services
 
         public static AreaOfReviewSdeModel MapAreaOfReviewSdeModel(IRow row, IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
         {
-            //TODO These can be null
+            var abandon = GuardNull(row.Value[fieldMap["CA_Abandon"].Index]);
+            var repair = GuardNull(row.Value[fieldMap["CA_Repair"].Index]);
+            var replug = GuardNull(row.Value[fieldMap["CA_Replug"].Index]);
+            var other = GuardNull(row.Value[fieldMap["CA_Other"].Index]);
+
             var model = new AreaOfReviewSdeModel
             {
-                CaAbandon = Convert.ToDouble(row.Value[fieldMap["CA_Abandon"].Index]),
-                CaRepair = Convert.ToDouble(row.Value[fieldMap["CA_Repair"].Index]),
-                CaReplug = Convert.ToDouble(row.Value[fieldMap["CA_Replug"].Index]),
-                CaOther = Convert.ToDouble(row.Value[fieldMap["CA_Other"].Index])
+                CaAbandon = string.IsNullOrEmpty(abandon) ? 0 : Convert.ToDouble(abandon),
+                CaRepair = string.IsNullOrEmpty(repair) ? 0 : Convert.ToDouble(repair),
+                CaReplug = string.IsNullOrEmpty(replug)? 0 : Convert.ToDouble(replug),
+                CaOther = string.IsNullOrEmpty(other) ? 0 : Convert.ToDouble(other)
             };
 
             return model;
