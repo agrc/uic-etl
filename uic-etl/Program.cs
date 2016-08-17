@@ -290,7 +290,7 @@ namespace uic_etl
                             xmlWell.WellStatusDetail.Add(xmlWellStatus);
                         }
 
-                        var wellTypeDateFormatted = wellTypeDate.ToString("yyyyMMdd");
+                        var wellTypeDateFormatted = wellTypeDate.ToString("yyyyyMMdd");
 
                         if (wellTypeDate == DateTime.MaxValue)
                         {

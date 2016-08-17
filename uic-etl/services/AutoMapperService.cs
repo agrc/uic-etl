@@ -36,9 +36,9 @@ namespace uic_etl.services
                     .ForMember(dest => dest.ViolationIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
                     .ForMember(dest => dest.ViolationContaminationCode, opts => opts.MapFrom(src => src.UsdwContamination))
                     .ForMember(dest => dest.ViolationEndangeringCode, opts => opts.MapFrom(src => src.Endanger))
-                    .ForMember(dest => dest.ViolationReturnComplianceDate, opts => opts.MapFrom(src => src.ReturnToComplianceDate.HasValue ? src.ReturnToComplianceDate.Value.ToString("yyyyMMdd") : null))
+                    .ForMember(dest => dest.ViolationReturnComplianceDate, opts => opts.MapFrom(src => src.ReturnToComplianceDate.HasValue ? src.ReturnToComplianceDate.Value.ToString("yyyyMMdd") : DateTime.MinValue.ToString("yyyyMMdd")))
                     .ForMember(dest => dest.ViolationSignificantCode, opts => opts.MapFrom(src => src.SignificantNonCompliance))
-                    .ForMember(dest => dest.ViolationDeterminedDate, opts => opts.MapFrom(src => src.ViolationDate.HasValue ? src.ViolationDate.Value.ToString("yyyyMMdd") : null))
+                    .ForMember(dest => dest.ViolationDeterminedDate, opts => opts.MapFrom(src => src.ViolationDate.HasValue ? src.ViolationDate.Value.ToString("yyyyMMdd") : DateTime.MinValue.ToString("yyyyyMMdd")))
                     .ForMember(dest => dest.ViolationTypeCode, opts => opts.MapFrom(src => src.ViolationType))
                     .ForMember(dest => dest.ViolationFacilityIdentifier, opts => opts.MapFrom(src => src.FacilityId))
                     .ForMember(dest => dest.Guid, opts => opts.MapFrom(src => src.Guid))
@@ -75,7 +75,7 @@ namespace uic_etl.services
 
                 _.CreateMap<WellStatusSdeModel, WellStatusDetail>()
                     .ForMember(dest => dest.WellStatusIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
-                    .ForMember(dest => dest.WellStatusDate, opts => opts.MapFrom(src => src.OperatingStatusDate.HasValue ? src.OperatingStatusDate.Value.ToString("yyyMMdd") : null))
+                    .ForMember(dest => dest.WellStatusDate, opts => opts.MapFrom(src => src.OperatingStatusDate.HasValue ? src.OperatingStatusDate.Value.ToString("yyyyMMdd") : DateTime.MinValue.ToString("yyyyMMdd")))
                     .ForMember(dest => dest.WellStatusWellIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.WellGuid).Execute()))
                     .ForMember(dest => dest.WellStatusOperatingStatusCode, opts => opts.MapFrom(src => src.OperatingStatusType));
 
@@ -83,7 +83,7 @@ namespace uic_etl.services
                     .ForMember(dest => dest.InspectionIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
                     .ForMember(dest => dest.InspectionAssistanceCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.InspectionAssistance) ? "U" : src.InspectionAssistance))
                     .ForMember(dest => dest.InspectionDeficiencyCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.InspectionDeficiency) ? "U" : src.InspectionDeficiency))
-                    .ForMember(dest => dest.InspectionActionDate, opts => opts.MapFrom(src => src.InspectionDate.HasValue ? src.InspectionDate.Value.ToString("yyyMMdd") : null))
+                    .ForMember(dest => dest.InspectionActionDate, opts => opts.MapFrom(src => src.InspectionDate.HasValue ? src.InspectionDate.Value.ToString("yyyyMMdd") : DateTime.MinValue.ToString("yyyyMMdd")))
                     .ForMember(dest => dest.InspectionIcisComplianceMonitoringReasonCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.IcisCompMonActReason) ? "U" : src.IcisCompMonActReason))
                     .ForMember(dest => dest.InspectionIcisComplianceMonitoringTypeCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.IcisCompMonType) ? "U" : src.IcisCompMonType))
                     .ForMember(dest => dest.InspectionIcisComplianceActivityTypeCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.IcisCompActType) ? "U" : src.IcisCompActType))
@@ -101,10 +101,10 @@ namespace uic_etl.services
 
                 _.CreateMap<MiTestSdeModel, MiTestDetail>()
                     .ForMember(dest => dest.MechanicalIntegrityTestIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
-                    .ForMember(dest => dest.MechanicalIntegrityTestCompletedDate, opts => opts.MapFrom(src => src.MitDate.HasValue ? src.MitDate.Value.ToString("yyyMMdd") : DateTime.MinValue.ToString("yyyMMdd")))
+                    .ForMember(dest => dest.MechanicalIntegrityTestCompletedDate, opts => opts.MapFrom(src => src.MitDate.HasValue ? src.MitDate.Value.ToString("yyyyMMdd") : DateTime.MinValue.ToString("yyyyMMdd")))
                     .ForMember(dest => dest.MechanicalIntegrityTestResultCode, opts => opts.MapFrom(src => src.MitResult))
                     .ForMember(dest => dest.MechanicalIntegrityTestTypeCode, opts => opts.MapFrom(src => src.MitType))
-                    .ForMember(dest => dest.MechanicalIntegrityTestRemedialActionDate, opts => opts.MapFrom(src => src.MitRemActDate.HasValue ? src.MitRemActDate.Value.ToString("yyyMMdd") : DateTime.MinValue.ToString("yyyMMdd")))
+                    .ForMember(dest => dest.MechanicalIntegrityTestRemedialActionDate, opts => opts.MapFrom(src => src.MitRemActDate.HasValue ? src.MitRemActDate.Value.ToString("yyyyMMdd") : DateTime.MinValue.ToString("yyyyMMdd")))
                     .ForMember(dest => dest.MechanicalIntegrityTestRemedialActionTypeCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.MitRemediationAction) ? "U" : src.MitRemediationAction))
                     .ForMember(dest => dest.MechanicalIntegrityTestWellIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.WellFk).Execute()));
 
