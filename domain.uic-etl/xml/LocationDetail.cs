@@ -9,12 +9,12 @@ namespace domain.uic_etl.xml
         {
             LocationIdentifier = generateIdentifierFunc(Guid.NewGuid());
             LocationAddressCounty = facility.CountyFips;
-            LocationAccuracyValueMeasure = well.LocationAccuracy;
+            LocationAccuracyValueMeasure = string.IsNullOrEmpty(well.LocationAccuracy) ? "U" : well.LocationAccuracy;
             GeographicReferencePointCode = "026";
             HorizontalCoordinateReferenceSystemDatumCode = "002";
-            HorizontalCollectionMethodCode = well.LocationMethod;
+            HorizontalCollectionMethodCode = string.IsNullOrEmpty(well.LocationMethod) ? "U" : well.LocationMethod;
             LocationPointLineAreaCode = "001";
-            SourceMapScaleNumeric = well.LocationAccuracy;
+            SourceMapScaleNumeric = string.IsNullOrEmpty(well.LocationAccuracy) ? "U" : well.LocationAccuracy;
             LocationWellIdentifier = generateIdentifierFunc(well.Guid);
             LatitudeMeasure = lat;
             LongitudeMeasure = lon;
