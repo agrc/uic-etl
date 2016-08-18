@@ -175,10 +175,21 @@ namespace uic_etl
                 var facilityCursor = uicFacility.Search(queryFilter, true);
                 releaser.ManageLifetime(facilityCursor);
 
+#if DEBUG
+                var i = 0;
+#endif
                 // Loop over UICFacility
                 IFeature facilityFeature;
                 while ((facilityFeature = facilityCursor.NextFeature()) != null)
                 {
+#if DEBUG
+                    i++;
+                    debug.Write("Facility #{0}", i);
+                    if (i > 25)
+                    {
+                        break;
+                    }
+#endif
                     releaser.ManageLifetime(facilityFeature);
 
                     var facility = AutoMapperService.MapFacilityModel(facilityFeature, facilityFieldMap);
