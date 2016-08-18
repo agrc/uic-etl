@@ -4,13 +4,14 @@
     {
         private string _permitActivityActionTypeCode;
         public string PermitActivityIdentifier { get; set; }
+        private const string Unknown = "FR";
 
         public string PermitActivityActionTypeCode
         {
             get {
                 if (string.IsNullOrEmpty(_permitActivityActionTypeCode))
                 {
-                    return "";
+                    return Unknown;
                 }
 
                 switch (_permitActivityActionTypeCode.ToUpper())
@@ -21,7 +22,7 @@
                     }
                     case "NR":
                     {
-                        return "";
+                        return Unknown;
                     }
                     case "AW":
                     {
