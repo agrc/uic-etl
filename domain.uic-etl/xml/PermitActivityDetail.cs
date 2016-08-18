@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace domain.uic_etl.xml
+﻿namespace domain.uic_etl.xml
 {
     public class PermitActivityDetail
     {
@@ -10,6 +8,11 @@ namespace domain.uic_etl.xml
         public string PermitActivityActionTypeCode
         {
             get {
+                if (string.IsNullOrEmpty(_permitActivityActionTypeCode))
+                {
+                    return "";
+                }
+
                 switch (_permitActivityActionTypeCode.ToUpper())
                 {
                     case "AR":
