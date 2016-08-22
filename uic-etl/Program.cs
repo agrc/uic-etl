@@ -31,6 +31,7 @@ namespace uic_etl
             {
                 Console.Write("uic-etl: ");
                 Console.WriteLine(e.Message);
+                Console.ReadKey();
 
                 return;
             }
