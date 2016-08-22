@@ -479,6 +479,13 @@ namespace uic_etl
                         var authorizationAction = AutoMapperService.MapAuthorizationActionSdeModel(authorizationActionFeature, authorizationActionFieldMap);
                         var permitActivityDetail = mapper.Map<AuthorizationActionSdeModel, PermitActivityDetail>(authorizationAction);
 
+                        if (string.IsNullOrEmpty(permitActivityDetail.PermitActivityActionTypeCode) || permitActivityDetail.PermitActivityActionTypeCode.ToUpper() == "NR")
+                        {
+                            // skip authorized by rule wells.
+                            // https://github.com/agrc/uic-etl/issues/10#issuecomment-241120723
+                            continue;
+                        }
+
                         xmlPermit.PermitActivityDetail.Add(permitActivityDetail);
                     }
 
