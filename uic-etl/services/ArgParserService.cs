@@ -59,7 +59,7 @@ namespace uic_etl.services
             if (string.IsNullOrEmpty(options.SdeConnectionPath))
             {
                 throw new InvalidOperationException(
-                    "Missing required option -c for the location fo the sde connection file.");
+                    "Missing required option -c for the location of the sde connection file.");
             }
 
             if (!new FileInfo(options.SdeConnectionPath).Exists)
