@@ -574,7 +574,7 @@ namespace tests.uic_etl
                 }, new FacilitySdeModel
                 {
                     CountyFips = 1
-                }, "UTEQA6EC842436CD9606", 40, 50)
+                }, 40, 50, guid => "UTEQA6EC842436CD9606")
             };
 
             XmlService.AddWell(ref facilityList, well);
