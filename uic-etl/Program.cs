@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml;
-using System.Xml.Linq;
 using domain.uic_etl.sde;
 using domain.uic_etl.xml;
 using ESRI.ArcGIS.ADF;
@@ -480,7 +479,8 @@ namespace uic_etl
                         var authorizationAction = AutoMapperService.MapAuthorizationActionSdeModel(authorizationActionFeature, authorizationActionFieldMap);
                         var permitActivityDetail = mapper.Map<AuthorizationActionSdeModel, PermitActivityDetail>(authorizationAction);
 
-                        if (string.IsNullOrEmpty(permitActivityDetail.PermitActivityActionTypeCode) || permitActivityDetail.PermitActivityActionTypeCode.ToUpper() == "NR")
+                        if (string.IsNullOrEmpty(permitActivityDetail.PermitActivityActionTypeCode) ||
+                            permitActivityDetail.PermitActivityActionTypeCode.ToUpper() == "NR")
                         {
                             // skip authorized by rule wells.
                             // https://github.com/agrc/uic-etl/issues/10#issuecomment-241120723
