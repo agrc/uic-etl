@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using FluentValidation;
 
 namespace domain.uic_etl.xml
 {
@@ -21,5 +23,45 @@ namespace domain.uic_etl.xml
         public string FacilitySiteTypeCode { get; set; }
         public string LocationAddressPostalCode { get; set; }
         public List<ViolationDetail> FacilityViolationDetail { get; set; }
+    }
+
+    public class FacilityDetailValidator : AbstractValidator<FacilityDetail>
+    {
+        public FacilityDetailValidator()
+        {
+            RuleSet("R1", () =>
+            {
+                RuleFor(src => src.FacilityIdentifier)
+                    .NotEmpty()
+                    .Length(20);
+
+                RuleFor(src => src.FacilitySiteName)
+                    .NotEmpty()
+                    .Length(1, 80);
+
+                RuleFor(src => src.FacilityStateIdentifier)
+                    .NotEmpty()
+                    .Length(1, 50);
+
+                RuleFor(src => src.LocationAddressText)
+                    .NotEmpty()
+                    .Length(1, 150);
+            });
+
+            RuleSet("R2C-1H", () =>
+            {
+                //todo only for facilities with 1H well
+                RuleFor(src => src.FacilityPetitionStatusCode)
+                    .Length(2)
+                    .Must(code => new[] {"AP", "DA", "NA"}.Contains(code));
+            });
+
+            RuleSet("R2C-Class1", () =>
+            {
+                RuleFor(src => src.FacilitySiteTypeCode)
+                    .Length(1)
+                    .Must(code => new[] {"C", "N", "U"}.Contains(code));
+            });
+        }
     }
 }

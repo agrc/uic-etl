@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using FluentValidation;
 
 namespace domain.uic_etl.xml
 {
@@ -37,5 +39,84 @@ namespace domain.uic_etl.xml
         public List<MiTestDetail> MitTestDetail { get; set; }
         public List<EngineeringDetail> EngineeringDetail { get; set; }
         public List<WasteDetail> WasteDetail { get; set; }
+    }
+
+    public class WellDetailValidator : AbstractValidator<WellDetail>
+    {
+        public WellDetailValidator()
+        {
+            RuleSet("R1", () =>
+            {
+                RuleFor(src => src.WellIdentifier)
+                    .NotEmpty()
+                    .Length(20);
+
+                RuleFor(src => src.WellFacilityIdentifier)
+                    .NotEmpty()
+                    .Length(20);
+
+                RuleFor(src => src.WellContactIdentifier)
+                    .NotEmpty()
+                    .Length(20);
+
+                RuleFor(src => src.WellPermitIdentifier)
+                    .NotEmpty()
+                    .Length(20);
+
+                RuleFor(src => src.WellStateIdentifier)
+                    .NotEmpty()
+                    .Length(1, 50);
+            });
+
+            // todo: required for DI programs only
+            // tribal code list is super log and i'm not sure how it works
+            RuleSet("R1C", () =>
+            {
+                RuleFor(src => src.WellStateTribalCode)
+                    .NotEmpty()
+                    .Length(2, 3);
+            });
+
+            RuleSet("R2C", () =>
+            {
+                RuleFor(src => src.WellName)
+                    .NotEmpty()
+                    .Length(1, 80);
+
+                // todo: requried for all wells except IV
+                RuleFor(src => src.WellAquiferExemptionInjectionCode)
+                    .NotEmpty()
+                    .Length(1)
+                    .Must(code => new[] {"Y", "N", "U"}.Contains(code.ToUpper()));
+
+                // todo: required for class I and II
+                RuleFor(src => src.WellTotalDepthNumeric)
+                    .NotEmpty()
+                    .Must(value =>
+                    {
+                        decimal depth;
+
+                        if (!decimal.TryParse(value, out depth))
+                        {
+                            return false;
+                        }
+
+                        return depth > 0 && depth < 100000;
+                    });
+
+                // todo: required for class V
+                RuleFor(src => src.WellHighPriorityDesignationCode)
+                    .NotEmpty()
+                    .Length(1)
+                    .Must(code => new[] {"Y", "N", "U"}.Contains(code.ToUpper()));
+
+                // todo: skipping geology
+
+                // todo: class III and IV 
+                RuleFor(src => src.WellSiteAreaNameText)
+                    .NotEmpty()
+                    .Length(1, 50);
+            });
+        }
     }
 }
