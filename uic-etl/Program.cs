@@ -145,7 +145,7 @@ namespace uic_etl
                 var newSpatialRefefence = srFactory.CreateGeographicCoordinateSystem(4326);
 
                 debug.Write("{0} Creating mappings for domain models", start.Elapsed);
-                var mapper = AutoMapperService.CreateMappings();
+                var mapper = EtlMappingService.CreateMappings();
 
                 debug.Write("{0} Creating XML document object.", start.Elapsed);
                 var doc = XmlService.CreateDocument();
@@ -192,7 +192,7 @@ namespace uic_etl
 #endif
                     releaser.ManageLifetime(facilityFeature);
 
-                    var facility = AutoMapperService.MapFacilityModel(facilityFeature, facilityFieldMap);
+                    var facility = EtlMappingService.MapFacilityModel(facilityFeature, facilityFieldMap);
                     var xmlFacility = mapper.Map<FacilitySdeModel, FacilityDetail>(facility);
 
                     debug.Write("{1} finding violations for facility: {0}", facility.Guid, start.Elapsed);
@@ -205,7 +205,7 @@ namespace uic_etl
                     {
                         releaser.ManageLifetime(violationFeature);
 
-                        var violation = AutoMapperService.MapViolationModel(violationFeature, violationFieldMap);
+                        var violation = EtlMappingService.MapViolationModel(violationFeature, violationFieldMap);
                         var xmlViolation = mapper.Map<ViolationSdeModel, ViolationDetail>(violation);
                         xmlViolation.ViolationFacilityIdentifier = xmlFacility.FacilityIdentifier;
 
@@ -219,7 +219,7 @@ namespace uic_etl
                         {
                             releaser.ManageLifetime(responseFeature);
 
-                            var responseDetail = AutoMapperService.MapResponseModel(responseFeature, responseFieldMap);
+                            var responseDetail = EtlMappingService.MapResponseModel(responseFeature, responseFieldMap);
                             var xmlResponseDetail = mapper.Map<EnforcementSdeModel, ResponseDetail>(responseDetail);
 
                             xmlResponseDetail.ResponseViolationIdentifier = xmlViolation.ViolationIdentifier;
@@ -243,7 +243,7 @@ namespace uic_etl
                     {
                         releaser.ManageLifetime(wellFeature);
 
-                        var well = AutoMapperService.MapWellModel(wellFeature, wellFieldMap);
+                        var well = EtlMappingService.MapWellModel(wellFeature, wellFieldMap);
                         var xmlWell = mapper.Map<WellSdeModel, WellDetail>(well);
                         xmlWell.WellSiteAreaNameText = xmlFacility.FacilitySiteName;
 
@@ -258,7 +258,7 @@ namespace uic_etl
                         {
                             releaser.ManageLifetime(facilityContactFeature);
 
-                            var contact = AutoMapperService.MapContactSdeModel(facilityContactFeature, contactFieldMap);
+                            var contact = EtlMappingService.MapContactSdeModel(facilityContactFeature, contactFieldMap);
 
                             if (contact.ContactType > mostImportantContact)
                             {
@@ -276,7 +276,7 @@ namespace uic_etl
                         releaser.ManageLifetime(verticalWellCursor);
 
                         var verticalEventFeature = verticalWellCursor.Next();
-                        var verticalEvent = AutoMapperService.MapVerticalWellEventModel(verticalEventFeature, verticalWellFieldMap);
+                        var verticalEvent = EtlMappingService.MapVerticalWellEventModel(verticalEventFeature, verticalWellFieldMap);
 
                         xmlWell.WellTotalDepthNumeric = string.IsNullOrEmpty(verticalEvent.Length) ? "0" : verticalEvent.Length;
 
@@ -291,7 +291,7 @@ namespace uic_etl
                         {
                             releaser.ManageLifetime(wellStatusFeature);
 
-                            var wellStatus = AutoMapperService.MapWellStatusModel(wellStatusFeature, wellStatusFieldMap);
+                            var wellStatus = EtlMappingService.MapWellStatusModel(wellStatusFeature, wellStatusFieldMap);
                             var xmlWellStatus = mapper.Map<WellStatusSdeModel, WellStatusDetail>(wellStatus);
 
                             // get the earliest date
@@ -341,7 +341,7 @@ namespace uic_etl
                         {
                             releaser.ManageLifetime(wellViolationFeature);
 
-                            var violation = AutoMapperService.MapViolationModel(wellViolationFeature, violationFieldMap);
+                            var violation = EtlMappingService.MapViolationModel(wellViolationFeature, violationFieldMap);
                             var xmlViolation = mapper.Map<ViolationSdeModel, ViolationDetail>(violation);
 
                             debug.Write("{1} finding well violation responses for violation: {0}", wellViolationFeature.OID, start.Elapsed);
@@ -353,7 +353,7 @@ namespace uic_etl
                             {
                                 releaser.ManageLifetime(responseFeature);
 
-                                var responseDetail = AutoMapperService.MapResponseModel(responseFeature, responseFieldMap);
+                                var responseDetail = EtlMappingService.MapResponseModel(responseFeature, responseFieldMap);
                                 var xmlResponseDetail = mapper.Map<EnforcementSdeModel, ResponseDetail>(responseDetail);
 
                                 xmlResponseDetail.ResponseViolationIdentifier = xmlViolation.ViolationIdentifier;
@@ -374,7 +374,7 @@ namespace uic_etl
                         {
                             releaser.ManageLifetime(wellInspectionFeature);
 
-                            var wellInspection = AutoMapperService.MapWellInspectionModel(wellInspectionFeature, wellInspectionFieldMap);
+                            var wellInspection = EtlMappingService.MapWellInspectionModel(wellInspectionFeature, wellInspectionFieldMap);
                             var xmlWellInspection = mapper.Map<WellInspectionSdeModel, WellInspectionDetail>(wellInspection);
 
                             xmlWell.WellInspectionDetail.Add(xmlWellInspection);
@@ -390,7 +390,7 @@ namespace uic_etl
                         {
                             releaser.ManageLifetime(mechanicalIntegrityFeature);
 
-                            var mit = AutoMapperService.MapMiTestSdeModel(mechanicalIntegrityFeature, mechanicalInspectionFieldMap);
+                            var mit = EtlMappingService.MapMiTestSdeModel(mechanicalIntegrityFeature, mechanicalInspectionFieldMap);
                             var xmlMit = mapper.Map<MiTestSdeModel, MiTestDetail>(mit);
                             xmlWell.MitTestDetail.Add(xmlMit);
                         }
@@ -406,7 +406,7 @@ namespace uic_etl
                         {
                             releaser.ManageLifetime(deepWellFeature);
 
-                            var deepWell = AutoMapperService.MapWellOperationSdeModel(deepWellFeature, deepWellFieldMap);
+                            var deepWell = EtlMappingService.MapWellOperationSdeModel(deepWellFeature, deepWellFieldMap);
                             var engineeringDetail = mapper.Map<WellOperatingSdeModel, EngineeringDetail>(deepWell);
 
                             xmlWell.EngineeringDetail.Add(engineeringDetail);
@@ -423,7 +423,7 @@ namespace uic_etl
                         {
                             releaser.ManageLifetime(wasteFeature);
 
-                            var waste = AutoMapperService.MapWasteClassISdeModel(wasteFeature, wasteFieldMap);
+                            var waste = EtlMappingService.MapWasteClassISdeModel(wasteFeature, wasteFieldMap);
                             var xmlWaste = mapper.Map<WasteClassISdeModel, WasteDetail>(waste);
 
                             xmlWell.WasteDetail.Add(xmlWaste);
@@ -446,7 +446,7 @@ namespace uic_etl
                 {
                     releaser.ManageLifetime(contactFeature);
 
-                    var contact = AutoMapperService.MapContactSdeModel(contactFeature, contactFieldMap);
+                    var contact = EtlMappingService.MapContactSdeModel(contactFeature, contactFieldMap);
                     var xmlContact = mapper.Map<ContactSdeModel, ContactDetail>(contact);
 
                     contacts.Add(xmlContact);
@@ -465,7 +465,7 @@ namespace uic_etl
                 {
                     releaser.ManageLifetime(authorizeFeature);
 
-                    var authorize = AutoMapperService.MapAuthorizationSdeModel(authorizeFeature, authorizationFieldMap);
+                    var authorize = EtlMappingService.MapAuthorizationSdeModel(authorizeFeature, authorizationFieldMap);
                     var xmlPermit = mapper.Map<AuthorizationSdeModel, PermitDetail>(authorize);
 
                     var authorizationActionCursor = authorizationActionRelation.GetObjectsRelatedToObject((IObject) authorizeFeature);
@@ -476,7 +476,7 @@ namespace uic_etl
                     IObject authorizationActionFeature;
                     while ((authorizationActionFeature = authorizationActionCursor.Next()) != null)
                     {
-                        var authorizationAction = AutoMapperService.MapAuthorizationActionSdeModel(authorizationActionFeature, authorizationActionFieldMap);
+                        var authorizationAction = EtlMappingService.MapAuthorizationActionSdeModel(authorizationActionFeature, authorizationActionFieldMap);
                         var permitActivityDetail = mapper.Map<AuthorizationActionSdeModel, PermitActivityDetail>(authorizationAction);
 
                         if (string.IsNullOrEmpty(permitActivityDetail.PermitActivityActionTypeCode) ||
@@ -500,7 +500,7 @@ namespace uic_etl
                         continue;
                     }
 
-                    var areaOfReview = AutoMapperService.MapAreaOfReviewSdeModel(areaOfReviewFeature, areaOfReviewFieldMap);
+                    var areaOfReview = EtlMappingService.MapAreaOfReviewSdeModel(areaOfReviewFeature, areaOfReviewFieldMap);
                     xmlPermit.PermitAorWellNumberNumeric = areaOfReview.PermitAorWellNumberNumeric;
 
                     permits.Add(xmlPermit);

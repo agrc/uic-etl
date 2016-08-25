@@ -12,7 +12,7 @@ using uic_etl.models.dtos;
 
 namespace uic_etl.services
 {
-    public static class AutoMapperService
+    public static class EtlMappingService
     {
         public static IMapper CreateMappings()
         {

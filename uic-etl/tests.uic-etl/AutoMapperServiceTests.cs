@@ -8,7 +8,7 @@ namespace tests.uic_etl
         [Fact]
         public void MappingsAreValid()
         {
-            var mapper = AutoMapperService.CreateMappings();
+            var mapper = EtlMappingService.CreateMappings();
 
             mapper.ConfigurationProvider.AssertConfigurationIsValid();
 
