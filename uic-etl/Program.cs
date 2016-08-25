@@ -147,6 +147,25 @@ namespace uic_etl
                 debug.Write("{0} Creating mappings for domain models", start.Elapsed);
                 var mapper = EtlMappingService.CreateMappings();
 
+                debug.Write("{0} Creating model validators", start.Elapsed);
+                var constituentValidator = new ConstituentDetailValidator();
+                var contactValidator = new ContactDetailValidator();
+                var correctionValidator = new CorrectionDetailValidator();
+                var engineeringValidator = new EngineeringDetailValidator();
+                var facilityValidator = new FacilityDetailValidator();
+                var locationValidator = new LocationDetailValidator();
+                var miTestValidator = new MiTestDetailValidator();
+                var permitActivityValidator = new PermitActivityDetailValidator();
+                var permitValidator = new PermitDetailValidator();
+                var responseValidator = new ResponseDetailValidator();
+                var violationValidator = new ViolationDetailValidator();
+                var wasteValidator = new WasteDetailValidator();
+                var wellValidator = new WellDetailValidator();
+                var wellInspectionValidator = new WellInspectionDetailValidator();
+                var wellStatusValidator = new WelLStatusDetailValidator();
+                var wellTypeValidator = new WellTypeDetailValidator();
+
+
                 debug.Write("{0} Creating XML document object.", start.Elapsed);
                 var doc = XmlService.CreateDocument();
 
