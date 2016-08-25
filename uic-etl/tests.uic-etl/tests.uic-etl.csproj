@@ -62,7 +62,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutoMapperServiceTests.cs" />
+    <Compile Include="EtlServiceTests.cs" />
     <Compile Include="XmlWritingTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -3,7 +3,7 @@ using Xunit;
 
 namespace tests.uic_etl
 {
-    public class AutoMapperServiceTests
+    public class EtlServiceTests
     {
         [Fact]
         public void MappingsAreValid()
