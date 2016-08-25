@@ -61,69 +61,56 @@ namespace uic_etl
                 var featureWorkspace = (IFeatureWorkspace) workspace;
                 releaser.ManageLifetime(featureWorkspace);
 
-                debug.Write("{0} Opening UICFacility feature class", start.Elapsed);
+                debug.Write("{0} Opening feature classes", start.Elapsed);
                 var uicFacility = featureWorkspace.OpenFeatureClass("UICFacility");
                 releaser.ManageLifetime(uicFacility);
 
-                debug.Write("{0} Opening Facility to Violation Relationship Class.", start.Elapsed);
+                debug.Write("{0} Opening relationship classes", start.Elapsed);
                 var facilityViolationRelation = featureWorkspace.OpenRelationshipClass("FacilityToViolation");
                 releaser.ManageLifetime(facilityViolationRelation);
 
-                debug.Write("{0} Opening Well to Violation Relationship Class.", start.Elapsed);
                 var wellViolationRelation = featureWorkspace.OpenRelationshipClass("WellToViolation");
                 releaser.ManageLifetime(wellViolationRelation);
 
-                debug.Write("{0} Opening Violation to Response Relationship Class.", start.Elapsed);
                 var responseRelation = featureWorkspace.OpenRelationshipClass("UICViolationToEnforcement");
                 releaser.ManageLifetime(responseRelation);
 
-                debug.Write("{0} Opening Facility to Well Relationship Class.", start.Elapsed);
                 var wellRelation = featureWorkspace.OpenRelationshipClass("FacilityToWell");
                 releaser.ManageLifetime(wellRelation);
 
-                debug.Write("{0} Opening Vertical Well Event to Well Relationship Class.", start.Elapsed);
                 var verticalWellRelation = featureWorkspace.OpenRelationshipClass("WellToVerticalWellEvent");
                 releaser.ManageLifetime(verticalWellRelation);
 
-                debug.Write("{0} Opening Facility to Well Relationship Class.", start.Elapsed);
                 var wellStatusRelation = featureWorkspace.OpenRelationshipClass("WellToWellOperatingStatus");
                 releaser.ManageLifetime(wellStatusRelation);
 
-                debug.Write("{0} Opening Well to Inspection Relationship Class.", start.Elapsed);
                 var wellInspectionRelation = featureWorkspace.OpenRelationshipClass("WellToInspection");
                 releaser.ManageLifetime(wellInspectionRelation);
 
-                debug.Write("{0} Opening MI Test Relationship Class.", start.Elapsed);
                 var wellIntegrityRelation = featureWorkspace.OpenRelationshipClass("WellToIntegrityTest");
                 releaser.ManageLifetime(wellIntegrityRelation);
 
-                debug.Write("{0} Opening Deep Well Relationship Class.", start.Elapsed);
                 var deepWellRelation = featureWorkspace.OpenRelationshipClass("WellToDeepWellOperation");
                 releaser.ManageLifetime(deepWellRelation);
 
-                debug.Write("{0} Opening Waste Relationship Class.", start.Elapsed);
                 var wasteRelation = featureWorkspace.OpenRelationshipClass("WellToClassIWaste");
                 releaser.ManageLifetime(wasteRelation);
 
-                debug.Write("{0} Opening UICContact table", start.Elapsed);
-                var uicContact = featureWorkspace.OpenTable("UICContact");
-                releaser.ManageLifetime(uicContact);
-
-                debug.Write("{0} Opening Authorization table", start.Elapsed);
-                var uicAuthorization = featureWorkspace.OpenTable("UICAuthorization");
-                releaser.ManageLifetime(uicAuthorization);
-
-                debug.Write("{0} Opening Authorization Action Relationship Class", start.Elapsed);
                 var authorizationActionRelation = featureWorkspace.OpenRelationshipClass("AuthorizationToAuthorizationAction");
                 releaser.ManageLifetime(authorizationActionRelation);
 
-                debug.Write("{0} Opening Area of Review Relationship Class", start.Elapsed);
                 var areaOfReviewRelation = featureWorkspace.OpenRelationshipClass("AuthorizationToAreaOfReview");
                 releaser.ManageLifetime(areaOfReviewRelation);
 
-                debug.Write("{0} Opening Facility to Contact Relationship Class", start.Elapsed);
                 var facilityToContactRelation = featureWorkspace.OpenRelationshipClass("UICFacilityToContact");
                 releaser.ManageLifetime(facilityToContactRelation);
+
+                debug.Write("{0} Opening tables", start.Elapsed);
+                var uicContact = featureWorkspace.OpenTable("UICContact");
+                releaser.ManageLifetime(uicContact);
+
+                var uicAuthorization = featureWorkspace.OpenTable("UICAuthorization");
+                releaser.ManageLifetime(uicAuthorization);
 
                 debug.Write("{0} Creating field mappings", start.Elapsed);
                 var facilityFieldMap = new FindIndexByFieldNameCommand(uicFacility, FacilitySdeModel.Fields).Execute();
@@ -165,7 +152,6 @@ namespace uic_etl
                 var wellStatusValidator = new WelLStatusDetailValidator();
                 var wellTypeValidator = new WellTypeDetailValidator();
 
-
                 debug.Write("{0} Creating XML document object.", start.Elapsed);
                 var doc = XmlService.CreateDocument();
 
@@ -194,17 +180,15 @@ namespace uic_etl
                 var facilityCursor = uicFacility.Search(queryFilter, true);
                 releaser.ManageLifetime(facilityCursor);
 
-#if DEBUG
-                var i = 0;
-#endif
+                var facilityCount = 0;
+
                 // Loop over UICFacility
                 IFeature facilityFeature;
                 while ((facilityFeature = facilityCursor.NextFeature()) != null)
                 {
+                    debug.Write("{0} Facilities processed {1}", start.Elapsed, facilityCount++);
 #if DEBUG
-                    i++;
-                    debug.Write("Facility #{0}", i);
-                    if (i > 25)
+                    if (facilityCount > 25)
                     {
                         break;
                     }
@@ -214,7 +198,6 @@ namespace uic_etl
                     var facility = EtlMappingService.MapFacilityModel(facilityFeature, facilityFieldMap);
                     var xmlFacility = mapper.Map<FacilitySdeModel, FacilityDetail>(facility);
 
-                    debug.Write("{1} finding violations for facility: {0}", facility.Guid, start.Elapsed);
                     var violationCursor = facilityViolationRelation.GetObjectsRelatedToObject(facilityFeature);
                     releaser.ManageLifetime(violationCursor);
 
@@ -228,7 +211,6 @@ namespace uic_etl
                         var xmlViolation = mapper.Map<ViolationSdeModel, ViolationDetail>(violation);
                         xmlViolation.ViolationFacilityIdentifier = xmlFacility.FacilityIdentifier;
 
-                        debug.Write("{1} finding facility violation responses for violation: {0}", violationFeature.OID, start.Elapsed);
                         var facilityResponseDetailCursor = responseRelation.GetObjectsRelatedToObject(violationFeature);
                         releaser.ManageLifetime(facilityResponseDetailCursor);
 
@@ -256,11 +238,13 @@ namespace uic_etl
 
                     debug.Write("{1} finding wells for facility: {0}", facility.Guid, start.Elapsed);
 
+                    var wellCount = 1;
                     // Find all wells
                     IFeature wellFeature;
                     while ((wellFeature = wellCursor.Next()) != null)
                     {
                         releaser.ManageLifetime(wellFeature);
+                        debug.Write("{0} Wells processed {1}", start.Elapsed, wellCount++);
 
                         var well = EtlMappingService.MapWellModel(wellFeature, wellFieldMap);
                         var xmlWell = mapper.Map<WellSdeModel, WellDetail>(well);
@@ -288,7 +272,6 @@ namespace uic_etl
                             mostImportantContactGuid = contact.Guid;
                         }
 
-                        debug.Write("{1} using contact type {0}", mostImportantContact, start.Elapsed);
                         xmlWell.WellContactIdentifier = new GenerateIdentifierCommand(mostImportantContactGuid).Execute();
 
                         var verticalWellCursor = verticalWellRelation.GetObjectsRelatedToObject(wellFeature);
@@ -302,7 +285,6 @@ namespace uic_etl
                         var wellStatusCursor = wellStatusRelation.GetObjectsRelatedToObject(wellFeature);
                         releaser.ManageLifetime(wellStatusCursor);
 
-                        debug.Write("{0} finding well status", start.Elapsed);
                         var wellTypeDate = DateTime.MaxValue;
                         // write well status
                         IObject wellStatusFeature;
@@ -350,7 +332,6 @@ namespace uic_etl
 
                         xmlWell.LocationDetail = locationDetail;
 
-                        debug.Write("{0} finding violations for well", start.Elapsed);
                         // well violation detail uses same table and relationship as facility violations
                         var wellViolationCursor = wellViolationRelation.GetObjectsRelatedToObject(wellFeature);
                         releaser.ManageLifetime(wellViolationCursor);
@@ -363,7 +344,6 @@ namespace uic_etl
                             var violation = EtlMappingService.MapViolationModel(wellViolationFeature, violationFieldMap);
                             var xmlViolation = mapper.Map<ViolationSdeModel, ViolationDetail>(violation);
 
-                            debug.Write("{1} finding well violation responses for violation: {0}", wellViolationFeature.OID, start.Elapsed);
                             var wellResponseDetailCursor = responseRelation.GetObjectsRelatedToObject(wellViolationFeature);
                             releaser.ManageLifetime(wellResponseDetailCursor);
 
@@ -383,7 +363,6 @@ namespace uic_etl
                             xmlWell.WellViolationDetail.Add(xmlViolation);
                         }
 
-                        debug.Write("{0} finding well inspections", start.Elapsed);
                         // well inspection detail
                         var wellInspectionCursor = wellInspectionRelation.GetObjectsRelatedToObject(wellFeature);
                         releaser.ManageLifetime(wellInspectionRelation);
@@ -399,7 +378,6 @@ namespace uic_etl
                             xmlWell.WellInspectionDetail.Add(xmlWellInspection);
                         }
 
-                        debug.Write("{0} finding MIT details", start.Elapsed);
                         // MI Test detail
                         var mechanicalIntegrityCursor = wellIntegrityRelation.GetObjectsRelatedToObject(wellFeature);
                         releaser.ManageLifetime(mechanicalIntegrityCursor);
@@ -413,8 +391,6 @@ namespace uic_etl
                             var xmlMit = mapper.Map<MiTestSdeModel, MiTestDetail>(mit);
                             xmlWell.MitTestDetail.Add(xmlMit);
                         }
-
-                        debug.Write("{0} finding engineering details", start.Elapsed);
 
                         // Engineering Detail
                         var deepWellCursor = deepWellRelation.GetObjectsRelatedToObject(wellFeature);
@@ -430,8 +406,6 @@ namespace uic_etl
 
                             xmlWell.EngineeringDetail.Add(engineeringDetail);
                         }
-
-                        debug.Write("{0} finding waste details", start.Elapsed);
 
                         // Waste Detail
                         var wasteCurser = wasteRelation.GetObjectsRelatedToObject(wellFeature);
@@ -489,8 +463,6 @@ namespace uic_etl
 
                     var authorizationActionCursor = authorizationActionRelation.GetObjectsRelatedToObject((IObject) authorizeFeature);
                     releaser.ManageLifetime(authorizationActionCursor);
-
-                    debug.Write("{1} finding permit responses for {0}", authorize.Guid, start.Elapsed);
 
                     IObject authorizationActionFeature;
                     while ((authorizationActionFeature = authorizationActionCursor.Next()) != null)
