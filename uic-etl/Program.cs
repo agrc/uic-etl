@@ -428,6 +428,8 @@ namespace uic_etl
 
                             if (!result.IsValid)
                             {
+                                ErrorReportingService.LogErrors(result.Errors, "R1");
+
                                 continue;
                             }
 
