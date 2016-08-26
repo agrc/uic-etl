@@ -46,7 +46,6 @@ namespace domain.uic_etl.xml
             });
 
             RuleSet("R1C", () => {
-                // R1C
                 RuleFor(src => src.MechanicalIntegrityTestRemedialActionDate)
                     .NotEmpty()
                     .Length(8)
