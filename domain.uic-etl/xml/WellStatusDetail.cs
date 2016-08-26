@@ -11,9 +11,9 @@ using FluentValidation;
         public string WellStatusWellIdentifier { get; set; }
     }
 
-    public class WelLStatusDetailValidator : AbstractValidator<WellStatusDetail>
+    public class WellStatusDetailValidator : AbstractValidator<WellStatusDetail>
     {
-        public WelLStatusDetailValidator()
+        public WellStatusDetailValidator()
         {
             RuleSet("R1", () =>
             {
