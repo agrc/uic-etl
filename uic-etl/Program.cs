@@ -13,6 +13,7 @@ using uic_etl.commands;
 using uic_etl.models;
 using uic_etl.models.dtos;
 using uic_etl.services;
+using FluentValidation;
 
 namespace uic_etl
 {
@@ -135,22 +136,13 @@ namespace uic_etl
                 var mapper = EtlMappingService.CreateMappings();
 
                 debug.Write("{0} Creating model validators", start.Elapsed);
-                var constituentValidator = new ConstituentDetailValidator();
-                var contactValidator = new ContactDetailValidator();
-                var correctionValidator = new CorrectionDetailValidator();
                 var engineeringValidator = new EngineeringDetailValidator();
                 var facilityValidator = new FacilityDetailValidator();
-                var locationValidator = new LocationDetailValidator();
-                var miTestValidator = new MiTestDetailValidator();
-                var permitActivityValidator = new PermitActivityDetailValidator();
                 var permitValidator = new PermitDetailValidator();
-                var responseValidator = new ResponseDetailValidator();
-                var violationValidator = new ViolationDetailValidator();
                 var wasteValidator = new WasteDetailValidator();
                 var wellValidator = new WellDetailValidator();
                 var wellInspectionValidator = new WellInspectionDetailValidator();
-                var wellStatusValidator = new WelLStatusDetailValidator();
-                var wellTypeValidator = new WellTypeDetailValidator();
+                var validator = new ValidatingService();
 
                 debug.Write("{0} Creating XML document object.", start.Elapsed);
                 var doc = XmlService.CreateDocument();
@@ -330,7 +322,10 @@ namespace uic_etl
 
                         var locationDetail = new LocationDetail(well, facility, point.X, point.Y, guid => new GenerateIdentifierCommand(guid).Execute());
 
-                        xmlWell.LocationDetail = locationDetail;
+                        if (validator.IsValid(locationDetail))
+                        {
+                            xmlWell.LocationDetail = locationDetail;
+                        }
 
                         // well violation detail uses same table and relationship as facility violations
                         var wellViolationCursor = wellViolationRelation.GetObjectsRelatedToObject(wellFeature);
@@ -357,10 +352,16 @@ namespace uic_etl
 
                                 xmlResponseDetail.ResponseViolationIdentifier = xmlViolation.ViolationIdentifier;
 
-                                xmlViolation.ResponseDetail.Add(xmlResponseDetail);
+                                if (validator.IsValid(xmlResponseDetail))
+                                {
+                                    xmlViolation.ResponseDetail.Add(xmlResponseDetail);
+                                }
                             }
 
-                            xmlWell.WellViolationDetail.Add(xmlViolation);
+                            if (validator.IsValid(xmlViolation))
+                            {
+                                xmlWell.WellViolationDetail.Add(xmlViolation);
+                            }
                         }
 
                         // well inspection detail
@@ -389,7 +390,11 @@ namespace uic_etl
 
                             var mit = EtlMappingService.MapMiTestSdeModel(mechanicalIntegrityFeature, mechanicalInspectionFieldMap);
                             var xmlMit = mapper.Map<MiTestSdeModel, MiTestDetail>(mit);
-                            xmlWell.MitTestDetail.Add(xmlMit);
+
+                            if (validator.IsValid(xmlMit))
+                            {
+                                xmlWell.MitTestDetail.Add(xmlMit);                                
+                            }
                         }
 
                         // Engineering Detail
@@ -418,6 +423,13 @@ namespace uic_etl
 
                             var waste = EtlMappingService.MapWasteClassISdeModel(wasteFeature, wasteFieldMap);
                             var xmlWaste = mapper.Map<WasteClassISdeModel, WasteDetail>(waste);
+
+                            var result = wasteValidator.Validate(xmlWaste, ruleSet: "R1");
+
+                            if (!result.IsValid)
+                            {
+                                continue;
+                            }
 
                             xmlWell.WasteDetail.Add(xmlWaste);
                         }
