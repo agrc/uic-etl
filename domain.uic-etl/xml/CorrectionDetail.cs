@@ -26,7 +26,7 @@ namespace domain.uic_etl.xml
                     .Length(20);
             });
 
-            RuleSet("RC2", () =>
+            RuleSet("R2C", () =>
             {
                 RuleFor(src => src.CorrectiveActionTypeCode)
                     .Length(2)

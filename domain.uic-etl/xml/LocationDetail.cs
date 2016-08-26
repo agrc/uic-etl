@@ -73,7 +73,7 @@ namespace domain.uic_etl.xml
                     });
             });
 
-            RuleSet("RC2", () =>
+            RuleSet("R2C", () =>
             {
                 RuleFor(src => src.HorizontalCollectionMethodCode)
                     .NotEmpty()
