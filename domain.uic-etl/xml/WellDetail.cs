@@ -39,6 +39,7 @@ namespace domain.uic_etl.xml
         public List<MiTestDetail> MitTestDetail { get; set; }
         public List<EngineeringDetail> EngineeringDetail { get; set; }
         public List<WasteDetail> WasteDetail { get; set; }
+        public int WellClass { get; set; }
     }
 
     public class WellDetailValidator : AbstractValidator<WellDetail>
@@ -69,26 +70,33 @@ namespace domain.uic_etl.xml
             });
 
             // todo: required for DI programs only
-            // tribal code list is super log and i'm not sure how it works
-            RuleSet("R1C", () =>
-            {
-                RuleFor(src => src.WellStateTribalCode)
-                    .NotEmpty()
-                    .Length(2, 3);
-            });
+//            RuleSet("R1C", () =>
+//            {
+//                RuleFor(src => src.WellStateTribalCode)
+//                    .NotEmpty()
+//                    .Length(2, 3);
+//            });
+
+            // todo: tribal code list is super log and i'm not sure how it works
 
             RuleSet("R2C", () =>
             {
                 RuleFor(src => src.WellName)
                     .NotEmpty()
                     .Length(1, 80);
+            });
 
+            RuleSet("R2C-except-6", () =>
+            {
                 // todo: requried for all wells except IV
                 RuleFor(src => src.WellAquiferExemptionInjectionCode)
                     .NotEmpty()
                     .Length(1)
                     .Must(code => new[] {"Y", "N", "U"}.Contains(code.ToUpper()));
+            });
 
+            RuleSet("R2C-1-2", () =>
+            {
                 // todo: required for class I and II
                 RuleFor(src => src.WellTotalDepthNumeric)
                     .NotEmpty()
@@ -103,7 +111,10 @@ namespace domain.uic_etl.xml
 
                         return depth > 0 && depth < 100000;
                     });
+            });
 
+            RuleSet("R2C-5", () =>
+            {
                 // todo: required for class V
                 RuleFor(src => src.WellHighPriorityDesignationCode)
                     .NotEmpty()
@@ -111,7 +122,10 @@ namespace domain.uic_etl.xml
                     .Must(code => new[] {"Y", "N", "U"}.Contains(code.ToUpper()));
 
                 // todo: skipping geology
+            });
 
+            RuleSet("R2C-3-4", () =>
+            {
                 // todo: class III and IV 
                 RuleFor(src => src.WellSiteAreaNameText)
                     .NotEmpty()
