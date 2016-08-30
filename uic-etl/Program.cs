@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml;
@@ -13,7 +14,6 @@ using uic_etl.commands;
 using uic_etl.models;
 using uic_etl.models.dtos;
 using uic_etl.services;
-using FluentValidation;
 
 namespace uic_etl
 {
@@ -136,12 +136,9 @@ namespace uic_etl
                 var mapper = EtlMappingService.CreateMappings();
 
                 debug.Write("{0} Creating model validators", start.Elapsed);
-                var engineeringValidator = new EngineeringDetailValidator();
                 var facilityValidator = new FacilityDetailValidator();
                 var permitValidator = new PermitDetailValidator();
-                var wasteValidator = new WasteDetailValidator();
                 var wellValidator = new WellDetailValidator();
-                var wellInspectionValidator = new WellInspectionDetailValidator();
                 var validator = new ValidatingService();
 
                 debug.Write("{0} Creating XML document object.", start.Elapsed);
@@ -203,6 +200,11 @@ namespace uic_etl
                         var xmlViolation = mapper.Map<ViolationSdeModel, ViolationDetail>(violation);
                         xmlViolation.ViolationFacilityIdentifier = xmlFacility.FacilityIdentifier;
 
+                        if (!validator.IsValid(xmlViolation))
+                        {
+                            continue;
+                        }
+
                         var facilityResponseDetailCursor = responseRelation.GetObjectsRelatedToObject(violationFeature);
                         releaser.ManageLifetime(facilityResponseDetailCursor);
 
@@ -214,6 +216,11 @@ namespace uic_etl
 
                             var responseDetail = EtlMappingService.MapResponseModel(responseFeature, responseFieldMap);
                             var xmlResponseDetail = mapper.Map<EnforcementSdeModel, ResponseDetail>(responseDetail);
+
+                            if (!validator.IsValid(xmlResponseDetail))
+                            {
+                                continue;
+                            }
 
                             xmlResponseDetail.ResponseViolationIdentifier = xmlViolation.ViolationIdentifier;
 
@@ -260,6 +267,11 @@ namespace uic_etl
                                 continue;
                             }
 
+                            if (!validator.IsValid(contact))
+                            {
+                                continue;
+                            }
+
                             mostImportantContact = contact.ContactType;
                             mostImportantContactGuid = contact.Guid;
                         }
@@ -287,10 +299,15 @@ namespace uic_etl
                             var wellStatus = EtlMappingService.MapWellStatusModel(wellStatusFeature, wellStatusFieldMap);
                             var xmlWellStatus = mapper.Map<WellStatusSdeModel, WellStatusDetail>(wellStatus);
 
+                            if (!validator.IsValid(xmlWellStatus))
+                            {
+                                continue;
+                            }
+
                             // get the earliest date
                             if (wellStatus.OperatingStatusDate.HasValue && wellTypeDate > wellStatus.OperatingStatusDate)
                             {
-                                wellTypeDate = wellStatus.OperatingStatusDate.Value;
+                                wellTypeDate = wellStatus.OperatingStatusDate.GetValueOrDefault();
                             }
 
                             xmlWell.WellStatusDetail.Add(xmlWellStatus);
@@ -312,7 +329,10 @@ namespace uic_etl
                             WellTypeWellIdentifier = new GenerateIdentifierCommand(well.Guid).Execute()
                         };
 
-                        xmlWell.WellTypeDetail.Add(wellTypeDetail);
+                        if (validator.IsValid(wellTypeDetail))
+                        {
+                            xmlWell.WellTypeDetail.Add(wellTypeDetail);
+                        }
 
                         // location detail
                         var utm = wellFeature.ShapeCopy;
@@ -339,6 +359,11 @@ namespace uic_etl
                             var violation = EtlMappingService.MapViolationModel(wellViolationFeature, violationFieldMap);
                             var xmlViolation = mapper.Map<ViolationSdeModel, ViolationDetail>(violation);
 
+                            if (!validator.IsValid(xmlViolation))
+                            {
+                                continue;
+                            }
+
                             var wellResponseDetailCursor = responseRelation.GetObjectsRelatedToObject(wellViolationFeature);
                             releaser.ManageLifetime(wellResponseDetailCursor);
 
@@ -352,15 +377,12 @@ namespace uic_etl
 
                                 xmlResponseDetail.ResponseViolationIdentifier = xmlViolation.ViolationIdentifier;
 
-                                if (validator.IsValid(xmlResponseDetail))
+                                if (!validator.IsValid(xmlResponseDetail))
                                 {
-                                    xmlViolation.ResponseDetail.Add(xmlResponseDetail);
+                                    continue;
                                 }
-                            }
 
-                            if (validator.IsValid(xmlViolation))
-                            {
-                                xmlWell.WellViolationDetail.Add(xmlViolation);
+                                xmlViolation.ResponseDetail.Add(xmlResponseDetail);
                             }
                         }
 
@@ -375,6 +397,11 @@ namespace uic_etl
 
                             var wellInspection = EtlMappingService.MapWellInspectionModel(wellInspectionFeature, wellInspectionFieldMap);
                             var xmlWellInspection = mapper.Map<WellInspectionSdeModel, WellInspectionDetail>(wellInspection);
+
+                            if (!validator.IsValid(xmlWellInspection))
+                            {
+                                continue;
+                            }
 
                             xmlWell.WellInspectionDetail.Add(xmlWellInspection);
                         }
@@ -393,7 +420,7 @@ namespace uic_etl
 
                             if (validator.IsValid(xmlMit))
                             {
-                                xmlWell.MitTestDetail.Add(xmlMit);                                
+                                xmlWell.MitTestDetail.Add(xmlMit);
                             }
                         }
 
@@ -408,6 +435,16 @@ namespace uic_etl
 
                             var deepWell = EtlMappingService.MapWellOperationSdeModel(deepWellFeature, deepWellFieldMap);
                             var engineeringDetail = mapper.Map<WellOperatingSdeModel, EngineeringDetail>(deepWell);
+
+                            if (!validator.IsValid(engineeringDetail, "R1"))
+                            {
+                                continue;
+                            }
+
+                            if (!new [] {1, 2}.Contains(xmlWell.WellClass) || !validator.IsValid(engineeringDetail, "R2C"))
+                            {
+                                continue;
+                            }
 
                             xmlWell.EngineeringDetail.Add(engineeringDetail);
                         }
@@ -424,16 +461,47 @@ namespace uic_etl
                             var waste = EtlMappingService.MapWasteClassISdeModel(wasteFeature, wasteFieldMap);
                             var xmlWaste = mapper.Map<WasteClassISdeModel, WasteDetail>(waste);
 
-                            var result = wasteValidator.Validate(xmlWaste, ruleSet: "R1");
-
-                            if (!result.IsValid)
+                            if (!validator.IsValid(xmlWaste, "R1"))
                             {
-                                ErrorReportingService.LogErrors(result.Errors, "R1");
-
                                 continue;
                             }
 
+                            if (xmlWell.WellClass != 1 || !validator.IsValid(xmlWaste, "R2C"))
+                            {
+                                debug.Write("Waste {0} failed RC2", xmlWaste.WasteIdentifier);
+                            }
+
                             xmlWell.WasteDetail.Add(xmlWaste);
+                        }
+
+                        if (!validator.IsValid(xmlWell, "R1"))
+                        {
+                            continue;
+                        }
+
+                        if (!validator.IsValid(xmlWell, "R2C"))
+                        {
+                            continue;
+                        }
+
+                        if (xmlWell.WellClass == 6 && !validator.IsValid(xmlWell, "R2C-except-6"))
+                        {
+                            debug.Write("Well {0} failed RC2", xmlWell.WellIdentifier);
+                        }
+
+                        if (new []{1, 2}.Contains(xmlWell.WellClass) && !validator.IsValid(xmlWell, "R2C-1-2"))
+                        {
+                            debug.Write("Well {0} failed RC2", xmlWell.WellIdentifier); 
+                        }
+
+                        if (xmlWell.WellClass == 5 && !validator.IsValid(xmlWell, "R2C-5"))
+                        {
+                            debug.Write("Well {0} failed RC2", xmlWell.WellIdentifier);
+                        }
+
+                        if (new[] { 3, 4 }.Contains(xmlWell.WellClass) && !validator.IsValid(xmlWell, "R2C-3-4"))
+                        {
+                            debug.Write("Well {0} failed RC2", xmlWell.WellIdentifier);
                         }
 
                         XmlService.AddWell(ref facilityDetailElement, xmlWell);
@@ -456,6 +524,11 @@ namespace uic_etl
                     var contact = EtlMappingService.MapContactSdeModel(contactFeature, contactFieldMap);
                     var xmlContact = mapper.Map<ContactSdeModel, ContactDetail>(contact);
 
+                    if (!validator.IsValid(xmlContact))
+                    {
+                        continue;
+                    }
+
                     contacts.Add(xmlContact);
                 }
 
@@ -475,6 +548,16 @@ namespace uic_etl
                     var authorize = EtlMappingService.MapAuthorizationSdeModel(authorizeFeature, authorizationFieldMap);
                     var xmlPermit = mapper.Map<AuthorizationSdeModel, PermitDetail>(authorize);
 
+                    if (!validator.IsValid(xmlPermit, "R1"))
+                    {
+                        continue;
+                    }
+
+                    if (!validator.IsValid(xmlPermit, "R2"))
+                    {
+                        debug.Write("Permit {0} did not pass R2", xmlPermit);
+                    }
+
                     var authorizationActionCursor = authorizationActionRelation.GetObjectsRelatedToObject((IObject) authorizeFeature);
                     releaser.ManageLifetime(authorizationActionCursor);
 
@@ -489,6 +572,11 @@ namespace uic_etl
                         {
                             // skip authorized by rule wells.
                             // https://github.com/agrc/uic-etl/issues/10#issuecomment-241120723
+                            continue;
+                        }
+
+                        if (!validator.IsValid(permitActivityDetail))
+                        {
                             continue;
                         }
 
