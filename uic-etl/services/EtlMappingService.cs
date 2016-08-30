@@ -71,7 +71,8 @@ namespace uic_etl.services
                     .ForMember(dest => dest.MitTestDetail, opts => opts.Ignore())
                     .ForMember(dest => dest.WellInspectionDetail, opts => opts.Ignore())
                     .ForMember(dest => dest.EngineeringDetail, opts => opts.Ignore())
-                    .ForMember(dest => dest.WasteDetail, opts => opts.Ignore());
+                    .ForMember(dest => dest.WasteDetail, opts => opts.Ignore())
+                    .ForMember(dest => dest.WellClass, opts => opts.MapFrom(src => src.WellClass));
 
                 _.CreateMap<WellStatusSdeModel, WellStatusDetail>()
                     .ForMember(dest => dest.WellStatusIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))

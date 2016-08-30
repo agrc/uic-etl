@@ -8,7 +8,7 @@ namespace domain.uic_etl.sde
         {
             "GUID", "InjectionAquiferExempt", "HighPriority", "WellID",
             "WellSWPZ", "WellName", "WellSubClass", "Facility_FK", "Authorization_FK",
-            "LocationMethod", "LocationAccuracy"
+            "LocationMethod", "LocationAccuracy", "WellClass"
         };
 
         public Guid Guid { get; set; }
@@ -22,5 +22,6 @@ namespace domain.uic_etl.sde
         public string WellSubClass { get; set; }
         public string LocationAccuracy { get; set; }
         public string LocationMethod { get; set; }
+        public string WellClass { get; set; }
     }
 }
