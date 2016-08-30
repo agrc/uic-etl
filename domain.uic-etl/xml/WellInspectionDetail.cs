@@ -49,41 +49,42 @@ namespace domain.uic_etl.xml
             });
 
             // todo only for DI programs (Last 2 characters of primacy agency code = `DI`
-            RuleSet("R2C", () =>
-            {
-                RuleFor(src => src.InspectionAssistanceCode)
-                    .NotEmpty()
-                    .Length(2)
-                    .Must(code => new[] {"GN", "SS", "BH", "NO"}.Contains(code.ToUpper()));
-
-                RuleFor(src => src.InspectionDeficiencyCode)
-                    .NotEmpty()
-                    .Length(2)
-                    .Must(code => new[] {"OS", "CM", "BH", "NO"}.Contains(code.ToUpper()));
-
-                RuleFor(src => src.InspectionIcisComplianceMonitoringReasonCode)
-                    .NotEmpty()
-                    .Length(2)
-                    .Must(code => new[] {"AP", "CP", "MA"}.Contains(code.ToUpper()));
-
-                RuleFor(src => src.InspectionIcisComplianceMonitoringTypeCode)
-                    .NotEmpty()
-                    .Length(3)
-                    .Must(code => new[] { "CAI", "CEI", "CSE", "IUI", "IWS", "OCA", "OSV", "OVI", "PRM", "VLN" }.Contains(code.ToUpper()));
-
-                RuleFor(src => src.InspectionIcisComplianceActivityTypeCode)
-                    .NotEmpty()
-                    .Length(2)
-                    .Must(code => new[] {"IR", "CS", "CV", "OR", "VD"}.Contains(code.ToUpper()));
-
-                RuleFor(src => src.InspectionIcisMoaName)
-                    .NotEmpty()
-                    .Length(1, 50);
-
-                RuleFor(src => src.InspectionIcisRegionalPriorityName)
-                    .NotEmpty()
-                    .Length(1, 12);
-            });
+            // I do not think we have any DI types
+//            RuleSet("R2C", () =>
+//            {
+//                RuleFor(src => src.InspectionAssistanceCode)
+//                    .NotEmpty()
+//                    .Length(2)
+//                    .Must(code => new[] {"GN", "SS", "BH", "NO"}.Contains(code.ToUpper()));
+//
+//                RuleFor(src => src.InspectionDeficiencyCode)
+//                    .NotEmpty()
+//                    .Length(2)
+//                    .Must(code => new[] {"OS", "CM", "BH", "NO"}.Contains(code.ToUpper()));
+//
+//                RuleFor(src => src.InspectionIcisComplianceMonitoringReasonCode)
+//                    .NotEmpty()
+//                    .Length(2)
+//                    .Must(code => new[] {"AP", "CP", "MA"}.Contains(code.ToUpper()));
+//
+//                RuleFor(src => src.InspectionIcisComplianceMonitoringTypeCode)
+//                    .NotEmpty()
+//                    .Length(3)
+//                    .Must(code => new[] { "CAI", "CEI", "CSE", "IUI", "IWS", "OCA", "OSV", "OVI", "PRM", "VLN" }.Contains(code.ToUpper()));
+//
+//                RuleFor(src => src.InspectionIcisComplianceActivityTypeCode)
+//                    .NotEmpty()
+//                    .Length(2)
+//                    .Must(code => new[] {"IR", "CS", "CV", "OR", "VD"}.Contains(code.ToUpper()));
+//
+//                RuleFor(src => src.InspectionIcisMoaName)
+//                    .NotEmpty()
+//                    .Length(1, 50);
+//
+//                RuleFor(src => src.InspectionIcisRegionalPriorityName)
+//                    .NotEmpty()
+//                    .Length(1, 12);
+//            });
         }
     }
 }
