@@ -18,6 +18,9 @@ namespace uic_etl.services
         private readonly ViolationDetailValidator _violationValidator;
         private readonly WellStatusDetailValidator _wellStatusValidator;
         private readonly WellTypeDetailValidator _wellTypeValidator;
+        private readonly WellInspectionDetailValidator _wellInspectionValidator;
+        private readonly EngineeringDetailValidator _engineeringDetailValidator;
+        private readonly WasteDetailValidator _wasteDetailValidator;
         public readonly Dictionary<string, Dictionary<string, IEnumerable<ValidationFailure>>> Results;
 
         public ValidatingService()
@@ -33,6 +36,9 @@ namespace uic_etl.services
             _violationValidator = new ViolationDetailValidator();
             _wellStatusValidator = new WellStatusDetailValidator();
             _wellTypeValidator = new WellTypeDetailValidator();
+            _wellInspectionValidator = new WellInspectionDetailValidator();
+            _engineeringDetailValidator = new EngineeringDetailValidator();
+            _wasteDetailValidator = new WasteDetailValidator();
         }
 
         public bool IsValid<T>(T model)
@@ -101,7 +107,13 @@ namespace uic_etl.services
                 key = "WellTypeDetail";
                 id = (model as WellTypeDetail).WellTypeIdentifier;
             }
-
+            else if (model is WellInspectionDetail)
+            {
+                validator = _wellInspectionValidator as AbstractValidator<T>;
+                key = "WellInspectionDetail";
+                id = (model as WellInspectionDetail).InspectionIdentifier;
+            }
+           
             if (validator == null)
             {
                 throw new ArgumentException("Model has special needs and needs to be validated outside of this service.", "model");
@@ -121,6 +133,38 @@ namespace uic_etl.services
                 var warnings = validator.Validate(model, ruleSet: ruleSet);
                 errors[ruleSet] = warnings.Errors;
             }
+
+            Results[string.Format("{0} with the id: {1}", key, id)] = errors;
+
+            return valid;
+        }
+
+        // use on conditionals the require branching in program
+        public bool IsValid<T>(T model, string ruleSet)
+        {
+            AbstractValidator<T> validator = null;
+            var key = "";
+            var id = "";
+
+            if (model is EngineeringDetail)
+            {
+                validator = _engineeringDetailValidator as AbstractValidator<T>;
+                key = "EngineeringDetail";
+                id = (model as EngineeringDetail).EngineeringIdentifier;
+            }
+            else if (model is WasteDetail)
+            {
+                validator = _wasteDetailValidator as AbstractValidator<T>;
+                key = "WasteDetail";
+                id = (model as WasteDetail).WasteIdentifier;
+            }
+            
+            var result = validator.Validate(model, ruleSet: ruleSet);
+
+            var valid = result.IsValid;
+
+            var errors = new Dictionary<string, IEnumerable<ValidationFailure>>();
+            errors[ruleSet] = result.Errors;
 
             Results[string.Format("{0} with the id: {1}", key, id)] = errors;
 
