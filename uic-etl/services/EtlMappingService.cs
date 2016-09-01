@@ -38,7 +38,7 @@ namespace uic_etl.services
                     .ForMember(dest => dest.ViolationEndangeringCode, opts => opts.MapFrom(src => src.Endanger))
                     .ForMember(dest => dest.ViolationReturnComplianceDate, opts => opts.MapFrom(src => src.ReturnToComplianceDate.HasValue ? src.ReturnToComplianceDate.Value.ToString("yyyyMMdd") : DateTime.MinValue.ToString("yyyyMMdd")))
                     .ForMember(dest => dest.ViolationSignificantCode, opts => opts.MapFrom(src => src.SignificantNonCompliance))
-                    .ForMember(dest => dest.ViolationDeterminedDate, opts => opts.MapFrom(src => src.ViolationDate.HasValue ? src.ViolationDate.Value.ToString("yyyyMMdd") : DateTime.MinValue.ToString("yyyyyMMdd")))
+                    .ForMember(dest => dest.ViolationDeterminedDate, opts => opts.MapFrom(src => src.ViolationDate.HasValue ? src.ViolationDate.Value.ToString("yyyyMMdd") : DateTime.MinValue.ToString("yyyyMMdd")))
                     .ForMember(dest => dest.ViolationTypeCode, opts => opts.MapFrom(src => src.ViolationType))
                     .ForMember(dest => dest.ViolationFacilityIdentifier, opts => opts.MapFrom(src => src.FacilityId))
                     .ForMember(dest => dest.Guid, opts => opts.MapFrom(src => src.Guid))
