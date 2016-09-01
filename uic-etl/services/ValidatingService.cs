@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using domain.uic_etl.xml;
 using FluentValidation;
 using FluentValidation.Results;
@@ -125,16 +126,28 @@ namespace uic_etl.services
             var valid = result.IsValid && conditionalResult.IsValid;
 
             var errors = new Dictionary<string, IEnumerable<ValidationFailure>>();
-            errors["R1"] = result.Errors;
-            errors["R1C"] = conditionalResult.Errors;
+            if (result.Errors.Count > 0)
+            {
+                errors["R1"] = result.Errors;
+            }
+            if (conditionalResult.Errors.Count > 0)
+            {
+                errors["R1C"] = conditionalResult.Errors;
+            }
 
             foreach (var ruleSet in new []{"R2", "R2C"})
             {
                 var warnings = validator.Validate(model, ruleSet: ruleSet);
-                errors[ruleSet] = warnings.Errors;
+                if (warnings.Errors.Count > 0)
+                {
+                    errors[ruleSet] = warnings.Errors;
+                }
             }
 
-            Results[string.Format("{0} with the id: {1}", key, id)] = errors;
+            if (errors.Count > 0)
+            {
+                Results[string.Format("{0} with the id: {1}", key, id)] = errors;
+            }
 
             return valid;
         }
@@ -164,9 +177,15 @@ namespace uic_etl.services
             var valid = result.IsValid;
 
             var errors = new Dictionary<string, IEnumerable<ValidationFailure>>();
-            errors[ruleSet] = result.Errors;
+            if (result.Errors.Count > 0)
+            {
+                errors[ruleSet] = result.Errors;
+            }
 
-            Results[string.Format("{0} with the id: {1}", key, id)] = errors;
+            if (errors.Count > 0)
+            {
+                Results[string.Format("{0} with the id: {1}", key, id)] = errors;
+            }
 
             return valid;
         }
