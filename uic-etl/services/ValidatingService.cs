@@ -27,9 +27,11 @@ namespace uic_etl.services
         private readonly WasteDetailValidator _wasteDetailValidator;
         private readonly FacilityDetailValidator _facilityDetailValidator;
         private readonly WellDetailValidator _wellDetailValidator;
+        private readonly ObservableCollection<Dictionary<string, IEnumerable<ValidationFailure>>> _results;
 
         public ValidatingService()
         {
+            _results = new ObservableCollection<Dictionary<string, IEnumerable<ValidationFailure>>>();
            
             _constituentValidator = new ConstituentDetailValidator();
             _contactValidator = new ContactDetailValidator();
@@ -157,6 +159,7 @@ namespace uic_etl.services
 
             if (errors.Count > 0)
             {
+                _results.Add(errors);
             }
 
             return valid;
@@ -210,6 +213,7 @@ namespace uic_etl.services
 
             if (errors.Count > 0)
             {
+                _results.Add(errors);
             }
 
             return valid;
