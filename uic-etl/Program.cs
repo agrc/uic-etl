@@ -136,9 +136,6 @@ namespace uic_etl
                 var mapper = EtlMappingService.CreateMappings();
 
                 debug.Write("{0} Creating model validators", start.Elapsed);
-                var facilityValidator = new FacilityDetailValidator();
-                var permitValidator = new PermitDetailValidator();
-                var wellValidator = new WellDetailValidator();
                 var validator = new ValidatingService();
 
                 debug.Write("{0} Creating XML document object.", start.Elapsed);
@@ -187,6 +184,10 @@ namespace uic_etl
                     var facility = EtlMappingService.MapFacilityModel(facilityFeature, facilityFieldMap);
                     var xmlFacility = mapper.Map<FacilitySdeModel, FacilityDetail>(facility);
 
+                    if (!validator.IsValid(xmlFacility, "R1"))
+                    {
+                        continue;
+                    }
                     var violationCursor = facilityViolationRelation.GetObjectsRelatedToObject(facilityFeature);
                     releaser.ManageLifetime(violationCursor);
 
@@ -265,12 +266,7 @@ namespace uic_etl
                             if (contact.ContactType > mostImportantContact)
                             {
                                 continue;
-                            }
-
-                            if (!validator.IsValid(contact))
-                            {
-                                continue;
-                            }
+                            } 
 
                             mostImportantContact = contact.ContactType;
                             mostImportantContactGuid = contact.Guid;
@@ -313,7 +309,7 @@ namespace uic_etl
                             xmlWell.WellStatusDetail.Add(xmlWellStatus);
                         }
 
-                        var wellTypeDateFormatted = wellTypeDate.ToString("yyyyyMMdd");
+                        var wellTypeDateFormatted = wellTypeDate.ToString("yyyyMMdd");
 
                         if (wellTypeDate == DateTime.MaxValue)
                         {
@@ -502,6 +498,16 @@ namespace uic_etl
                         if (new[] { 3, 4 }.Contains(xmlWell.WellClass) && !validator.IsValid(xmlWell, "R2C-3-4"))
                         {
                             debug.Write("Well {0} failed RC2", xmlWell.WellIdentifier);
+                        }
+
+                        if (xmlWell.WellTypeCode == "1001" && !validator.IsValid(xmlFacility, "R2C-1H"))
+                        {
+                            // todo: remove facility and exit
+                        }
+
+                        if (xmlWell.WellClass == 1 && !validator.IsValid(xmlFacility, "R2C-Class1"))
+                        {
+                            // todo: remove facility and exit
                         }
 
                         XmlService.AddWell(ref facilityDetailElement, xmlWell);
