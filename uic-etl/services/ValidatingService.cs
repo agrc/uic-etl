@@ -22,6 +22,8 @@ namespace uic_etl.services
         private readonly WellInspectionDetailValidator _wellInspectionValidator;
         private readonly EngineeringDetailValidator _engineeringDetailValidator;
         private readonly WasteDetailValidator _wasteDetailValidator;
+        private readonly FacilityDetailValidator _facilityDetailValidator;
+        private readonly WellDetailValidator _wellDetailValidator;
         public readonly Dictionary<string, Dictionary<string, IEnumerable<ValidationFailure>>> Results;
 
         public ValidatingService()
@@ -40,6 +42,8 @@ namespace uic_etl.services
             _wellInspectionValidator = new WellInspectionDetailValidator();
             _engineeringDetailValidator = new EngineeringDetailValidator();
             _wasteDetailValidator = new WasteDetailValidator();
+            _facilityDetailValidator = new FacilityDetailValidator();
+            _wellDetailValidator = new WellDetailValidator();
         }
 
         public bool IsValid<T>(T model)
@@ -171,7 +175,23 @@ namespace uic_etl.services
                 key = "WasteDetail";
                 id = (model as WasteDetail).WasteIdentifier;
             }
-            
+            else if (model is FacilityDetail)
+            {
+                validator = _facilityDetailValidator as AbstractValidator<T>;
+                key = "FacilityDetail";
+                id = (model as FacilityDetail).FacilityIdentifier; 
+            }
+            else if (model is WellDetail)
+            {
+                validator = _wellDetailValidator as AbstractValidator<T>;
+                key = "FacilityDetail";
+                id = (model as WellDetail).WellIdentifier;
+            }
+
+            if (validator == null)
+            {
+                throw new ArgumentException("add this steve.", "model");
+            }
             var result = validator.Validate(model, ruleSet: ruleSet);
 
             var valid = result.IsValid;
