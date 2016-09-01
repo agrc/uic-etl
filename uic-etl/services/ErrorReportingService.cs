@@ -4,9 +4,9 @@ namespace uic_etl.services
 {
     public static class ErrorReportingService
     {
-        public static void LogErrors(IEnumerable list, string type)
+        public static void LogErrors(IList newItems)
         {
-            
-        } 
+
+        }
     }
 }

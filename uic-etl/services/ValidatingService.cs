@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using domain.uic_etl.xml;
 using FluentValidation;
@@ -24,11 +27,10 @@ namespace uic_etl.services
         private readonly WasteDetailValidator _wasteDetailValidator;
         private readonly FacilityDetailValidator _facilityDetailValidator;
         private readonly WellDetailValidator _wellDetailValidator;
-        public readonly Dictionary<string, Dictionary<string, IEnumerable<ValidationFailure>>> Results;
 
         public ValidatingService()
         {
-            Results = new Dictionary<string, Dictionary<string, IEnumerable<ValidationFailure>>>();
+           
             _constituentValidator = new ConstituentDetailValidator();
             _contactValidator = new ContactDetailValidator();
             _correctionValidator = new CorrectionDetailValidator();
@@ -44,6 +46,11 @@ namespace uic_etl.services
             _wasteDetailValidator = new WasteDetailValidator();
             _facilityDetailValidator = new FacilityDetailValidator();
             _wellDetailValidator = new WellDetailValidator();
+
+            _results.CollectionChanged += (sender, args) =>
+            {
+                ErrorReportingService.LogErrors(args.NewItems);
+            };
         }
 
         public bool IsValid<T>(T model)
@@ -150,7 +157,6 @@ namespace uic_etl.services
 
             if (errors.Count > 0)
             {
-                Results[string.Format("{0} with the id: {1}", key, id)] = errors;
             }
 
             return valid;
@@ -204,7 +210,6 @@ namespace uic_etl.services
 
             if (errors.Count > 0)
             {
-                Results[string.Format("{0} with the id: {1}", key, id)] = errors;
             }
 
             return valid;
