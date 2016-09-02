@@ -28,6 +28,7 @@ namespace uic_etl.services
         private readonly WasteDetailValidator _wasteDetailValidator;
         private readonly FacilityDetailValidator _facilityDetailValidator;
         private readonly WellDetailValidator _wellDetailValidator;
+        private readonly PermitDetailValidator _permitDetailValidator;
         private readonly ObservableCollection<LogModel> _results;
 
         public ValidatingService()
@@ -49,6 +50,7 @@ namespace uic_etl.services
             _wasteDetailValidator = new WasteDetailValidator();
             _facilityDetailValidator = new FacilityDetailValidator();
             _wellDetailValidator = new WellDetailValidator();
+            _permitDetailValidator = new PermitDetailValidator();
 
             _results.CollectionChanged += (sender, args) =>
             {
@@ -196,6 +198,12 @@ namespace uic_etl.services
                 validator = _wellDetailValidator as AbstractValidator<T>;
                 key = "FacilityDetail";
                 id = (model as WellDetail).WellIdentifier;
+            }
+            else if (model is PermitDetail)
+            {
+                validator = _permitDetailValidator as AbstractValidator<T>;
+                key = "PermitDetail";
+                id = (model as PermitDetail).PermitIdentifier; 
             }
 
             if (validator == null)
