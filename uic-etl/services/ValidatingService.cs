@@ -7,6 +7,7 @@ using System.Linq;
 using domain.uic_etl.xml;
 using FluentValidation;
 using FluentValidation.Results;
+using uic_etl.models.dtos;
 
 namespace uic_etl.services
 {
@@ -27,11 +28,11 @@ namespace uic_etl.services
         private readonly WasteDetailValidator _wasteDetailValidator;
         private readonly FacilityDetailValidator _facilityDetailValidator;
         private readonly WellDetailValidator _wellDetailValidator;
-        private readonly ObservableCollection<Dictionary<string, IEnumerable<ValidationFailure>>> _results;
+        private readonly ObservableCollection<LogModel> _results;
 
         public ValidatingService()
         {
-            _results = new ObservableCollection<Dictionary<string, IEnumerable<ValidationFailure>>>();
+            _results = new ObservableCollection<LogModel>();
            
             _constituentValidator = new ConstituentDetailValidator();
             _contactValidator = new ContactDetailValidator();
@@ -51,7 +52,7 @@ namespace uic_etl.services
 
             _results.CollectionChanged += (sender, args) =>
             {
-                ErrorReportingService.LogErrors(args.NewItems);
+                ReportingService.LogErrors(args.NewItems);
             };
         }
 
@@ -159,7 +160,7 @@ namespace uic_etl.services
 
             if (errors.Count > 0)
             {
-                _results.Add(errors);
+                _results.Add(new LogModel(key, id, errors));
             }
 
             return valid;
@@ -213,7 +214,7 @@ namespace uic_etl.services
 
             if (errors.Count > 0)
             {
-                _results.Add(errors);
+                _results.Add(new LogModel(key, id, errors));
             }
 
             return valid;
