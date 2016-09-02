@@ -7,6 +7,8 @@ namespace domain.uic_etl.xml
 {
     public class LocationDetail
     {
+        private string _sourceMapScaleNumeric;
+
         public LocationDetail(WellSdeModel well, FacilitySdeModel facility, double lon, double lat, Func<Guid, string> generateIdentifierFunc)
         {
             LocationIdentifier = generateIdentifierFunc(Guid.NewGuid());
@@ -111,7 +113,11 @@ namespace domain.uic_etl.xml
         public string LocationIdentifier { get; set; }
         public string HorizontalCollectionMethodCode { get; set; }
         public string LocationPointLineAreaCode { get; set; }
-        public string SourceMapScaleNumeric { get; set; }
+        public string SourceMapScaleNumeric
+        {
+            get { return _sourceMapScaleNumeric == "N" ? "NA" : _sourceMapScaleNumeric; }
+            set { _sourceMapScaleNumeric = value; }
+        }
         public string LocationWellIdentifier { get; set; }
     }
 
@@ -146,7 +152,7 @@ namespace domain.uic_etl.xml
                         int accuracy;
                         if (!int.TryParse(x.ToString(), out accuracy))
                         {
-                            return false;
+                            return new[] {"NA", "U"}.Contains(x.ToString());
                         }
 
                         return accuracy > 0 && accuracy < 1000000;
