@@ -8,7 +8,6 @@ namespace domain.uic_etl.xml
     {
         private string _wellTypeCode;
         public string WellTypeIdentifier { get; set; }
-
         public string WellTypeCode
         {
             get
@@ -304,7 +303,6 @@ namespace domain.uic_etl.xml
             }
             set { _wellTypeCode = value; }
         }
-
         public string WellTypeDate { get; set; }
         public string WellTypeWellIdentifier { get; set; }
     }
@@ -319,7 +317,7 @@ namespace domain.uic_etl.xml
             var codeTwo = new[] {"2A", "2D", "2F", "2H", "2M", "2R", "2C", "2X"};
             var codeThree = new[] {"3A", "3G", "3U", "3S", "3C", "3N", "3X"};
             var codeFour = new[] {"4A", "4P"};
-            var codeFive = new[] {"5A", "5B", "5C", "5D", "5E", "5F", "5G", "5H", "5I", "5L", "5X"};
+            var codeFive = new[] {"5A", "5B", "5C", "5D", "5E", "5F", "5G", "5H", "5I", "5K", "5L", "5X"};
             var codeSix = new[] {"6A", "6B"};
 
             _wellTypes = codeOne.Concat(codeTwo)
