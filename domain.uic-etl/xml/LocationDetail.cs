@@ -11,7 +11,6 @@ namespace domain.uic_etl.xml
         {
             LocationIdentifier = generateIdentifierFunc(Guid.NewGuid());
             LocationAddressCounty = facility.CountyFips;
-            LocationAccuracyValueMeasure = string.IsNullOrEmpty(well.LocationAccuracy) ? "U" : well.LocationAccuracy;
             GeographicReferencePointCode = "026";
             HorizontalCoordinateReferenceSystemDatumCode = "002";
             HorizontalCollectionMethodCode = string.IsNullOrEmpty(well.LocationMethod) ? "U" : well.LocationMethod;
@@ -26,7 +25,88 @@ namespace domain.uic_etl.xml
         public double LatitudeMeasure { get; set; }
         public string HorizontalCoordinateReferenceSystemDatumCode { get; set; }
         public string GeographicReferencePointCode { get; set; }
-        public string LocationAccuracyValueMeasure { get; set; }
+        public object LocationAccuracyValueMeasure
+        {
+            get
+            {
+                switch (SourceMapScaleNumeric)
+                {
+                    case "NA":
+                    case "N":
+                    {
+                        return "NA";
+                    }
+                    case "1":
+                    {
+                        return 250;
+                    }
+                    case "2":
+                    {
+                        return 3000;
+                    }
+                    case "3":
+                    {
+                        return 7000;
+                    }
+                    case "A":
+                    {
+                        return 10000;
+                    }
+                    case "B":
+                    {
+                        return 12000;
+                    }
+                    case "C":
+                    {
+                        return 15480;
+                    }
+                    case "D":
+                    {
+                        return 20000;
+                    }
+                    case "E":
+                    {
+                        return 24000;
+                    }
+                    case "F":
+                    {
+                        return 25000;
+                    }
+                    case "G":
+                    {
+                        return 50000;
+                    }
+                    case "H":
+                    {
+                        return 62500;
+                    }
+                    case "I":
+                    {
+                        return 63360;
+                    }
+                    case "J":
+                    {
+                        return 100000;
+                    }
+                    case "K":
+                    {
+                        return 125000;
+                    }
+                    case "L":
+                    {
+                        return 250000;
+                    }
+                    case "M":
+                    {
+                        return 500000;
+                    }
+                    default:
+                    {
+                        return "U";
+                    }
+                }
+            }
+        }
         public int LocationAddressCounty { get; set; }
         public string LocationIdentifier { get; set; }
         public string HorizontalCollectionMethodCode { get; set; }
@@ -64,7 +144,7 @@ namespace domain.uic_etl.xml
                     .Must(x =>
                     {
                         int accuracy;
-                        if (!int.TryParse(x, out accuracy))
+                        if (!int.TryParse(x.ToString(), out accuracy))
                         {
                             return false;
                         }
@@ -79,13 +159,13 @@ namespace domain.uic_etl.xml
                     .NotEmpty()
                     .Length(3)
                     .Must(code => new[] {"001", "007", "011", "012", "013", "014", "015", "016", "017", "021", "022", "023", "024", "025", "026", "027", "028"}
-                         .Contains(code));
+                        .Contains(code));
 
                 RuleFor(src => src.SourceMapScaleNumeric)
                     .NotEmpty()
                     .Length(1, 2)
-                    .Must(code => new [] {"NA", "1", "2", "3", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "U"}
-                         .Contains(code.ToUpper()));
+                    .Must(code => new[] {"NA", "1", "2", "3", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "U"}
+                        .Contains(code.ToUpper()));
             });
         }
     }
