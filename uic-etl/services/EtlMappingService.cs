@@ -235,7 +235,7 @@ namespace uic_etl.services
                 HighPriority = GetDomainValue(row, fieldMap["HighPriority"]),
                 WellSwpz = GetDomainValue(row, fieldMap["WellSWPZ"]),
                 LocationAccuracy = GetDomainValue(row, fieldMap["LocationAccuracy"]),
-                LocationMethod = GetDomainValue(row, fieldMap["LocationAccuracy"]),
+                LocationMethod = GetDomainValue(row, fieldMap["LocationMethod"]),
                 WellName = GetDomainValue(row, fieldMap["WellName"]),
                 WellSubClass = GetDomainValue(row, fieldMap["WellSubClass"])
             };
