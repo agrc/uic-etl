@@ -38,7 +38,7 @@ namespace domain.uic_etl.xml
                     .Length(2)
                     .Must(code => new[] {"PS", "FU", "FP", "FA"}.Contains(code.ToUpper()));
 
-                RuleFor(src => src.MechanicalIntegrityTestResultCode)
+                RuleFor(src => src.MechanicalIntegrityTestTypeCode)
                     .NotEmpty()
                     .Length(2)
                     .Must(code => new[] {"AP", "CT", "MR", "WI", "WA", "AT", "SR", "OL", "CR", "TN", "RC", "CB", "OA", "RS", "DC", "OF"}
