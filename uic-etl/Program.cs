@@ -40,6 +40,10 @@ namespace uic_etl
             var start = Stopwatch.StartNew();
             debug.Write("Staring: {0}", DateTime.Now.ToString("s"));
 
+            debug.Write("{0} Initializing log writer", start.Elapsed);
+            ReportingService.Initalize();
+            ReportingService.Log("Starting ETL Process");
+
             using (var releaser = new ComReleaser())
             {
                 IWorkspace workspace;
@@ -617,6 +621,7 @@ namespace uic_etl
             }
 
             debug.Write("{0} finished.", start.Elapsed);
+            ReportingService.Log(string.Format("{0} finished.", start.Elapsed));
 
             Console.ReadKey();
         }
