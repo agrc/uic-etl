@@ -18,3 +18,4 @@ build/
 # NuGet Packages Directory
 packages/
 maps/uic.mxd
+uic-etl/secrets.json
