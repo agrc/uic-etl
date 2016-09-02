@@ -76,6 +76,7 @@
     <Compile Include="models\Configruation.cs" />
     <Compile Include="models\dtos\IndexFieldMap.cs" />
     <Compile Include="models\dtos\HeaderInformation.cs" />
+    <Compile Include="models\dtos\LogModel.cs" />
     <Compile Include="models\EtlOptions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
