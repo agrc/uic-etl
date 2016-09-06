@@ -15,7 +15,7 @@ namespace uic_etl.services
             var p = new OptionSet
             {
                 {
-                    "c|connection=", "the path to the .sde connection file for the UDEQ database. eg: c:\\udeq.sde",
+                    "c|connection=", "the path to the .sde connection file for the UTEQ database. eg: c:\\udeq.sde",
                     v => options.SdeConnectionPath = v
                 },
                 {

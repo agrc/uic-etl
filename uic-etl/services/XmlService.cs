@@ -40,7 +40,7 @@ namespace uic_etl.services
 
             doc.Root.Add(new XElement(Exchange + "Header",
                 new XElement(Exchange + "Author", "CANDACE CADY"),
-                new XElement(Exchange + "Organization", "UDEQ -- UTAH DEPARTMENT OF ENVIRONMENTAL QUALITY"),
+                new XElement(Exchange + "Organization", "UTEQ -- UTAH DEPARTMENT OF ENVIRONMENTAL QUALITY"),
                 new XElement(Exchange + "Title", model.Title),
                 new XElement(Exchange + "CreationTime", model.CreationTime),
                 new XElement(Exchange + "Comment", model.Comments),
@@ -57,7 +57,7 @@ namespace uic_etl.services
             var payload = new XElement(Exchange + "Payload",
                new XAttribute("Operation", "Delete - Insert"),
                new XElement(xmlns + "UIC", new XAttribute(XNamespace.Xmlns + "xsi", Xsi),
-                   new XElement(xmlns + "PrimacyAgencyCode", "UDEQ")));
+                   new XElement(xmlns + "PrimacyAgencyCode", "UTEQ")));
 
             return payload;
         }
