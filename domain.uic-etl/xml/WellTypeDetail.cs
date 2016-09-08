@@ -7,6 +7,7 @@ namespace domain.uic_etl.xml
     public class WellTypeDetail
     {
         private string _wellTypeCode;
+        private int _wellClass;
         public string WellTypeIdentifier { get; set; }
         public string WellTypeCode
         {
@@ -152,15 +153,13 @@ namespace domain.uic_etl.xml
                     }
                     case "5035":
                     {
-//                        if (wellClass == 3)
-//                        {
-//                            return "3G";
-//                        }
-//                        
-//                        if (wellClass == 5)
-//                        {
-//                            return "5L2";
-//                        }
+                        switch (_wellClass)
+                        {
+                            case 3:
+                                return "3G";
+                            case 5:
+                                return "5L2";
+                        }
 
                         return _wellTypeCode;
                     }
@@ -259,27 +258,25 @@ namespace domain.uic_etl.xml
                     }
                     case "5033":
                     {
-//                        if (wellClass == 1)
-//                        {
-//                            return "1C";
-//                        }
-//                        if (wellClass == 5)
-//                        {
-//                            return "5A22";
-//                        }
+                        switch (_wellClass)
+                        {
+                            case 1:
+                                return "1C";
+                            case 5:
+                                return "5A22";
+                        }
 
                         return _wellTypeCode;
                     }
                     case "5034":
                     {
-//                        if (wellClass == 1)
-//                        {
-//                            return "1W";
-//                        }
-//                        if (wellClass == 5)
-//                        {
-//                            return "5A23";
-//                        }
+                        switch (_wellClass)
+                        {
+                            case 1:
+                                return "1W";
+                            case 5:
+                                return "5A23";
+                        }
 
                         return _wellTypeCode;
                     }
@@ -305,6 +302,11 @@ namespace domain.uic_etl.xml
         }
         public string WellTypeDate { get; set; }
         public string WellTypeWellIdentifier { get; set; }
+
+        public int WellClass
+        {
+            set { _wellClass = value; }
+        }
     }
 
     public class WellTypeDetailValidator : AbstractValidator<WellTypeDetail>
