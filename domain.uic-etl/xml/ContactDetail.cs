@@ -1,11 +1,28 @@
-﻿using FluentValidation;
+﻿using System;
+using FluentValidation;
 
 namespace domain.uic_etl.xml
 {
     public class ContactDetail
     {
+        private string _telephoneNumberText;
         public string ContactIdentifier { get; set; }
-        public string TelephoneNumberText { get; set; }
+
+        public string TelephoneNumberText
+        {
+            get
+            {
+                var x = _telephoneNumberText.IndexOf("x", StringComparison.InvariantCultureIgnoreCase);
+                if (x > -1)
+                {
+                    return _telephoneNumberText.Substring(0, x);
+                }
+
+                return _telephoneNumberText;
+            }
+            set { _telephoneNumberText = value.Replace(" ", ""); }
+        }
+
         public string IndividualFullName { get; set; }
         public string ContactCityName { get; set; }
         public string ContactAddressStateCode { get; set; }
