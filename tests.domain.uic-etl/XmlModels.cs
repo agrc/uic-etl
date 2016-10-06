@@ -22,6 +22,14 @@ namespace tests.domain.uic_etl
             contact.TelephoneNumberText = "801.972.4587";
 
             Assert.Equal("801.972.4587", contact.TelephoneNumberText);
+
+            contact.TelephoneNumberText = null;
+
+            Assert.Null(contact.TelephoneNumberText);
+
+            contact.TelephoneNumberText = string.Empty;
+
+            Assert.Empty(contact.TelephoneNumberText);
         }
     }
 }

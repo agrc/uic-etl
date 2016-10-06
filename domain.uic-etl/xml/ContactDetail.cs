@@ -12,6 +12,11 @@ namespace domain.uic_etl.xml
         {
             get
             {
+                if (string.IsNullOrEmpty(_telephoneNumberText))
+                {
+                    return _telephoneNumberText;
+                }
+
                 var x = _telephoneNumberText.IndexOf("x", StringComparison.InvariantCultureIgnoreCase);
                 if (x > -1)
                 {
@@ -20,7 +25,16 @@ namespace domain.uic_etl.xml
 
                 return _telephoneNumberText;
             }
-            set { _telephoneNumberText = value.Replace(" ", ""); }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    _telephoneNumberText = value;
+                    return;
+                }
+
+                _telephoneNumberText = value.Replace(" ", "");
+            }
         }
 
         public string IndividualFullName { get; set; }
