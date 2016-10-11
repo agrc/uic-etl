@@ -162,7 +162,7 @@ namespace uic_etl
                 var queryFilter = new QueryFilter
                 {
                     WhereClause = "1=1",
-//                    WhereClause = "Guid='{268BB302-89F2-4BAA-A19B-45B3C207F236}'",
+//                    WhereClause = "Guid='{268bb302-89f2-4baa-a19b-45b3c207f236}'",
                     SubFields = string.Join(",", FacilitySdeModel.Fields)
                 };
                 releaser.ManageLifetime(queryFilter);
