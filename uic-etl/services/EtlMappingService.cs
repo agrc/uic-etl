@@ -207,7 +207,16 @@ namespace uic_etl.services
                 wellGuid = new Guid(wellGuidString);
             }
 
+            var facilityGuidString = GuardNull(row.Value[fieldMap["Facility_FK"].Index]);
+            var facilityGuid = Guid.Empty;
+
+            if (!string.IsNullOrEmpty(facilityGuidString))
+            {
+                facilityGuid = new Guid(facilityGuidString);
+            }
+
             model.WellId = wellGuid;
+            model.FacilityId = facilityGuid;
 
             return model;
         }

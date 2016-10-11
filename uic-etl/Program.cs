@@ -221,6 +221,7 @@ namespace uic_etl
 
                             var responseDetail = EtlMappingService.MapResponseModel(responseFeature, responseFieldMap);
                             var xmlResponseDetail = mapper.Map<EnforcementSdeModel, ResponseDetail>(responseDetail);
+                            xmlResponseDetail.ResponseViolationIdentifier = xmlViolation.ViolationIdentifier;
 
                             if (!validator.IsValid(xmlResponseDetail))
                             {
