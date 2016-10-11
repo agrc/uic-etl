@@ -196,18 +196,6 @@ namespace domain.uic_etl.xml
                         {
                             return "5A21";
                         }
-                    case "5033":
-                        {
-                            switch (_wellClass)
-                            {
-                                case 1:
-                                    return "1C";
-                                case 5:
-                                    return "5A22";
-                            }
-
-                            return _wellTypeCode;
-                        }
                     case "5034":
                         {
                             switch (_wellClass)
