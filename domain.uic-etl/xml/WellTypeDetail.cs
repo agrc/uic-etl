@@ -7,7 +7,6 @@ namespace domain.uic_etl.xml
     public class WellTypeDetail
     {
         private string _wellTypeCode;
-        private int _wellClass;
         public string WellTypeIdentifier { get; set; }
         public string WellTypeCode
         {
@@ -286,11 +285,6 @@ namespace domain.uic_etl.xml
         }
         public string WellTypeDate { get; set; }
         public string WellTypeWellIdentifier { get; set; }
-
-        public int WellClass
-        {
-            set { _wellClass = value; }
-        }
     }
 
     public class WellTypeDetailValidator : AbstractValidator<WellTypeDetail>
