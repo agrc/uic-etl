@@ -103,6 +103,25 @@ namespace uic_etl.services
                 node.Add(permitDetail);
             }
 
+            const int unknownNumber = -1;
+            const string unknownText = "Unknown";
+            var geologyDetailPlaceholder = new XElement(Uic + "GeologyDetail",
+                new XElement(Uic + "GeologyIdentifier", new GenerateIdentifierCommand(Guid.Empty).Execute()),
+                new XElement(Uic + "GeologyConfiningZoneName", unknownText),
+                new XElement(Uic + "GeologyConfiningZoneTopNumeric", unknownNumber),
+                new XElement(Uic + "GeologyConfiningZoneBottomNumeric", unknownNumber),
+                new XElement(Uic + "GeologyLithologicConfiningZoneText", unknownText),
+                new XElement(Uic + "GeologyInjectionZoneFormationName", unknownText),
+                new XElement(Uic + "GeologyBottomInjectionZoneNumeric", unknownNumber),
+                new XElement(Uic + "GeologyLithologicInjectionZoneText", unknownText),
+                new XElement(Uic + "GeologyTopInjectionIntervalNumeric", unknownNumber),
+                new XElement(Uic + "GeologyBottomInjectionIntervalNumeric", unknownNumber),
+                new XElement(Uic + "GeologyInjectioneZonePermeabilityRateNumeric", unknownNumber),
+                new XElement(Uic + "GeologyInjectionZonePorosityPercentNumeric", unknownNumber),
+                new XElement(Uic + "GeologyUSDWDepthNumeric", unknownNumber));
+
+            node.Add(geologyDetailPlaceholder);
+
             return node;
         }
 
