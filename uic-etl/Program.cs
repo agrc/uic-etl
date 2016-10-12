@@ -38,6 +38,7 @@ namespace uic_etl
 
             var debug = new DebugService(options.Verbose);
             var start = Stopwatch.StartNew();
+            const int limit = 10;
             debug.Write("Staring: {0}", DateTime.Now.ToString("s"));
 
             debug.Write("{0} Initializing log writer", start.Elapsed);
@@ -180,7 +181,7 @@ namespace uic_etl
                 {
                     debug.Write("{0} Facilities processed {1}", start.Elapsed, facilityCount++);
 #if DEBUG
-                    if (facilityCount > 25)
+                    if (facilityCount > limit)
                     {
                         break;
                     }
