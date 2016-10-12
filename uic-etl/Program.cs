@@ -167,6 +167,8 @@ namespace uic_etl
                 };
                 releaser.ManageLifetime(queryFilter);
 
+                var linkedContacts = new HashSet<Guid>();
+
                 var facilityCursor = uicFacility.Search(queryFilter, true);
                 releaser.ManageLifetime(facilityCursor);
 
@@ -277,6 +279,7 @@ namespace uic_etl
                             mostImportantContactGuid = contact.Guid;
                         }
 
+                        linkedContacts.Add(mostImportantContactGuid);
                         xmlWell.WellContactIdentifier = new GenerateIdentifierCommand(mostImportantContactGuid).Execute();
 
                         var verticalWellCursor = verticalWellRelation.GetObjectsRelatedToObject(wellFeature);
@@ -521,6 +524,7 @@ namespace uic_etl
 
                 debug.Write("{0} finding all contacts", start.Elapsed);
                 queryFilter.SubFields = string.Join(",", ContactSdeModel.Fields);
+                queryFilter.WhereClause = "GUID IN(" + string.Join(",", linkedContacts.Select(x => "'{" + x.ToString().ToUpper() + "}'")) + ")";
 
                 var contactCursor = uicContact.Search(queryFilter, true);
                 releaser.ManageLifetime(contactCursor);
@@ -543,6 +547,7 @@ namespace uic_etl
                     contacts.Add(xmlContact);
                 }
 
+                queryFilter.WhereClause = "1=1";
                 queryFilter.SubFields = string.Join(",", AuthorizationSdeModel.Fields);
 
                 var authorizationCursor = uicAuthorization.Search(queryFilter, true);
