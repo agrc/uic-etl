@@ -599,6 +599,7 @@ namespace uic_etl
                         var authorizationAction = EtlMappingService.MapAuthorizationActionSdeModel(authorizationActionFeature,
                             authorizationActionFieldMap);
                         var permitActivityDetail = mapper.Map<AuthorizationActionSdeModel, PermitActivityDetail>(authorizationAction);
+                        permitActivityDetail.PermitActivityPermitIdentifier = xmlPermit.PermitIdentifier;
 
                         if (string.IsNullOrEmpty(permitActivityDetail.PermitActivityActionTypeCode) ||
                             permitActivityDetail.PermitActivityActionTypeCode.ToUpper() == "NR")
