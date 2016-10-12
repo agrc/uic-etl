@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using domain.uic_etl.xml;
+using uic_etl.commands;
 using uic_etl.models.dtos;
 
 namespace uic_etl.services
@@ -55,9 +57,9 @@ namespace uic_etl.services
             XNamespace xmlns = "http://www.exchangenetwork.net/schema/uic/2";
 
             var payload = new XElement(Exchange + "Payload",
-               new XAttribute("Operation", "Delete - Insert"),
-               new XElement(xmlns + "UIC", new XAttribute(XNamespace.Xmlns + "xsi", Xsi),
-                   new XElement(xmlns + "PrimacyAgencyCode", "UTEQ")));
+                new XAttribute("Operation", "Delete - Insert"),
+                new XElement(xmlns + "UIC", new XAttribute(XNamespace.Xmlns + "xsi", Xsi),
+                    new XElement(xmlns + "PrimacyAgencyCode", "UTEQ")));
 
             return payload;
         }
@@ -207,10 +209,10 @@ namespace uic_etl.services
             foreach (var wellType in model.WellTypeDetail)
             {
                 var wellTypeDetail = new XElement(Uic + "WellTypeDetail",
-                   new XElement(Uic + "WellTypeIdentifier",wellType.WellTypeIdentifier),
-                   new XElement(Uic + "WellTypeCode", wellType.WellTypeCode),
-                   new XElement(Uic + "WellTypeDate", wellType.WellTypeDate),
-                   new XElement(Uic + "WellTypeWellIdentifier", wellType.WellTypeWellIdentifier));
+                    new XElement(Uic + "WellTypeIdentifier", wellType.WellTypeIdentifier),
+                    new XElement(Uic + "WellTypeCode", wellType.WellTypeCode),
+                    new XElement(Uic + "WellTypeDate", wellType.WellTypeDate),
+                    new XElement(Uic + "WellTypeWellIdentifier", wellType.WellTypeWellIdentifier));
 
                 wellDetail.Add(wellTypeDetail);
             }
