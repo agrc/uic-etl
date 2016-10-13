@@ -139,6 +139,7 @@ namespace uic_etl.services
                     new XElement(Uic + "FacilityStateIdentifier", model.FacilityStateIdentifier),
                     new XElement(Uic + "LocationAddressText", model.LocationAddressText),
                     new XElement(Uic + "FacilitySiteTypeCode", model.FacilitySiteTypeCode),
+                    new XElement(Uic + "NAICSCode", model.NaicsCode),
                     new XElement(Uic + "LocationAddressPostalCode", model.LocationAddressPostalCode)));
 
             foreach (var violationModel in model.FacilityViolationDetail)

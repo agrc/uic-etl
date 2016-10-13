@@ -22,6 +22,7 @@ namespace domain.uic_etl.xml
         public string LocationAddressText { get; set; }
         public string FacilitySiteTypeCode { get; set; }
         public string LocationAddressPostalCode { get; set; }
+        public string NaicsCode { get; set; }
         public List<ViolationDetail> FacilityViolationDetail { get; set; }
     }
 
@@ -46,6 +47,12 @@ namespace domain.uic_etl.xml
                 RuleFor(src => src.LocationAddressText)
                     .NotEmpty()
                     .Length(1, 150);
+            });
+
+            RuleSet("R2C", () =>
+            {
+                RuleFor(src => src.NaicsCode)
+                    .Length(1, 6);
             });
 
             RuleSet("R2C-1H", () =>

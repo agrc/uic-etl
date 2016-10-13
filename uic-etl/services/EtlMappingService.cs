@@ -30,7 +30,8 @@ namespace uic_etl.services
                     .ForMember(dest => dest.FacilityViolationDetail, opts => opts.Ignore())
                     .ForMember(dest => dest.LocationAddressPostalCode, opts => opts.MapFrom(src => src.FacilityZip))
                     .ForMember(dest => dest.LocationAddressStateCode, opts => opts.UseValue("UT"))
-                    .ForMember(dest => dest.LocationAddressText, opts => opts.MapFrom(src => src.FacilityAddress));
+                    .ForMember(dest => dest.LocationAddressText, opts => opts.MapFrom(src => src.FacilityAddress))
+                    .ForMember(dest => dest.NaicsCode, opts => opts.MapFrom(src => src.NaicsPrimary));
 
                 _.CreateMap<ViolationSdeModel, ViolationDetail>()
                     .ForMember(dest => dest.ViolationIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
@@ -170,7 +171,8 @@ namespace uic_etl.services
                 FacilityZip = GetDomainValue(row, fieldMap["FacilityZip"]),
                 FacilityType = GetDomainValue(row, fieldMap["FacilityType"]),
                 CountyFips = (int)row.Value[fieldMap["CountyFIPS"].Index],
-                NoMigrationPetStatus = GetDomainValue(row, fieldMap["NoMigrationPetStatus"])
+                NoMigrationPetStatus = GetDomainValue(row, fieldMap["NoMigrationPetStatus"]),
+                NaicsPrimary = GetDomainValue(row, fieldMap["NAICSPrimary"])
             };
 
             return model;
