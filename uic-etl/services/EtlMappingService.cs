@@ -84,7 +84,7 @@ namespace uic_etl.services
                 _.CreateMap<WellInspectionSdeModel, WellInspectionDetail>()
                     .ForMember(dest => dest.InspectionIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
                     .ForMember(dest => dest.InspectionAssistanceCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.InspectionAssistance) ? "NO" : src.InspectionAssistance))
-                    .ForMember(dest => dest.InspectionDeficiencyCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.InspectionDeficiency) ? "U" : src.InspectionDeficiency))
+                    .ForMember(dest => dest.InspectionDeficiencyCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.InspectionDeficiency) ? "NO" : src.InspectionDeficiency))
                     .ForMember(dest => dest.InspectionActionDate, opts => opts.MapFrom(src => src.InspectionDate.HasValue ? src.InspectionDate.Value.ToString("yyyyMMdd") : DateTime.MinValue.ToString("yyyyMMdd")))
                     .ForMember(dest => dest.InspectionIcisComplianceMonitoringReasonCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.IcisCompMonActReason) ? "U" : src.IcisCompMonActReason))
                     .ForMember(dest => dest.InspectionIcisComplianceMonitoringTypeCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.IcisCompMonType) ? "U" : src.IcisCompMonType))
