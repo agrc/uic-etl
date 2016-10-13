@@ -230,8 +230,8 @@ namespace uic_etl.services
                     new XElement(Uic + "LocationPointLineAreaCode", model.LocationDetail.LocationPointLineAreaCode),
                     new XElement(Uic + "SourceMapScaleNumeric", model.LocationDetail.SourceMapScaleNumeric),
                     new XElement(Uic + "LocationWellIdentifier", model.LocationDetail.LocationWellIdentifier),
-                    new XElement(Uic + "LatitudeMeasure", model.LocationDetail.LatitudeMeasure),
-                    new XElement(Uic + "LongitudeMeasure", model.LocationDetail.LongitudeMeasure)));
+                    new XElement(Uic + "LatitudeMeasure", model.LocationDetail.LatitudeMeasure.ToString("###.######")),
+                    new XElement(Uic + "LongitudeMeasure", model.LocationDetail.LongitudeMeasure.ToString("###.######"))));
             }
 
             foreach (var violation in model.WellViolationDetail)
