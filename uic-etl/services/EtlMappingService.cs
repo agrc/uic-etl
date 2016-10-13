@@ -29,7 +29,7 @@ namespace uic_etl.services
                     .ForMember(dest => dest.FacilityStateIdentifier, opts => opts.MapFrom(src => src.FacilityId))
                     .ForMember(dest => dest.FacilityViolationDetail, opts => opts.Ignore())
                     .ForMember(dest => dest.LocationAddressPostalCode, opts => opts.MapFrom(src => src.FacilityZip))
-                    .ForMember(dest => dest.LocationAddressStateCode, opts => opts.MapFrom(src => src.FacilityId))
+                    .ForMember(dest => dest.LocationAddressStateCode, opts => opts.UseValue("UT"))
                     .ForMember(dest => dest.LocationAddressText, opts => opts.MapFrom(src => src.FacilityAddress));
 
                 _.CreateMap<ViolationSdeModel, ViolationDetail>()
