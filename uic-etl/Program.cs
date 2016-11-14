@@ -163,9 +163,17 @@ namespace uic_etl
                 var payload = XmlService.CreatePayloadElements();
 
                 debug.Write("{0} Quering UICFacility features.", start.Elapsed);
+                var testSubmissionGuids = new[]
+                {
+                    "'{268BB302-89F2-4BAA-A19B-45B3C207F236}'", 
+                    "'{B6BD6456-2607-4172-A498-55471FF720C0}'", 
+                    "'{8551FD2F-599C-4BE1-852A-643E633D8E66}'"
+                };
+           
                 var queryFilter = new QueryFilter
                 {
                     WhereClause = "1=1",
+//                    WhereClause = string.Format("Guid IN ({0})", string.Join(",", testSubmissionGuids)),
 //                    WhereClause = "Guid='{268bb302-89f2-4baa-a19b-45b3c207f236}'",
                     SubFields = string.Join(",", FacilitySdeModel.Fields)
                 };
