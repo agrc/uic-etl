@@ -172,7 +172,8 @@ namespace uic_etl.services
                 FacilityType = GetDomainValue(row, fieldMap["FacilityType"]),
                 CountyFips = (int)row.Value[fieldMap["CountyFIPS"].Index],
                 NoMigrationPetStatus = GetDomainValue(row, fieldMap["NoMigrationPetStatus"]),
-                NaicsPrimary = GetDomainValue(row, fieldMap["NAICSPrimary"])
+                NaicsPrimary = GetDomainValue(row, fieldMap["NAICSPrimary"]),
+                FacilityMilePost = GetDomainValue(row, fieldMap["FacilityMilePost"])
             };
 
             return model;

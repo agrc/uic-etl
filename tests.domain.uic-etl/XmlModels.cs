@@ -1,4 +1,5 @@
-﻿using domain.uic_etl.xml;
+﻿using domain.uic_etl.sde;
+using domain.uic_etl.xml;
 using Xunit;
 
 namespace tests.domain.uic_etl
@@ -30,6 +31,77 @@ namespace tests.domain.uic_etl
             contact.TelephoneNumberText = string.Empty;
 
             Assert.Empty(contact.TelephoneNumberText);
+        }
+    }
+
+    public class SdeModels
+    {
+        [Fact]
+        public void SeeMilepostFacilityAddressShouldGetMilepostValue()
+        {
+            const string milepost = "Using milepost";
+            var facility = new FacilitySdeModel
+            {
+                FacilityAddress = "See Facility Mile Post",
+                FacilityMilePost = milepost
+            };
+
+            Assert.Equal(facility.FacilityAddress, milepost);
+        }
+
+        [Fact]
+        public void EmptyFacilityAddressShouldGetMilepostValue()
+        {
+            const string milepost = "Using milepost";
+            var facility = new FacilitySdeModel
+            {
+                FacilityAddress = "See Facility Mile Post",
+                FacilityMilePost = milepost
+            };
+
+            Assert.Equal(facility.FacilityAddress, milepost);
+        }
+
+        [Fact]
+        public void FacilityAddressShouldAddressValue()
+        {
+            const string milepost = "Using milepost";
+            const string address = "Using address";
+            var facility = new FacilitySdeModel
+            {
+                FacilityAddress = address,
+                FacilityMilePost = milepost
+            };
+
+            Assert.Equal(facility.FacilityAddress, address);
+        }
+
+        [Fact]
+        public void NullFacilityAddressAndMilepostShouldBeNull()
+        {
+            const string milepost = null;
+            const string address = null;
+            var facility = new FacilitySdeModel
+            {
+                FacilityAddress = address,
+                FacilityMilePost = milepost
+            };
+
+            Assert.Null(facility.FacilityAddress);
+        }
+
+        [Fact]
+        public void EmptyFacilityAddressAndMilepostShouldBeEmpty()
+        {
+            const string milepost = "";
+            const string address = "";
+            var facility = new FacilitySdeModel
+            {
+                FacilityAddress = address,
+                FacilityMilePost = milepost
+            };
+
+            Assert.Empty(facility.FacilityAddress);
         }
     }
 }
