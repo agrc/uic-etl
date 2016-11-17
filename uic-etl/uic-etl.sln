@@ -16,6 +16,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XML Schema", "XML Schema", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests.domain.uic-etl", "..\tests.domain.uic-etl\tests.domain.uic-etl.csproj", "{52A95BDD-FA55-4E10-8829-A451F0238052}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CF9F810F-B3B6-4A5E-94B1-E093E3FD97F3}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.MD = ..\README.MD
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

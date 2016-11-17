@@ -26,11 +26,16 @@ namespace uic_etl
             try
             {
                 options = ArgParserService.Parse(args);
+                if (options == null)
+                {
+                    return;
+                }
             }
             catch (InvalidOperationException e)
             {
                 Console.Write("uic-etl: ");
                 Console.WriteLine(e.Message);
+                Console.WriteLine("press any key to continue");
                 Console.ReadKey();
 
                 return;
@@ -151,9 +156,9 @@ namespace uic_etl
 
                 var headerModel = new HeaderInformation
                 {
-                    Title = "data submission for quarter #1, fy 2010",
+                    Title = options.Title,
                     CreationTime = DateTime.Now.ToString("s"),
-                    Comments = "This is a sample"
+                    Comments = options.Comments
                 };
 
                 debug.Write("{1} Creating header property for: {0}", headerModel.Title, start.Elapsed);

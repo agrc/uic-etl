@@ -5,6 +5,7 @@
         public string SdeConnectionPath { get; set; }
         public string OutputXmlPath { get; set; }
         public bool Verbose { get; set; }
-        public Configruation Configruation { get; set; }
+        public string Title { get; set; }
+        public string Comments { get; set; }
     }
 }

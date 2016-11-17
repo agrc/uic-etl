@@ -15,20 +15,24 @@ namespace uic_etl.services
             var p = new OptionSet
             {
                 {
-                    "c|connection=", "the path to the .sde connection file for the UTEQ database. eg: c:\\udeq.sde",
+                    "c|connection=", "REQUIRED. the path to the .sde connection file for the UTEQ database. eg: c:\\udeq.sde",
                     v => options.SdeConnectionPath = v
                 },
                 {
-                    "e|environment=", "Modifiy the environment to run the tool. dev, stage, prod. Defaults to dev.",
-                    (Configruation v) => options.Configruation = v
-                },
-                {
                     "o|output=",
-                    "The location and filename to save the output of this tool. eg: c:\\udeq.xml. Defaults to current working directory\\uic.xml",
+                    "the location and filename to save the output of this tool. eg: c:\\udeq.xml. Defaults to current working directory\\uic.xml",
                     v => options.OutputXmlPath = v
                 },
                 {
-                    "v", "increase debug message verbosity.",
+                    "t|title=", "the submission title information. eg: data submission for quarter #1, fy 2010",
+                    v => options.Title = v
+                },
+                {
+                    "a|comment=", "a comment to add to the header. eg: this is a sample.",
+                    v => options.Comments = v
+                },
+                {
+                    "v", "increase the debug message verbosity.",
                     v =>
                     {
                         if (v != null)
@@ -53,6 +57,13 @@ namespace uic_etl.services
                 Console.WriteLine(e.Message);
                 ShowHelp(p);
 
+                return null;
+            }
+
+            if (showHelp)
+            {
+                ShowHelp(p);
+                
                 return null;
             }
 
