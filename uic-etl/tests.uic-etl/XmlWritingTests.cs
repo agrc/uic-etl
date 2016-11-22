@@ -174,6 +174,7 @@ namespace tests.uic_etl
                                        "<FacilityStateIdentifier>FacilityStateIdentifier</FacilityStateIdentifier>" +
                                        "<LocationAddressText>LocationAddressText</LocationAddressText>" +
                                        "<FacilitySiteTypeCode>FacilitySiteTypeCode</FacilitySiteTypeCode>" +
+                                       "<NAICSCode>NaicsCode</NAICSCode>" +
                                        "<LocationAddressPostalCode>LocationAddressPostalCode</LocationAddressPostalCode>" +
                                        "</FacilityDetail></FacilityList></UIC></Payload>";
 
@@ -191,10 +192,14 @@ namespace tests.uic_etl
                 LocalityName = "LocalityName",
                 LocationAddressPostalCode = "LocationAddressPostalCode",
                 LocationAddressStateCode = "LocationAddressStateCode",
-                LocationAddressText = "LocationAddressText"
+                LocationAddressText = "LocationAddressText",
+                NaicsCode = "NaicsCode"
             };
 
             XmlService.AddFacility(ref doc, model);
+
+            _output.WriteLine(doc.ToString());
+            _output.WriteLine(expected.ToString());
 
             Assert.Equal(expected.ToString(), doc.ToString());
         }
@@ -215,6 +220,7 @@ namespace tests.uic_etl
                                        "<FacilityStateIdentifier>FacilityStateIdentifier</FacilityStateIdentifier>" +
                                        "<LocationAddressText>LocationAddressText</LocationAddressText>" +
                                        "<FacilitySiteTypeCode>FacilitySiteTypeCode</FacilitySiteTypeCode>" +
+                                       "<NAICSCode>NaicsCode</NAICSCode>" +
                                        "<LocationAddressPostalCode>LocationAddressPostalCode</LocationAddressPostalCode>" +
                                        "<FacilityViolationDetail>" +
                                        "<ViolationIdentifier>ViolationIdentifier</ViolationIdentifier>" +
@@ -238,6 +244,7 @@ namespace tests.uic_etl
                 FacilitySiteName = "FacilitySiteName",
                 FacilitySiteTypeCode = "FacilitySiteTypeCode",
                 FacilityStateIdentifier = "FacilityStateIdentifier",
+                NaicsCode = "NaicsCode",
                 FacilityViolationDetail = new List<ViolationDetail>
                 {
                     new ViolationDetail
@@ -282,6 +289,7 @@ namespace tests.uic_etl
                                        "<FacilityStateIdentifier>FacilityStateIdentifier</FacilityStateIdentifier>" +
                                        "<LocationAddressText>LocationAddressText</LocationAddressText>" +
                                        "<FacilitySiteTypeCode>FacilitySiteTypeCode</FacilitySiteTypeCode>" +
+                                       "<NAICSCode>NaicsCode</NAICSCode>" +
                                        "<LocationAddressPostalCode>LocationAddressPostalCode</LocationAddressPostalCode>" +
                                        "<FacilityViolationDetail>" +
                                        "<ViolationIdentifier>ViolationIdentifier</ViolationIdentifier>" +
@@ -307,6 +315,7 @@ namespace tests.uic_etl
                 FacilityPetitionStatusCode = "FacilityPetitionStatusCode",
                 FacilitySiteName = "FacilitySiteName",
                 FacilitySiteTypeCode = "FacilitySiteTypeCode",
+                NaicsCode = "NaicsCode",
                 FacilityStateIdentifier = "FacilityStateIdentifier",
                 FacilityViolationDetail = new List<ViolationDetail>
                 {
@@ -355,7 +364,7 @@ namespace tests.uic_etl
                                        "<FacilityDetail>" +
                                        "<FacilityIdentifier>FacilityIdentifier</FacilityIdentifier>" +
                                        "<LocalityName /><FacilitySiteName /><FacilityPetitionStatusCode /><LocationAddressStateCode />" +
-                                       "<FacilityStateIdentifier /><LocationAddressText /><FacilitySiteTypeCode /><LocationAddressPostalCode />" +
+                                       "<FacilityStateIdentifier /><LocationAddressText /><FacilitySiteTypeCode /><NAICSCode /><LocationAddressPostalCode />" +
                                        "</FacilityDetail>" +
                                        "<WellDetail>" +
                                        "<WellIdentifier>WellIdentifier</WellIdentifier>" +
@@ -419,7 +428,7 @@ namespace tests.uic_etl
                                        "<FacilityDetail>" +
                                        "<FacilityIdentifier>FacilityIdentifier</FacilityIdentifier>" +
                                        "<LocalityName /><FacilitySiteName /><FacilityPetitionStatusCode /><LocationAddressStateCode />" +
-                                       "<FacilityStateIdentifier /><LocationAddressText /><FacilitySiteTypeCode /><LocationAddressPostalCode />" +
+                                       "<FacilityStateIdentifier /><LocationAddressText /><FacilitySiteTypeCode /><NAICSCode /><LocationAddressPostalCode />" +
                                        "</FacilityDetail>" +
                                        "<WellDetail>" +
                                        "<WellIdentifier>WellIdentifier</WellIdentifier>" +
@@ -511,7 +520,7 @@ namespace tests.uic_etl
                                        "<FacilityDetail>" +
                                        "<FacilityIdentifier>FacilityIdentifier</FacilityIdentifier>" +
                                        "<LocalityName /><FacilitySiteName /><FacilityPetitionStatusCode /><LocationAddressStateCode />" +
-                                       "<FacilityStateIdentifier /><LocationAddressText /><FacilitySiteTypeCode /><LocationAddressPostalCode />" +
+                                       "<FacilityStateIdentifier /><LocationAddressText /><FacilitySiteTypeCode /><NAICSCode /><LocationAddressPostalCode />" +
                                        "</FacilityDetail>" +
                                        "<WellDetail>" +
                                        "<WellIdentifier>WellIdentifier</WellIdentifier>" +
@@ -598,7 +607,7 @@ namespace tests.uic_etl
                                        "<FacilityDetail>" +
                                        "<FacilityIdentifier>FacilityIdentifier</FacilityIdentifier>" +
                                        "<LocalityName /><FacilitySiteName /><FacilityPetitionStatusCode /><LocationAddressStateCode />" +
-                                       "<FacilityStateIdentifier /><LocationAddressText /><FacilitySiteTypeCode /><LocationAddressPostalCode />" +
+                                       "<FacilityStateIdentifier /><LocationAddressText /><FacilitySiteTypeCode /><NAICSCode /><LocationAddressPostalCode />" +
                                        "</FacilityDetail>" +
                                        "<WellDetail>" +
                                        "<WellIdentifier>WellIdentifier</WellIdentifier>" +
