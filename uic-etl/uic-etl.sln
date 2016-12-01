@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\README.MD = ..\README.MD
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uic.epa-compare", "..\uic.epa-compare\uic.epa-compare.csproj", "{278A9B2C-52C5-4516-A6BA-6DE0E1BB97C4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{52A95BDD-FA55-4E10-8829-A451F0238052}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52A95BDD-FA55-4E10-8829-A451F0238052}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52A95BDD-FA55-4E10-8829-A451F0238052}.Release|Any CPU.Build.0 = Release|Any CPU
+		{278A9B2C-52C5-4516-A6BA-6DE0E1BB97C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{278A9B2C-52C5-4516-A6BA-6DE0E1BB97C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{278A9B2C-52C5-4516-A6BA-6DE0E1BB97C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{278A9B2C-52C5-4516-A6BA-6DE0E1BB97C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
