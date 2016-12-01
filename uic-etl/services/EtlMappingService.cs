@@ -60,7 +60,7 @@ namespace uic_etl.services
                     .ForMember(dest => dest.WellGeologyIdentifier, opts => opts.MapFrom(__ => new GenerateIdentifierCommand(Guid.Empty).Execute()))
                     .ForMember(dest => dest.WellSiteAreaNameText, opts => opts.Ignore())
                     .ForMember(dest => dest.WellPermitIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.AuthorizationGuid).Execute()))
-                    .ForMember(dest => dest.WellStateIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
+                    .ForMember(dest => dest.WellStateIdentifier, opts => opts.MapFrom(src => src.Guid))
                     .ForMember(dest => dest.WellStateTribalCode, opts => opts.UseValue("UT"))
                     .ForMember(dest => dest.WellName, opts => opts.MapFrom(src => src.WellName))
                     .ForMember(dest => dest.WellTypeCode, opts => opts.MapFrom(src => src.WellSubClass))
