@@ -11,7 +11,7 @@ namespace domain.uic_etl.xml
 
         public LocationDetail(WellSdeModel well, FacilitySdeModel facility, double lon, double lat, Func<Guid, string> generateIdentifierFunc)
         {
-            LocationIdentifier = generateIdentifierFunc(Guid.NewGuid());
+            LocationIdentifier = generateIdentifierFunc(well.Guid);
             LocationAddressCounty = facility.CountyFips;
             GeographicReferencePointCode = "026";
             HorizontalCoordinateReferenceSystemDatumCode = "002";
