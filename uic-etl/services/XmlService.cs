@@ -41,15 +41,15 @@ namespace uic_etl.services
             }
 
             doc.Root.Add(new XElement(Exchange + "Header",
-                new XElement(Exchange + "Author", "CANDACE CADY"),
-                new XElement(Exchange + "Organization", "UTEQ -- UTAH DEPARTMENT OF ENVIRONMENTAL QUALITY"),
+                new XElement(Exchange + "Author", "Candace Cady"),
+                new XElement(Exchange + "Organization", "UDEQ"),
                 new XElement(Exchange + "Title", "Data Submittal for UT 1422 UIC Program"),
                 new XElement(Exchange + "CreationTime", model.CreationTime),
                 new XElement(Exchange + "Comment", model.Comments),
                 new XElement(Exchange + "DataService", "UIC"),
-                new XElement(Exchange + "ContactInfo", "CANDACE CADY 195 NORTH 1950 WEST, SALT LAKE CITY UT 84114, (801) 536-4352"),
-                new XElement(Exchange + "Notification", "AGRC@UTAH.GOV"),
-                new XElement(Exchange + "Sensitivity", "UNCLASSIFIED")));
+                new XElement(Exchange + "ContactInfo", "ccady@utah.gov"),
+                new XElement(Exchange + "Notification", "ccady@utah.gov"),
+                new XElement(Exchange + "Sensitivity", "Unclasified")));
         }
 
         public static XElement CreatePayloadElements()

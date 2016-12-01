@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Document xmlns="http://www.exchangenetwork.net/schema/v1.0/ExchangeNetworkDocument.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Id="6a43a7c5-0510-41ff-a15d-39657d55153d" xsi:schemaLocation="xmlns http://www.exchangenetwork.net/schema/v1.0/ExchangeNetworkDocument.xsd">
   <Header>
-    <Author>static: CANDACE CADY</Author>
+    <Author>static: Candace Cady</Author>
     <Organization>static: UDEQ -- UTAH DEPARTMENT OF ENVIRONMENTAL QUALITY</Organization>
     <Title>user input</Title>
     <CreationTime>dynamic: generated when tool is run</CreationTime>
     <Comment>user input</Comment>
     <DataService>static: UIC</DataService>
-    <ContactInfo>static: CANDACE CADY 195 NORTH 1950 WEST, SALT LAKE CITY UT 84114, (801) 536-4352</ContactInfo>
-    <Notification>static: AGRC@UTAH.GOV</Notification>
-    <Sensitivity>static: UNCLASSIFIED</Sensitivity>
+    <ContactInfo>static: ccady@utah.gov</ContactInfo>
+    <Notification>static: ccady@utah.gov</Notification>
+    <Sensitivity>static: Unclasified</Sensitivity>
   </Header>
   <Payload Operation="Delete - Insert">
     <UIC xmlns="http://www.exchangenetwork.net/schema/uic/2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
