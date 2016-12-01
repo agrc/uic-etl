@@ -74,7 +74,7 @@ namespace tests.uic_etl
                 "<Header>" +
                 "<Author>CANDACE CADY</Author>" +
                 "<Organization>UTEQ -- UTAH DEPARTMENT OF ENVIRONMENTAL QUALITY</Organization>" +
-                "<Title>data submission for quarter #1, fy 2010</Title>" +
+                "<Title>Data Submittal for UT 1422 UIC Program</Title>" +
                 "<CreationTime>2016-08-15T16:20:32</CreationTime>" +
                 "<Comment>This is a sample</Comment>" +
                 "<DataService>UIC</DataService>" +
@@ -86,7 +86,6 @@ namespace tests.uic_etl
             var doc = XmlService.CreateDocument();
             var headerModel = new HeaderInformation
             {
-                Title = "data submission for quarter #1, fy 2010",
                 CreationTime = new DateTime(2016, 8, 15, 16, 20, 32).ToString("s"),
                 Comments = "This is a sample"
             };
@@ -126,7 +125,7 @@ namespace tests.uic_etl
                  "<Header>" +
                  "<Author>CANDACE CADY</Author>" +
                  "<Organization>UTEQ -- UTAH DEPARTMENT OF ENVIRONMENTAL QUALITY</Organization>" +
-                 "<Title>data submission for quarter #1, fy 2010</Title>" +
+                 "<Title>Data Submittal for UT 1422 UIC Program</Title>" +
                  "<CreationTime>2016-08-15T16:20:32</CreationTime>" +
                  "<Comment>This is a sample</Comment>" +
                  "<DataService>UIC</DataService>" +
@@ -141,7 +140,6 @@ namespace tests.uic_etl
             var doc = XmlService.CreateDocument();
             var headerModel = new HeaderInformation
             {
-                Title = "data submission for quarter #1, fy 2010",
                 CreationTime = new DateTime(2016, 8, 15, 16, 20, 32).ToString("s"),
                 Comments = "This is a sample"
             };

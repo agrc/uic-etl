@@ -24,10 +24,6 @@ namespace uic_etl.services
                     v => options.OutputXmlPath = v
                 },
                 {
-                    "t|title=", "the submission title information. eg: data submission for quarter #1, fy 2010",
-                    v => options.Title = v
-                },
-                {
                     "a|comment=", "a comment to add to the header. eg: this is a sample.",
                     v => options.Comments = v
                 },

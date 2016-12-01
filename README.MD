@@ -22,8 +22,6 @@ Options:
   -o, --output=VALUE         the location and filename to save the output of
                                this tool. eg: c:\udeq.xml. Defaults to current
                                working directory\uic.xml
-  -t, --title=VALUE          the submission title information. eg: data
-                               submission for quarter #1, fy 2010
   -a, --comment=VALUE        a comment to add to the header. eg: this is a
                                sample.
   -v                         increase the debug message verbosity.

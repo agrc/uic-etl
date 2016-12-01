@@ -156,12 +156,11 @@ namespace uic_etl
 
                 var headerModel = new HeaderInformation
                 {
-                    Title = options.Title,
                     CreationTime = DateTime.Now.ToString("s"),
                     Comments = options.Comments
                 };
 
-                debug.Write("{1} Creating header property for: {0}", headerModel.Title, start.Elapsed);
+                debug.Write("{0} Creating header property", start.Elapsed);
                 XmlService.AppendHeader(ref doc, headerModel);
 
                 debug.Write("{0} Creating payload elements", start.Elapsed);

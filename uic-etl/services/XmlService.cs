@@ -43,7 +43,7 @@ namespace uic_etl.services
             doc.Root.Add(new XElement(Exchange + "Header",
                 new XElement(Exchange + "Author", "CANDACE CADY"),
                 new XElement(Exchange + "Organization", "UTEQ -- UTAH DEPARTMENT OF ENVIRONMENTAL QUALITY"),
-                new XElement(Exchange + "Title", model.Title),
+                new XElement(Exchange + "Title", "Data Submittal for UT 1422 UIC Program"),
                 new XElement(Exchange + "CreationTime", model.CreationTime),
                 new XElement(Exchange + "Comment", model.Comments),
                 new XElement(Exchange + "DataService", "UIC"),
