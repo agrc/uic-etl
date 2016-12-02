@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using domain.uic_etl.xml;
-using uic_etl.commands;
 using uic_etl.models.dtos;
 
 namespace uic_etl.services
@@ -110,18 +108,24 @@ namespace uic_etl.services
 
         public static XElement AddFacility(ref XElement payload, FacilityDetail model)
         {
-            var facilityDetail = new XElement(Uic + "FacilityList",
-                new XElement(Uic + "FacilityDetail",
-                    new XElement(Uic + "FacilityIdentifier", model.FacilityIdentifier),
-                    new XElement(Uic + "LocalityName", model.LocalityName),
-                    new XElement(Uic + "FacilitySiteName", model.FacilitySiteName),
-                    new XElement(Uic + "FacilityPetitionStatusCode", model.FacilityPetitionStatusCode),
-                    new XElement(Uic + "LocationAddressStateCode", model.LocationAddressStateCode),
-                    new XElement(Uic + "FacilityStateIdentifier", model.FacilityStateIdentifier),
-                    new XElement(Uic + "LocationAddressText", model.LocationAddressText),
-                    new XElement(Uic + "FacilitySiteTypeCode", model.FacilitySiteTypeCode),
-                    new XElement(Uic + "NAICSCode", model.NaicsCode),
-                    new XElement(Uic + "LocationAddressPostalCode", model.LocationAddressPostalCode)));
+            var facilityDetail = new XElement(Uic + "FacilityList");
+            var facility = new XElement(Uic + "FacilityDetail",
+                new XElement(Uic + "FacilityIdentifier", model.FacilityIdentifier),
+                new XElement(Uic + "LocalityName", model.LocalityName),
+                new XElement(Uic + "FacilitySiteName", model.FacilitySiteName),
+                new XElement(Uic + "FacilityPetitionStatusCode", model.FacilityPetitionStatusCode),
+                new XElement(Uic + "LocationAddressStateCode", model.LocationAddressStateCode),
+                new XElement(Uic + "FacilityStateIdentifier", model.FacilityStateIdentifier),
+                new XElement(Uic + "LocationAddressText", model.LocationAddressText));
+
+            if (model.FacilitySiteTypeCode != "U")
+            {
+                facility.Add(new XElement(Uic + "FacilitySiteTypeCode", model.FacilitySiteTypeCode));
+            }
+            facility.Add(new XElement(Uic + "NAICSCode", model.NaicsCode),
+                new XElement(Uic + "LocationAddressPostalCode", model.LocationAddressPostalCode));
+
+            facilityDetail.Add(facility);
 
             foreach (var violationModel in model.FacilityViolationDetail)
             {
@@ -170,7 +174,7 @@ namespace uic_etl.services
             {
                 wellDetail.Add(new XElement(Uic + "WellTotalDepthNumeric", model.WellTotalDepthNumeric));
             }
-            
+
             wellDetail.Add(
                 new XElement(Uic + "WellHighPriorityDesignationCode", model.WellHighPriorityDesignationCode),
                 new XElement(Uic + "WellContactIdentifier", model.WellContactIdentifier),
