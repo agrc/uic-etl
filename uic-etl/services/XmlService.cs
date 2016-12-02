@@ -183,8 +183,14 @@ namespace uic_etl.services
         {
             var wellDetail = new XElement(Uic + "WellDetail",
                 new XElement(Uic + "WellIdentifier", model.WellIdentifier),
-                new XElement(Uic + "WellAquiferExemptionInjectionCode", model.WellAquiferExemptionInjectionCode),
-                new XElement(Uic + "WellTotalDepthNumeric", model.WellTotalDepthNumeric),
+                new XElement(Uic + "WellAquiferExemptionInjectionCode", model.WellAquiferExemptionInjectionCode));
+
+            if (model.WellTotalDepthNumeric != "empty")
+            {
+                wellDetail.Add(new XElement(Uic + "WellTotalDepthNumeric", model.WellTotalDepthNumeric));
+            }
+            
+            wellDetail.Add(
                 new XElement(Uic + "WellHighPriorityDesignationCode", model.WellHighPriorityDesignationCode),
                 new XElement(Uic + "WellContactIdentifier", model.WellContactIdentifier),
                 new XElement(Uic + "WellFacilityIdentifier", model.WellFacilityIdentifier),
