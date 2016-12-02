@@ -49,6 +49,13 @@ namespace uic.epa_compare.services
                 return null;
             }
 
+            if (string.IsNullOrEmpty(options.EpaFile) || string.IsNullOrEmpty(options.UicEtlFile))
+            {
+                ShowHelp(p);
+
+                return null;
+            }
+
             options.EpaFile = FileExists(options.EpaFile);
             options.UicEtlFile = FileExists(options.UicEtlFile);
 
@@ -80,7 +87,7 @@ namespace uic.epa_compare.services
 
         private static void ShowHelp(OptionSet p)
         {
-            Console.WriteLine("Usage: uicetl [OPTIONS]+");
+            Console.WriteLine("Usage: uic epa compare [OPTIONS]+");
             Console.WriteLine();
             Console.WriteLine("Options:");
 
