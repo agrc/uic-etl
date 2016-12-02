@@ -251,17 +251,52 @@ namespace uic_etl.services
             foreach (var inspection in model.WellInspectionDetail)
             {
                 var inspectionDetail = new XElement(Uic + "WellInspectionDetail",
-                    new XElement(Uic + "InspectionIdentifier", inspection.InspectionIdentifier),
-                    new XElement(Uic + "InspectionAssistanceCode", inspection.InspectionAssistanceCode),
-                    new XElement(Uic + "InspectionDeficiencyCode", inspection.InspectionDeficiencyCode),
-                    new XElement(Uic + "InspectionActionDate", inspection.InspectionActionDate),
-                    new XElement(Uic + "InspectionICISComplianceMonitoringReasonCode", inspection.InspectionIcisComplianceMonitoringReasonCode),
-                    new XElement(Uic + "InspectionICISComplianceMonitoringTypeCode", inspection.InspectionIcisComplianceMonitoringTypeCode),
-                    new XElement(Uic + "InspectionICISComplianceActivityTypeCode", inspection.InspectionIcisComplianceActivityTypeCode),
-                    new XElement(Uic + "InspectionICISMOAName", inspection.InspectionIcisMoaName),
-                    new XElement(Uic + "InspectionICISRegionalPriorityName", inspection.InspectionIcisRegionalPriorityName),
-                    new XElement(Uic + "InspectionTypeActionCode", inspection.InspectionTypeActionCode),
-                    new XElement(Uic + "InspectionWellIdentifier", inspection.InspectionWellIdentifier));
+                    new XElement(Uic + "InspectionIdentifier", inspection.InspectionIdentifier));
+                
+                if (inspection.InspectionAssistanceCode != "NO")
+                {
+                    inspectionDetail.Add(new XElement(Uic + "InspectionAssistanceCode", inspection.InspectionAssistanceCode));
+                }
+                
+                if (inspection.InspectionDeficiencyCode != "NO")
+                {
+                    inspectionDetail.Add(new XElement(Uic + "InspectionDeficiencyCode", inspection.InspectionDeficiencyCode));
+                }  
+                    
+                inspectionDetail.Add(new XElement(Uic + "InspectionActionDate", inspection.InspectionActionDate));
+
+                if (inspection.InspectionIcisComplianceMonitoringReasonCode != "U")
+                {
+                    inspectionDetail.Add(new XElement(Uic + "InspectionICISComplianceMonitoringReasonCode",
+                        inspection.InspectionIcisComplianceMonitoringReasonCode));
+                }
+
+                if (inspection.InspectionIcisComplianceMonitoringTypeCode != "U")
+                {
+                    inspectionDetail.Add(new XElement(Uic + "InspectionICISComplianceMonitoringTypeCode", inspection.InspectionIcisComplianceMonitoringTypeCode));
+                }
+
+                if (inspection.InspectionIcisComplianceActivityTypeCode != "U")
+                {
+                    inspectionDetail.Add(new XElement(Uic + "InspectionICISComplianceActivityTypeCode", inspection.InspectionIcisComplianceActivityTypeCode));
+                }
+
+                if (inspection.InspectionIcisMoaName != "U")
+                {
+                    inspectionDetail.Add(new XElement(Uic + "InspectionICISMOAName", inspection.InspectionIcisMoaName));
+                }
+
+                if (inspection.InspectionIcisRegionalPriorityName != "U")
+                {
+                    inspectionDetail.Add(new XElement(Uic + "InspectionICISRegionalPriorityName", inspection.InspectionIcisRegionalPriorityName));
+                }
+
+                if (inspection.InspectionTypeActionCode != "U")
+                {
+                    inspectionDetail.Add(new XElement(Uic + "InspectionTypeActionCode", inspection.InspectionTypeActionCode));
+                }
+                
+                inspectionDetail.Add(new XElement(Uic + "InspectionWellIdentifier", inspection.InspectionWellIdentifier));
 
                 foreach (var correction in inspection.CorrectionDetail)
                 {
