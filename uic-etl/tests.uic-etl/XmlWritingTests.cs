@@ -371,7 +371,6 @@ namespace tests.uic_etl
                                        "<WellHighPriorityDesignationCode>WellHighPriorityDesignationCode</WellHighPriorityDesignationCode>" +
                                        "<WellContactIdentifier>WellContactIdentifier</WellContactIdentifier>" +
                                        "<WellFacilityIdentifier>WellFacilityIdentifier</WellFacilityIdentifier>" +
-                                       "<WellGeologyIdentifier>WellGeologyIdentifier</WellGeologyIdentifier>" +
                                        "<WellSiteAreaNameText>WellSiteAreaNameText</WellSiteAreaNameText>" +
                                        "<WellPermitIdentifier>WellPermitIdentifier</WellPermitIdentifier>" +
                                        "<WellStateIdentifier>WellStateIdentifier</WellStateIdentifier>" +
@@ -399,7 +398,6 @@ namespace tests.uic_etl
                 WellHighPriorityDesignationCode = "WellHighPriorityDesignationCode",
                 WellContactIdentifier = "WellContactIdentifier",
                 WellFacilityIdentifier = "WellFacilityIdentifier",
-                WellGeologyIdentifier = "WellGeologyIdentifier",
                 WellSiteAreaNameText = "WellSiteAreaNameText",
                 WellPermitIdentifier = "WellPermitIdentifier",
                 WellStateIdentifier = "WellStateIdentifier",
@@ -435,7 +433,6 @@ namespace tests.uic_etl
                                        "<WellHighPriorityDesignationCode>WellHighPriorityDesignationCode</WellHighPriorityDesignationCode>" +
                                        "<WellContactIdentifier>WellContactIdentifier</WellContactIdentifier>" +
                                        "<WellFacilityIdentifier>WellFacilityIdentifier</WellFacilityIdentifier>" +
-                                       "<WellGeologyIdentifier>WellGeologyIdentifier</WellGeologyIdentifier>" +
                                        "<WellSiteAreaNameText>WellSiteAreaNameText</WellSiteAreaNameText>" +
                                        "<WellPermitIdentifier>WellPermitIdentifier</WellPermitIdentifier>" +
                                        "<WellStateIdentifier>WellStateIdentifier</WellStateIdentifier>" +
@@ -474,7 +471,6 @@ namespace tests.uic_etl
                 WellHighPriorityDesignationCode = "WellHighPriorityDesignationCode",
                 WellContactIdentifier = "WellContactIdentifier",
                 WellFacilityIdentifier = "WellFacilityIdentifier",
-                WellGeologyIdentifier = "WellGeologyIdentifier",
                 WellSiteAreaNameText = "WellSiteAreaNameText",
                 WellPermitIdentifier = "WellPermitIdentifier",
                 WellStateIdentifier = "WellStateIdentifier",
@@ -527,7 +523,6 @@ namespace tests.uic_etl
                                        "<WellHighPriorityDesignationCode>WellHighPriorityDesignationCode</WellHighPriorityDesignationCode>" +
                                        "<WellContactIdentifier>WellContactIdentifier</WellContactIdentifier>" +
                                        "<WellFacilityIdentifier>WellFacilityIdentifier</WellFacilityIdentifier>" +
-                                       "<WellGeologyIdentifier>WellGeologyIdentifier</WellGeologyIdentifier>" +
                                        "<WellSiteAreaNameText>WellSiteAreaNameText</WellSiteAreaNameText>" +
                                        "<WellPermitIdentifier>WellPermitIdentifier</WellPermitIdentifier>" +
                                        "<WellStateIdentifier>WellStateIdentifier</WellStateIdentifier>" +
@@ -569,7 +564,6 @@ namespace tests.uic_etl
                 WellHighPriorityDesignationCode = "WellHighPriorityDesignationCode",
                 WellContactIdentifier = "WellContactIdentifier",
                 WellFacilityIdentifier = "WellFacilityIdentifier",
-                WellGeologyIdentifier = "WellGeologyIdentifier",
                 WellSiteAreaNameText = "WellSiteAreaNameText",
                 WellPermitIdentifier = "WellPermitIdentifier",
                 WellStateIdentifier = "WellStateIdentifier",
@@ -614,7 +608,6 @@ namespace tests.uic_etl
                                        "<WellHighPriorityDesignationCode>WellHighPriorityDesignationCode</WellHighPriorityDesignationCode>" +
                                        "<WellContactIdentifier>WellContactIdentifier</WellContactIdentifier>" +
                                        "<WellFacilityIdentifier>WellFacilityIdentifier</WellFacilityIdentifier>" +
-                                       "<WellGeologyIdentifier>WellGeologyIdentifier</WellGeologyIdentifier>" +
                                        "<WellSiteAreaNameText>WellSiteAreaNameText</WellSiteAreaNameText>" +
                                        "<WellPermitIdentifier>WellPermitIdentifier</WellPermitIdentifier>" +
                                        "<WellStateIdentifier>WellStateIdentifier</WellStateIdentifier>" +
@@ -654,7 +647,6 @@ namespace tests.uic_etl
                 WellHighPriorityDesignationCode = "WellHighPriorityDesignationCode",
                 WellContactIdentifier = "WellContactIdentifier",
                 WellFacilityIdentifier = "WellFacilityIdentifier",
-                WellGeologyIdentifier = "WellGeologyIdentifier",
                 WellSiteAreaNameText = "WellSiteAreaNameText",
                 WellPermitIdentifier = "WellPermitIdentifier",
                 WellStateIdentifier = "WellStateIdentifier",

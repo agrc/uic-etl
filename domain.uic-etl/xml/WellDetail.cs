@@ -24,7 +24,6 @@ namespace domain.uic_etl.xml
         public string WellHighPriorityDesignationCode { get; set; }
         public string WellContactIdentifier { get; set; }
         public string WellFacilityIdentifier { get; set; }
-        public string WellGeologyIdentifier { get; set; }
         public string WellSiteAreaNameText { get; set; }
         public string WellPermitIdentifier { get; set; }
         public string WellStateIdentifier { get; set; }
