@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -173,10 +174,12 @@ namespace uic_etl
                     "'{B6BD6456-2607-4172-A498-55471FF720C0}'",
                     "'{8551FD2F-599C-4BE1-852A-643E633D8E66}'"
                 };
-           
+                var multipleWellStatus = "Guid='{ADB83294-B48E-440D-83D2-365005C232C7}'";
+
                 var queryFilter = new QueryFilter
                 {
-                    WhereClause = "1=1",
+//                    WhereClause = "1=1",
+                    WhereClause = multipleWellStatus,
 //                    WhereClause = string.Format("Guid IN ({0})", string.Join(",", testSubmissionGuids)),
 //                    WhereClause = "Guid='{268bb302-89f2-4baa-a19b-45b3c207f236}'",
                     SubFields = string.Join(",", FacilitySdeModel.Fields)
@@ -329,6 +332,22 @@ namespace uic_etl
                             if (wellStatus.OperatingStatusDate.HasValue && wellTypeDate > wellStatus.OperatingStatusDate)
                             {
                                 wellTypeDate = wellStatus.OperatingStatusDate.GetValueOrDefault();
+                            }
+
+                            if (xmlWell.WellStatusDetail.Any())
+                            {
+                                var newer = xmlWell.WellStatusDetail.Count(x =>
+                                    DateTime.ParseExact(xmlWellStatus.WellStatusDate, "yyyyMMdd", CultureInfo.InvariantCulture) >
+                                    DateTime.ParseExact(x.WellStatusDate, "yyyyMMdd", CultureInfo.InvariantCulture)) > 0;
+
+                                if (newer)
+                                {
+                                    xmlWell.WellStatusDetail.Clear();
+                                }
+                                else
+                                {
+                                    continue;
+                                }
                             }
 
                             xmlWell.WellStatusDetail.Add(xmlWellStatus);
