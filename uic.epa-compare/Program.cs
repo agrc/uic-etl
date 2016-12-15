@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using NetBike.XmlUnit;
 using uic.epa_compare.models;
 using uic.epa_compare.services;
 
@@ -66,6 +67,15 @@ namespace uic.epa_compare
 //            doc.Save("C:\\Users\\agrc-arcgis\\Desktop\\uic-ordered.xml");
 
             var skipTags = new[] {"LatitudeMeasure", "LongitudeMeasure", "LocationAccuracy", "LocationIdentifier"};
+            var comparer = new XmlComparer
+            {
+                NormalizeText = true,
+                Analyzer = XmlAnalyzer.Custom()
+                    .SetEqual(XmlComparisonType.NodeListSequence)
+                    .SetEqual(XmlComparisonType.TextValue)
+                    .SetSimilar(XmlComparisonType.NamespacePrefix),
+                Handler = XmlCompareHandling.Limit(50)
+            };
 
             // loop over facility list items
             foreach (var epaFacilityListItem in epaFacilityList)
@@ -74,8 +84,6 @@ namespace uic.epa_compare
                 foreach (var element in epaFacilityListItem.Elements())
                 {
                     var type = element.Name;
-                    var tags = element.Elements().OrderBy(x => x.Name.LocalName);
-                    var epaCursor = tags.GetEnumerator();
                     var idElement = element.Elements().First();
                     var idTag = idElement.Name;
                     var id = idElement.Value;
@@ -91,31 +99,16 @@ namespace uic.epa_compare
                         continue;
                     }
 
-                    var uicCursor = uicElement.Elements().OrderBy(x => x.Name.LocalName).GetEnumerator();
+                    var result = comparer.Compare(element, uicElement);
 
-                    epaCursor.MoveNext();
-                    uicCursor.MoveNext();
-
-                    do
+                    if (!result.IsEqual)
                     {
-                        var testMatch = epaCursor.Current;
-                        var match = uicCursor.Current;
-
-                        if (testMatch.Name != match.Name)
+                        foreach (var item in result.Differences)
                         {
-                            Console.WriteLine("{0} != {1}", testMatch.Name, match.Name);
+                            Console.WriteLine("State: {0}", item.State);
+                            Console.WriteLine("Comparison: {0}", item.Difference);
                         }
-
-                        if (skipTags.Contains(testMatch.Name.LocalName))
-                        {
-                            continue;
-                        }
-
-                        if (testMatch.Value != match.Value)
-                        {
-                            Console.WriteLine("{0} != {1} for {2}", testMatch.Value, match.Value, testMatch.Name);
-                        }
-                    } while (uicCursor.MoveNext() && epaCursor.MoveNext());
+                    }
                 }
 
 //                try
