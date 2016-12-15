@@ -169,8 +169,8 @@ namespace uic_etl
                 debug.Write("{0} Quering UICFacility features.", start.Elapsed);
                 var testSubmissionGuids = new[]
                 {
-                    "'{268BB302-89F2-4BAA-A19B-45B3C207F236}'", 
-                    "'{B6BD6456-2607-4172-A498-55471FF720C0}'", 
+                    "'{268BB302-89F2-4BAA-A19B-45B3C207F236}'",
+                    "'{B6BD6456-2607-4172-A498-55471FF720C0}'",
                     "'{8551FD2F-599C-4BE1-852A-643E633D8E66}'"
                 };
            
@@ -602,7 +602,7 @@ namespace uic_etl
                         debug.Write("Permit {0} did not pass R2", xmlPermit);
                     }
 
-                    var authorizationActionCursor = authorizationActionRelation.GetObjectsRelatedToObject((IObject)authorizeFeature);
+                    var authorizationActionCursor = authorizationActionRelation.GetObjectsRelatedToObject((IObject) authorizeFeature);
                     releaser.ManageLifetime(authorizationActionCursor);
 
                     IObject authorizationActionFeature;
@@ -629,7 +629,7 @@ namespace uic_etl
                         xmlPermit.PermitActivityDetail.Add(permitActivityDetail);
                     }
 
-                    var areaOfReviewCursor = areaOfReviewRelation.GetObjectsRelatedToObject((IObject)authorizeFeature);
+                    var areaOfReviewCursor = areaOfReviewRelation.GetObjectsRelatedToObject((IObject) authorizeFeature);
                     releaser.ManageLifetime(areaOfReviewCursor);
 
                     var areaOfReviewFeature = areaOfReviewCursor.Next();
