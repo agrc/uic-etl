@@ -276,6 +276,26 @@ namespace uic_etl.services
 
             return model;
         }
+        
+        public static WellInspectionSdeModel MapFacilityInspectionModel(IObject row,
+            IReadOnlyDictionary<string, IndexFieldMap> fieldMap)
+        {
+            var model = new WellInspectionSdeModel
+            {
+                Guid = new Guid((string)row.Value[fieldMap["GUID"].Index]),
+                InspectionAssistance = GetDomainValue(row, fieldMap["InspectionAssistance"]),
+                InspectionDeficiency = GetDomainValue(row, fieldMap["InspectionDeficiency"]),
+                InspectionDate = GetDateValue(row.Value[fieldMap["InspectionDate"].Index]),
+                IcisCompMonActReason = GetDomainValue(row, fieldMap["ICISCompMonActReason"]),
+                IcisCompMonType = GetDomainValue(row, fieldMap["ICISCompMonType"]),
+                IcisCompActType = GetDomainValue(row, fieldMap["ICISCompActType"]),
+                IcisMoaPriority = GetDomainValue(row, fieldMap["ICISMOAPriority"]),
+                IcisRegionalPriority = GetDomainValue(row, fieldMap["ICISRegionalPriority"]),
+                InspectionType = GetDomainValue(row, fieldMap["InspectionType"])
+            };
+
+            return model;
+        }
 
         public static WellInspectionSdeModel MapWellInspectionModel(IObject row,
             IReadOnlyDictionary<string, IndexFieldMap> fieldMap)

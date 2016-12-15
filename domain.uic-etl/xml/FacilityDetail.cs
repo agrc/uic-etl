@@ -10,6 +10,7 @@ namespace domain.uic_etl.xml
         public FacilityDetail()
         {
             FacilityViolationDetail = new List<ViolationDetail>();
+            FacilityInspectionDetail = new List<WellInspectionDetail>();
         }
 
         public string FacilityIdentifier { get; set; }
@@ -24,6 +25,7 @@ namespace domain.uic_etl.xml
         public string LocationAddressPostalCode { get; set; }
         public string NaicsCode { get; set; }
         public List<ViolationDetail> FacilityViolationDetail { get; set; }
+        public List<WellInspectionDetail> FacilityInspectionDetail { get; set; } 
     }
 
     public class FacilityDetailValidator : AbstractValidator<FacilityDetail>

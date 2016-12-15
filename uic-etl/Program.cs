@@ -99,6 +99,9 @@ namespace uic_etl
                 var wellInspectionRelation = featureWorkspace.OpenRelationshipClass("WellToInspection");
                 releaser.ManageLifetime(wellInspectionRelation);
 
+                var facilityInspectionRelation = featureWorkspace.OpenRelationshipClass("FacilityToInspection");
+                releaser.ManageLifetime(facilityInspectionRelation);
+
                 var wellIntegrityRelation = featureWorkspace.OpenRelationshipClass("WellToIntegrityTest");
                 releaser.ManageLifetime(wellIntegrityRelation);
 
@@ -168,20 +171,19 @@ namespace uic_etl
                 var payload = XmlService.CreatePayloadElements();
 
                 debug.Write("{0} Quering UICFacility features.", start.Elapsed);
-                var testSubmissionGuids = new[]
-                {
-                    "'{268BB302-89F2-4BAA-A19B-45B3C207F236}'",
-                    "'{B6BD6456-2607-4172-A498-55471FF720C0}'",
-                    "'{8551FD2F-599C-4BE1-852A-643E633D8E66}'"
-                };
+                var whereClause = "1=1";
+
+                var testSubmissionGuids = string.Format("Guid IN ({0})",
+                    string.Join(",", "'{268BB302-89F2-4BAA-A19B-45B3C207F236}'", "'{B6BD6456-2607-4172-A498-55471FF720C0}'",
+                        "'{8551FD2F-599C-4BE1-852A-643E633D8E66}'"));
                 var multipleWellStatus = "Guid='{ADB83294-B48E-440D-83D2-365005C232C7}'";
+                var noWellInspection = "Guid='{8738A1C1-5354-4308-8209-B976DF463884}'";
+
+                whereClause = noWellInspection;
 
                 var queryFilter = new QueryFilter
                 {
-//                    WhereClause = "1=1",
-                    WhereClause = multipleWellStatus,
-//                    WhereClause = string.Format("Guid IN ({0})", string.Join(",", testSubmissionGuids)),
-//                    WhereClause = "Guid='{268bb302-89f2-4baa-a19b-45b3c207f236}'",
+                    WhereClause = whereClause,
                     SubFields = string.Join(",", FacilitySdeModel.Fields)
                 };
                 releaser.ManageLifetime(queryFilter);
@@ -214,6 +216,27 @@ namespace uic_etl
                     {
                         continue;
                     }
+
+                    var inspectionCursor = facilityInspectionRelation.GetObjectsRelatedToObject(facilityFeature);
+                    releaser.ManageLifetime(inspectionCursor);
+
+                    // Find all UICInspections
+                    IObject inspectionFeature;
+                    while ((inspectionFeature = inspectionCursor.Next()) != null)
+                    {
+                        releaser.ManageLifetime(inspectionFeature);
+
+                        var inspection = EtlMappingService.MapFacilityInspectionModel(inspectionFeature, wellInspectionFieldMap);
+                        var xmlInspection = mapper.Map<WellInspectionSdeModel, WellInspectionDetail>(inspection);
+
+                        if (!validator.IsValid(xmlInspection))
+                        {
+                            continue;
+                        }
+
+                        xmlFacility.FacilityInspectionDetail.Add(xmlInspection);
+                    }
+
                     var violationCursor = facilityViolationRelation.GetObjectsRelatedToObject(facilityFeature);
                     releaser.ManageLifetime(violationCursor);
 
@@ -571,97 +594,104 @@ namespace uic_etl
                 }
 
                 debug.Write("{0} finding all linked contacts", start.Elapsed);
-                queryFilter.SubFields = string.Join(",", ContactSdeModel.Fields);
-                queryFilter.WhereClause = "GUID IN(" + string.Join(",", linkedContacts.Select(x => "'{" + x.ToString().ToUpper() + "}'")) + ")";
-
-                var contactCursor = uicContact.Search(queryFilter, true);
-                releaser.ManageLifetime(contactCursor);
-
+                
                 var contacts = new List<ContactDetail>();
 
-                IRow contactFeature;
-                while ((contactFeature = contactCursor.NextRow()) != null)
+                if (linkedContacts.Any())
                 {
-                    releaser.ManageLifetime(contactFeature);
+                    queryFilter.SubFields = string.Join(",", ContactSdeModel.Fields);
+                    queryFilter.WhereClause = "GUID IN(" + string.Join(",", linkedContacts.Select(x => "'{" + x.ToString().ToUpper() + "}'")) + ")";
 
-                    var contact = EtlMappingService.MapContactSdeModel(contactFeature, contactFieldMap);
-                    var xmlContact = mapper.Map<ContactSdeModel, ContactDetail>(contact);
+                    var contactCursor = uicContact.Search(queryFilter, true);
+                    releaser.ManageLifetime(contactCursor);
 
-                    if (!validator.IsValid(xmlContact))
+                    IRow contactFeature;
+                    while ((contactFeature = contactCursor.NextRow()) != null)
                     {
-                        continue;
+                        releaser.ManageLifetime(contactFeature);
+
+                        var contact = EtlMappingService.MapContactSdeModel(contactFeature, contactFieldMap);
+                        var xmlContact = mapper.Map<ContactSdeModel, ContactDetail>(contact);
+
+                        if (!validator.IsValid(xmlContact))
+                        {
+                            continue;
+                        }
+
+                        contacts.Add(xmlContact);
                     }
-
-                    contacts.Add(xmlContact);
                 }
-
-                queryFilter.WhereClause = "GUID IN(" + string.Join(",", linkedPermits.Select(x => "'{" + x.ToString().ToUpper() + "}'")) + ")";
-                queryFilter.SubFields = string.Join(",", AuthorizationSdeModel.Fields);
-
-                var authorizationCursor = uicAuthorization.Search(queryFilter, true);
-                releaser.ManageLifetime(authorizationCursor);
 
                 var permits = new List<PermitDetail>();
 
-                IRow authorizeFeature;
-                while ((authorizeFeature = authorizationCursor.NextRow()) != null)
+                if (linkedPermits.Any())
                 {
-                    releaser.ManageLifetime(authorizeFeature);
+                    queryFilter.WhereClause = "GUID IN(" + string.Join(",", linkedPermits.Select(x => "'{" + x.ToString().ToUpper() + "}'")) + ")";
+                    queryFilter.SubFields = string.Join(",", AuthorizationSdeModel.Fields);
 
-                    var authorize = EtlMappingService.MapAuthorizationSdeModel(authorizeFeature, authorizationFieldMap);
-                    var xmlPermit = mapper.Map<AuthorizationSdeModel, PermitDetail>(authorize);
+                    var authorizationCursor = uicAuthorization.Search(queryFilter, true);
+                    releaser.ManageLifetime(authorizationCursor);
 
-                    if (!validator.IsValid(xmlPermit, "R1"))
+                    IRow authorizeFeature;
+                    while ((authorizeFeature = authorizationCursor.NextRow()) != null)
                     {
-                        continue;
-                    }
+                        releaser.ManageLifetime(authorizeFeature);
 
-                    if (!validator.IsValid(xmlPermit, "R2"))
-                    {
-                        debug.Write("Permit {0} did not pass R2", xmlPermit);
-                    }
+                        var authorize = EtlMappingService.MapAuthorizationSdeModel(authorizeFeature, authorizationFieldMap);
+                        var xmlPermit = mapper.Map<AuthorizationSdeModel, PermitDetail>(authorize);
 
-                    var authorizationActionCursor = authorizationActionRelation.GetObjectsRelatedToObject((IObject) authorizeFeature);
-                    releaser.ManageLifetime(authorizationActionCursor);
-
-                    IObject authorizationActionFeature;
-                    while ((authorizationActionFeature = authorizationActionCursor.Next()) != null)
-                    {
-                        var authorizationAction = EtlMappingService.MapAuthorizationActionSdeModel(authorizationActionFeature,
-                            authorizationActionFieldMap);
-                        var permitActivityDetail = mapper.Map<AuthorizationActionSdeModel, PermitActivityDetail>(authorizationAction);
-                        permitActivityDetail.PermitActivityPermitIdentifier = xmlPermit.PermitIdentifier;
-
-                        if (string.IsNullOrEmpty(permitActivityDetail.PermitActivityActionTypeCode) ||
-                            permitActivityDetail.PermitActivityActionTypeCode.ToUpper() == "NR")
-                        {
-                            // skip authorized by rule wells.
-                            // https://github.com/agrc/uic-etl/issues/10#issuecomment-241120723
-                            continue;
-                        }
-
-                        if (!validator.IsValid(permitActivityDetail))
+                        if (!validator.IsValid(xmlPermit, "R1"))
                         {
                             continue;
                         }
 
-                        xmlPermit.PermitActivityDetail.Add(permitActivityDetail);
-                    }
+                        if (!validator.IsValid(xmlPermit, "R2"))
+                        {
+                            debug.Write("Permit {0} did not pass R2", xmlPermit);
+                        }
 
-                    var areaOfReviewCursor = areaOfReviewRelation.GetObjectsRelatedToObject((IObject) authorizeFeature);
-                    releaser.ManageLifetime(areaOfReviewCursor);
+                        var authorizationActionCursor = authorizationActionRelation.GetObjectsRelatedToObject((IObject) authorizeFeature);
+                        releaser.ManageLifetime(authorizationActionCursor);
 
-                    var areaOfReviewFeature = areaOfReviewCursor.Next();
-                    if (areaOfReviewFeature == null)
-                    {
+                        IObject authorizationActionFeature;
+                        while ((authorizationActionFeature = authorizationActionCursor.Next()) != null)
+                        {
+                            var authorizationAction = EtlMappingService.MapAuthorizationActionSdeModel(authorizationActionFeature,
+                                authorizationActionFieldMap);
+                            var permitActivityDetail = mapper.Map<AuthorizationActionSdeModel, PermitActivityDetail>(authorizationAction);
+                            permitActivityDetail.PermitActivityPermitIdentifier = xmlPermit.PermitIdentifier;
+
+                            if (string.IsNullOrEmpty(permitActivityDetail.PermitActivityActionTypeCode) ||
+                                permitActivityDetail.PermitActivityActionTypeCode.ToUpper() == "NR")
+                            {
+                                // skip authorized by rule wells.
+                                // https://github.com/agrc/uic-etl/issues/10#issuecomment-241120723
+                                continue;
+                            }
+
+                            if (!validator.IsValid(permitActivityDetail))
+                            {
+                                continue;
+                            }
+
+                            xmlPermit.PermitActivityDetail.Add(permitActivityDetail);
+                        }
+
+                        var areaOfReviewCursor = areaOfReviewRelation.GetObjectsRelatedToObject((IObject) authorizeFeature);
+                        releaser.ManageLifetime(areaOfReviewCursor);
+
+                        var areaOfReviewFeature = areaOfReviewCursor.Next();
+                        if (areaOfReviewFeature == null)
+                        {
+                            permits.Add(xmlPermit);
+                            continue;
+                        }
+
+                        var areaOfReview = EtlMappingService.MapAreaOfReviewSdeModel(areaOfReviewFeature, areaOfReviewFieldMap);
+                        xmlPermit.PermitAorWellNumberNumeric = areaOfReview.PermitAorWellNumberNumeric;
+
                         permits.Add(xmlPermit);
-                        continue;
                     }
-
-                    var areaOfReview = EtlMappingService.MapAreaOfReviewSdeModel(areaOfReviewFeature, areaOfReviewFieldMap);
-                    xmlPermit.PermitAorWellNumberNumeric = areaOfReview.PermitAorWellNumberNumeric;
-
-                    permits.Add(xmlPermit);
                 }
 
                 XmlService.AppendPayloadElements(ref payload, contacts, permits);

@@ -127,6 +127,59 @@ namespace uic_etl.services
 
             facilityDetail.Add(facility);
 
+            foreach (var inspection in model.FacilityInspectionDetail)
+            {
+                var inspectionDetail = new XElement(Uic + "FacilityInspectionDetail",
+                    new XElement(Uic + "InspectionIdentifier", inspection.InspectionIdentifier));
+
+                if (inspection.InspectionAssistanceCode != "NO")
+                {
+                    inspectionDetail.Add(new XElement(Uic + "InspectionAssistanceCode", inspection.InspectionAssistanceCode));
+                }
+
+                if (inspection.InspectionDeficiencyCode != "NO")
+                {
+                    inspectionDetail.Add(new XElement(Uic + "InspectionDeficiencyCode", inspection.InspectionDeficiencyCode));
+                }
+
+                inspectionDetail.Add(new XElement(Uic + "InspectionActionDate", inspection.InspectionActionDate));
+
+                if (inspection.InspectionIcisComplianceMonitoringReasonCode != "U")
+                {
+                    inspectionDetail.Add(new XElement(Uic + "InspectionICISComplianceMonitoringReasonCode",
+                        inspection.InspectionIcisComplianceMonitoringReasonCode));
+                }
+
+                if (inspection.InspectionIcisComplianceMonitoringTypeCode != "U")
+                {
+                    inspectionDetail.Add(new XElement(Uic + "InspectionICISComplianceMonitoringTypeCode", inspection.InspectionIcisComplianceMonitoringTypeCode));
+                }
+
+                if (inspection.InspectionIcisComplianceActivityTypeCode != "U")
+                {
+                    inspectionDetail.Add(new XElement(Uic + "InspectionICISComplianceActivityTypeCode", inspection.InspectionIcisComplianceActivityTypeCode));
+                }
+
+                if (inspection.InspectionIcisMoaName != "U")
+                {
+                    inspectionDetail.Add(new XElement(Uic + "InspectionICISMOAName", inspection.InspectionIcisMoaName));
+                }
+
+                if (inspection.InspectionIcisRegionalPriorityName != "U")
+                {
+                    inspectionDetail.Add(new XElement(Uic + "InspectionICISRegionalPriorityName", inspection.InspectionIcisRegionalPriorityName));
+                }
+
+                if (inspection.InspectionTypeActionCode != "U")
+                {
+                    inspectionDetail.Add(new XElement(Uic + "InspectionTypeActionCode", inspection.InspectionTypeActionCode));
+                }
+
+                inspectionDetail.Add(new XElement(Uic + "InspectionFacilityIdentifier", model.FacilityIdentifier));
+
+                facility.Add(inspectionDetail);
+            }
+
             foreach (var violationModel in model.FacilityViolationDetail)
             {
                 var violationDetail = new XElement(Uic + "FacilityViolationDetail",
