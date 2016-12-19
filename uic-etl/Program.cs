@@ -328,10 +328,16 @@ namespace uic_etl
                         var verticalWellCursor = verticalWellRelation.GetObjectsRelatedToObject(wellFeature);
                         releaser.ManageLifetime(verticalWellCursor);
 
-                        var verticalEventFeature = verticalWellCursor.Next();
-                        var verticalEvent = EtlMappingService.MapVerticalWellEventModel(verticalEventFeature, verticalWellFieldMap);
-
-                        xmlWell.WellTotalDepthNumeric = string.IsNullOrEmpty(verticalEvent.Length) ? "empty" : verticalEvent.Length;
+                        IObject verticalEventFeature;
+                        while ((verticalEventFeature = verticalWellCursor.Next()) != null)
+                        {
+                            var verticalEvent = EtlMappingService.MapVerticalWellEventModel(verticalEventFeature, verticalWellFieldMap);
+                            if (verticalEvent.IsTotalDepth)
+                            {
+                                xmlWell.WellTotalDepthNumeric = string.IsNullOrEmpty(verticalEvent.Length) ? "empty" : verticalEvent.Length;
+                                break;
+                            }
+                        }
 
                         var wellStatusCursor = wellStatusRelation.GetObjectsRelatedToObject(wellFeature);
                         releaser.ManageLifetime(wellStatusCursor);

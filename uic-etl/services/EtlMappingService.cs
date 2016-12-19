@@ -257,7 +257,8 @@ namespace uic_etl.services
         {
             var model = new VerticalWellEventSdeModel
             {
-                Length = GetDomainValue(row, fieldMap["Length"])
+                Length = GetDomainValue(row, fieldMap["Length"]),
+                EventDescriptor = GetDomainValue(row, fieldMap["EventDescriptor"])
             };
 
             return model;
