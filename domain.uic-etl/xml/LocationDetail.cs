@@ -31,76 +31,54 @@ namespace domain.uic_etl.xml
         {
             get
             {
-                switch (SourceMapScaleNumeric)
+                if (string.IsNullOrEmpty(HorizontalCollectionMethodCode) || HorizontalCollectionMethodCode == "U")
                 {
-                    case "NA":
-                    case "N":
+                    return "U";
+                }
+
+                switch (HorizontalCollectionMethodCode)
+                {
+                    case "001":
                     {
-                        return "NA";
+                        return 50;
                     }
-                    case "1":
+                    case "007":
                     {
-                        return 250;
+                        return 200;
                     }
-                    case "2":
+                    case "012":
+                    case "013":
                     {
-                        return 3000;
+                        return 1;
                     }
-                    case "3":
+                    case "014":
                     {
-                        return 7000;
+                        return 3;
                     }
-                    case "A":
+                    case "016":
                     {
-                        return 10000;
+                        return 15;
                     }
-                    case "B":
+                    case "011":
+                    case "017":
                     {
-                        return 12000;
+                        return 80;
                     }
-                    case "C":
+                    case "021":
                     {
-                        return 15480;
+                        return SourceMapScaleNumeric == "J" ? 200 : 40;
                     }
-                    case "D":
+                    case "023":
                     {
-                        return 20000;
+                        return 400;
                     }
-                    case "E":
+                    case "024":
                     {
-                        return 24000;
+                        return 800;
                     }
-                    case "F":
+                    case "027":
                     {
-                        return 25000;
-                    }
-                    case "G":
-                    {
-                        return 50000;
-                    }
-                    case "H":
-                    {
-                        return 62500;
-                    }
-                    case "I":
-                    {
-                        return 63360;
-                    }
-                    case "J":
-                    {
-                        return 100000;
-                    }
-                    case "K":
-                    {
-                        return 125000;
-                    }
-                    case "L":
-                    {
-                        return 250000;
-                    }
-                    case "M":
-                    {
-                        return 500000;
+                        return 900;
                     }
                     default:
                     {
