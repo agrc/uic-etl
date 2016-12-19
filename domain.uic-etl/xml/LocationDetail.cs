@@ -40,45 +40,45 @@ namespace domain.uic_etl.xml
                 {
                     case "001":
                     {
-                        return 50;
+                        return "50.0";
                     }
                     case "007":
                     {
-                        return 200;
+                        return "200.0";
                     }
                     case "012":
                     case "013":
                     {
-                        return 1;
+                        return "1.0";
                     }
                     case "014":
                     {
-                        return 3;
+                        return "3.0";
                     }
                     case "016":
                     {
-                        return 15;
+                        return "15.0";
                     }
                     case "011":
                     case "017":
                     {
-                        return 80;
+                        return "80.0";
                     }
                     case "021":
                     {
-                        return SourceMapScaleNumeric == "J" ? 200 : 40;
+                        return SourceMapScaleNumeric == "J" ? "200.0" : "40.0";
                     }
                     case "023":
                     {
-                        return 400;
+                        return "400.0";
                     }
                     case "024":
                     {
-                        return 800;
+                        return "800.0";
                     }
                     case "027":
                     {
-                        return 900;
+                        return "900.0";
                     }
                     default:
                     {
