@@ -132,45 +132,45 @@ namespace uic_etl.services
                 var inspectionDetail = new XElement(Uic + "FacilityInspectionDetail",
                     new XElement(Uic + "InspectionIdentifier", inspection.InspectionIdentifier));
 
-                if (inspection.InspectionAssistanceCode != "NO")
+                if (!string.IsNullOrEmpty(inspection.InspectionAssistanceCode))
                 {
                     inspectionDetail.Add(new XElement(Uic + "InspectionAssistanceCode", inspection.InspectionAssistanceCode));
                 }
-
-                if (inspection.InspectionDeficiencyCode != "NO")
+                
+                if (!string.IsNullOrEmpty(inspection.InspectionDeficiencyCode))
                 {
                     inspectionDetail.Add(new XElement(Uic + "InspectionDeficiencyCode", inspection.InspectionDeficiencyCode));
-                }
-
+                }  
+                    
                 inspectionDetail.Add(new XElement(Uic + "InspectionActionDate", inspection.InspectionActionDate));
 
-                if (inspection.InspectionIcisComplianceMonitoringReasonCode != "U")
+                if (!string.IsNullOrEmpty(inspection.InspectionIcisComplianceMonitoringReasonCode))
                 {
                     inspectionDetail.Add(new XElement(Uic + "InspectionICISComplianceMonitoringReasonCode",
                         inspection.InspectionIcisComplianceMonitoringReasonCode));
                 }
 
-                if (inspection.InspectionIcisComplianceMonitoringTypeCode != "U")
+                if (!string.IsNullOrEmpty(inspection.InspectionIcisComplianceMonitoringTypeCode))
                 {
                     inspectionDetail.Add(new XElement(Uic + "InspectionICISComplianceMonitoringTypeCode", inspection.InspectionIcisComplianceMonitoringTypeCode));
                 }
 
-                if (inspection.InspectionIcisComplianceActivityTypeCode != "U")
+                if (!string.IsNullOrEmpty(inspection.InspectionIcisComplianceActivityTypeCode))
                 {
                     inspectionDetail.Add(new XElement(Uic + "InspectionICISComplianceActivityTypeCode", inspection.InspectionIcisComplianceActivityTypeCode));
                 }
 
-                if (inspection.InspectionIcisMoaName != "U")
+                if (!string.IsNullOrEmpty(inspection.InspectionIcisMoaName))
                 {
                     inspectionDetail.Add(new XElement(Uic + "InspectionICISMOAName", inspection.InspectionIcisMoaName));
                 }
 
-                if (inspection.InspectionIcisRegionalPriorityName != "U")
+                if (!string.IsNullOrEmpty(inspection.InspectionIcisRegionalPriorityName))
                 {
                     inspectionDetail.Add(new XElement(Uic + "InspectionICISRegionalPriorityName", inspection.InspectionIcisRegionalPriorityName));
                 }
 
-                if (inspection.InspectionTypeActionCode != "U")
+                if (!string.IsNullOrEmpty(inspection.InspectionTypeActionCode))
                 {
                     inspectionDetail.Add(new XElement(Uic + "InspectionTypeActionCode", inspection.InspectionTypeActionCode));
                 }
@@ -306,45 +306,45 @@ namespace uic_etl.services
                 var inspectionDetail = new XElement(Uic + "WellInspectionDetail",
                     new XElement(Uic + "InspectionIdentifier", inspection.InspectionIdentifier));
                 
-                if (inspection.InspectionAssistanceCode != "NO")
+                if (!string.IsNullOrEmpty(inspection.InspectionAssistanceCode))
                 {
                     inspectionDetail.Add(new XElement(Uic + "InspectionAssistanceCode", inspection.InspectionAssistanceCode));
                 }
                 
-                if (inspection.InspectionDeficiencyCode != "NO")
+                if (!string.IsNullOrEmpty(inspection.InspectionDeficiencyCode))
                 {
                     inspectionDetail.Add(new XElement(Uic + "InspectionDeficiencyCode", inspection.InspectionDeficiencyCode));
                 }  
                     
                 inspectionDetail.Add(new XElement(Uic + "InspectionActionDate", inspection.InspectionActionDate));
 
-                if (inspection.InspectionIcisComplianceMonitoringReasonCode != "U")
+                if (!string.IsNullOrEmpty(inspection.InspectionIcisComplianceMonitoringReasonCode))
                 {
                     inspectionDetail.Add(new XElement(Uic + "InspectionICISComplianceMonitoringReasonCode",
                         inspection.InspectionIcisComplianceMonitoringReasonCode));
                 }
 
-                if (inspection.InspectionIcisComplianceMonitoringTypeCode != "U")
+                if (!string.IsNullOrEmpty(inspection.InspectionIcisComplianceMonitoringTypeCode))
                 {
                     inspectionDetail.Add(new XElement(Uic + "InspectionICISComplianceMonitoringTypeCode", inspection.InspectionIcisComplianceMonitoringTypeCode));
                 }
 
-                if (inspection.InspectionIcisComplianceActivityTypeCode != "U")
+                if (!string.IsNullOrEmpty(inspection.InspectionIcisComplianceActivityTypeCode))
                 {
                     inspectionDetail.Add(new XElement(Uic + "InspectionICISComplianceActivityTypeCode", inspection.InspectionIcisComplianceActivityTypeCode));
                 }
 
-                if (inspection.InspectionIcisMoaName != "U")
+                if (!string.IsNullOrEmpty(inspection.InspectionIcisMoaName))
                 {
                     inspectionDetail.Add(new XElement(Uic + "InspectionICISMOAName", inspection.InspectionIcisMoaName));
                 }
 
-                if (inspection.InspectionIcisRegionalPriorityName != "U")
+                if (!string.IsNullOrEmpty(inspection.InspectionIcisRegionalPriorityName))
                 {
                     inspectionDetail.Add(new XElement(Uic + "InspectionICISRegionalPriorityName", inspection.InspectionIcisRegionalPriorityName));
                 }
 
-                if (inspection.InspectionTypeActionCode != "U")
+                if (!string.IsNullOrEmpty(inspection.InspectionTypeActionCode))
                 {
                     inspectionDetail.Add(new XElement(Uic + "InspectionTypeActionCode", inspection.InspectionTypeActionCode));
                 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using AutoMapper;
 using domain.uic_etl.sde;
 using domain.uic_etl.xml;
@@ -59,7 +58,7 @@ namespace uic_etl.services
                     .ForMember(dest => dest.WellFacilityIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.FacilityGuid).Execute()))
                     .ForMember(dest => dest.WellSiteAreaNameText, opts => opts.Ignore())
                     .ForMember(dest => dest.WellPermitIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.AuthorizationGuid).Execute()))
-                    .ForMember(dest => dest.WellStateIdentifier, opts => opts.MapFrom(src => src.Guid))
+                    .ForMember(dest => dest.WellStateIdentifier, opts => opts.MapFrom(src => src.Guid.ToString("B").ToUpper()))
                     .ForMember(dest => dest.WellStateTribalCode, opts => opts.UseValue("UT"))
                     .ForMember(dest => dest.WellName, opts => opts.MapFrom(src => src.WellName))
                     .ForMember(dest => dest.WellTypeCode, opts => opts.MapFrom(src => src.WellSubClass))
@@ -82,15 +81,15 @@ namespace uic_etl.services
 
                 _.CreateMap<WellInspectionSdeModel, WellInspectionDetail>()
                     .ForMember(dest => dest.InspectionIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
-                    .ForMember(dest => dest.InspectionAssistanceCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.InspectionAssistance) ? "NO" : src.InspectionAssistance))
-                    .ForMember(dest => dest.InspectionDeficiencyCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.InspectionDeficiency) ? "NO" : src.InspectionDeficiency))
+                    .ForMember(dest => dest.InspectionAssistanceCode, opts => opts.MapFrom(src => src.InspectionAssistance))
+                    .ForMember(dest => dest.InspectionDeficiencyCode, opts => opts.MapFrom(src => src.InspectionDeficiency))
                     .ForMember(dest => dest.InspectionActionDate, opts => opts.MapFrom(src => src.InspectionDate.HasValue ? src.InspectionDate.Value.ToString("yyyyMMdd") : DateTime.MinValue.ToString("yyyyMMdd")))
-                    .ForMember(dest => dest.InspectionIcisComplianceMonitoringReasonCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.IcisCompMonActReason) ? "U" : src.IcisCompMonActReason))
-                    .ForMember(dest => dest.InspectionIcisComplianceMonitoringTypeCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.IcisCompMonType) ? "U" : src.IcisCompMonType))
-                    .ForMember(dest => dest.InspectionIcisComplianceActivityTypeCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.IcisCompActType) ? "U" : src.IcisCompActType))
-                    .ForMember(dest => dest.InspectionIcisMoaName, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.IcisMoaPriority) ? "U" : src.IcisMoaPriority))
-                    .ForMember(dest => dest.InspectionIcisRegionalPriorityName, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.IcisRegionalPriority) ? "U" : src.IcisRegionalPriority))
-                    .ForMember(dest => dest.InspectionTypeActionCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.InspectionType) ? "U" : src.InspectionType))
+                    .ForMember(dest => dest.InspectionIcisComplianceMonitoringReasonCode, opts => opts.MapFrom(src => src.IcisCompMonActReason))
+                    .ForMember(dest => dest.InspectionIcisComplianceMonitoringTypeCode, opts => opts.MapFrom(src => src.IcisCompMonType))
+                    .ForMember(dest => dest.InspectionIcisComplianceActivityTypeCode, opts => opts.MapFrom(src => src.IcisCompActType))
+                    .ForMember(dest => dest.InspectionIcisMoaName, opts => opts.MapFrom(src => src.IcisMoaPriority))
+                    .ForMember(dest => dest.InspectionIcisRegionalPriorityName, opts => opts.MapFrom(src => src.IcisRegionalPriority))
+                    .ForMember(dest => dest.InspectionTypeActionCode, opts => opts.MapFrom(src => src.InspectionType))
                     .ForMember(dest => dest.InspectionWellIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.WellFk).Execute()))
                     .ForMember(dest => dest.CorrectionDetail, opts => opts.Ignore());
 
