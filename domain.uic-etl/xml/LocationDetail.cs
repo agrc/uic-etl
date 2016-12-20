@@ -127,8 +127,8 @@ namespace domain.uic_etl.xml
                 RuleFor(src => src.LocationAccuracyValueMeasure)
                     .Must(x =>
                     {
-                        int accuracy;
-                        if (!int.TryParse(x.ToString(), out accuracy))
+                        double accuracy;
+                        if (!double.TryParse(x.ToString(), out accuracy))
                         {
                             return new[] {"NA", "U"}.Contains(x.ToString());
                         }
