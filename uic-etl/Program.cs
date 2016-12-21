@@ -178,6 +178,9 @@ namespace uic_etl
                         "'{8551FD2F-599C-4BE1-852A-643E633D8E66}'"));
                 var multipleWellStatus = "Guid='{ADB83294-B48E-440D-83D2-365005C232C7}'";
                 var noWellInspection = "Guid='{8738A1C1-5354-4308-8209-B976DF463884}'";
+                var missingWellViolation = "Guid='{1FE34009-B413-419F-83DE-8673D6D5205B}'";
+                var bhFacilityInspection = "Guid='{0768C21D-D8C1-484B-85F5-22C551BD0E18}'";
+                var contactOrdering = "Guid='{E26A85D4-3624-4986-837C-53383C7B7E48}'";
 
                 whereClause = noWellInspection;
 
