@@ -332,11 +332,18 @@ namespace uic_etl
                         while ((verticalEventFeature = verticalWellCursor.Next()) != null)
                         {
                             var verticalEvent = EtlMappingService.MapVerticalWellEventModel(verticalEventFeature, verticalWellFieldMap);
-                            if (verticalEvent.IsTotalDepth)
+                            if (!verticalEvent.IsTotalDepth)
                             {
-                                xmlWell.WellTotalDepthNumeric = string.IsNullOrEmpty(verticalEvent.Length) ? "empty" : verticalEvent.Length;
-                                break;
+                                continue;
                             }
+
+                            xmlWell.WellTotalDepthNumeric = verticalEvent.Length;
+                            break;
+                        }
+
+                        if (string.IsNullOrEmpty(xmlWell.WellTotalDepthNumeric))
+                        {
+                            xmlWell.WellTotalDepthNumeric = "empty";
                         }
 
                         var wellStatusCursor = wellStatusRelation.GetObjectsRelatedToObject(wellFeature);
