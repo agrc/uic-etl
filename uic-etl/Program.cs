@@ -240,7 +240,7 @@ namespace uic_etl
                     var violationCursor = facilityViolationRelation.GetObjectsRelatedToObject(facilityFeature);
                     releaser.ManageLifetime(violationCursor);
 
-                    // Find all UICViolations
+                    // Find all facility UICViolations
                     IObject violationFeature;
                     while ((violationFeature = violationCursor.Next()) != null)
                     {
