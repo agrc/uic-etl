@@ -182,8 +182,6 @@ namespace uic_etl
                 var bhFacilityInspection = "Guid='{0768C21D-D8C1-484B-85F5-22C551BD0E18}'";
                 var contactOrdering = "Guid='{E26A85D4-3624-4986-837C-53383C7B7E48}'";
 
-                whereClause = noWellInspection;
-
                 var queryFilter = new QueryFilter
                 {
                     WhereClause = whereClause,
