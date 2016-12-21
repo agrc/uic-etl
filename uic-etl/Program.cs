@@ -460,6 +460,8 @@ namespace uic_etl
 
                                 xmlViolation.ResponseDetail.Add(xmlResponseDetail);
                             }
+                            
+                            xmlWell.WellViolationDetail.Add(xmlViolation);
                         }
 
                         // well inspection detail
