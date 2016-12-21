@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using NetBike.XmlUnit;
+using Org.XmlUnit.Builder;
+using Org.XmlUnit.Diff;
 using uic.epa_compare.models;
 using uic.epa_compare.services;
 
@@ -37,7 +39,6 @@ namespace uic.epa_compare
                 return;
             }
 
-
             XDocument epa;
             XDocument uic;
             var sortFacilities = new Func<XElement, string>(element => element.Elements().First().Elements().First().Value);
@@ -49,33 +50,19 @@ namespace uic.epa_compare
                 uic = XDocument.Load(reader2);
             }
 
-            
-
             var epaContainerNode = epa.Root.Descendants(Uic + "UIC");
             var epaFacilityList = epaContainerNode.Elements(Uic + "FacilityList").OrderBy(sortFacilities);
-//            var epaWells = epaFacilities.Elements(Uic + "WellDetail").OrderBy(x => x.Elements().First().Value);
-//
-//            var doc = new XDocument(new XElement("Root", epaWells));
-//            doc.Save("C:\\Users\\agrc-arcgis\\Desktop\\epa-ordered.xml");
-//
+
             var uicContainerNode = uic.Root.Descendants(Uic + "UIC");
             var uicFacilities = uicContainerNode.Elements(Uic + "FacilityList").OrderBy(sortFacilities);
-//            var uicWells = uicFacilities.Elements(Uic + "WellDetail").OrderBy(x => x.Elements().First().Value);
-//
-//
-//            doc = new XDocument(new XElement("Root", uicWells));
-//            doc.Save("C:\\Users\\agrc-arcgis\\Desktop\\uic-ordered.xml");
 
-            var skipTags = new[] {"LatitudeMeasure", "LongitudeMeasure", "LocationAccuracy", "LocationIdentifier"};
-            var comparer = new XmlComparer
-            {
-                NormalizeText = true,
-                Analyzer = XmlAnalyzer.Custom()
-                    .SetEqual(XmlComparisonType.NodeListSequence)
-                    .SetEqual(XmlComparisonType.TextValue)
-                    .SetSimilar(XmlComparisonType.NamespacePrefix),
-                Handler = XmlCompareHandling.Limit(50)
-            };
+            var skips = new[] { "LatitudeMeasure", "LongitudeMeasure", "LocationAccuracyValueMeasure", "WellContactIdentifier" };
+            var selector = ElementSelectors.ConditionalBuilder()
+                        .WhenElementIsNamed("WellInspectionDetail").ThenUse(ByNameAndTextRecSelector.CanBeCompared)
+                        .ElseUse(ElementSelectors.ByNameAndText)
+                        .Build();
+
+            var nodeMatcher = new DefaultNodeMatcher(selector);
 
             // loop over facility list items
             foreach (var epaFacilityListItem in epaFacilityList)
@@ -98,37 +85,30 @@ namespace uic.epa_compare
                         Console.WriteLine("Missing {1} element: {0}", id, type.LocalName);
                         continue;
                     }
+                    
+                    var myDiff = DiffBuilder.Compare(element)
+                        .WithTest(uicElement)
+                        .CheckForSimilar()
+                        .WithNodeMatcher(nodeMatcher)
+                        .WithNodeFilter(x => !skips.Contains(x.LocalName))
+                        .IgnoreComments()
+                        .IgnoreWhitespace()
+                        .NormalizeWhitespace()
+                        .Build();
 
-                    var result = comparer.Compare(element, uicElement);
-
-                    if (!result.IsEqual)
+                    if (myDiff.HasDifferences())
                     {
-                        foreach (var item in result.Differences)
+                        Debug.WriteLine(id);
+                        foreach (var item in myDiff.Differences)
                         {
-                            Console.WriteLine("State: {0}", item.State);
-                            Console.WriteLine("Comparison: {0}", item.Difference);
+                            Debug.WriteLine(item.Comparison);
                         }
                     }
                 }
-
-//                try
-//                {
-//                    var uicFacility = uicFacilities.Single(x => x.Element(Uic + "FacilityDetail")
-//                        .Element(Uic + "FacilityIdentifier")
-//                        .Value == facilityId);
-//                }
-//                catch (Exception)
-//                {
-//                    Console.WriteLine("UIC missing facilitiy {0}", facilityId);
-//                    continue;
-//                }
-
-
             }
 
-            Console.Write("Done comparing");
+            Console.WriteLine("Done comparing");
             Console.ReadKey();
-            
         }
     }
 }
