@@ -397,6 +397,7 @@ namespace uic_etl.services
                 Guid = new Guid((string)row.Value[fieldMap["GUID"].Index]),
                 ContactPhone = GetDomainValue(row, fieldMap["ContactPhone"]),
                 ContactName = GetDomainValue(row, fieldMap["ContactName"]),
+                ContactType = Convert.ToInt16(GetDomainValue(row, fieldMap["ContactType"])),
                 ContactMailCity = GetDomainValue(row, fieldMap["ContactMailCity"]),
                 ContactMailState = GetDomainValue(row, fieldMap["ContactMailState"]),
                 ContactMailAddress = GetDomainValue(row, fieldMap["ContactMailAddress"]),
