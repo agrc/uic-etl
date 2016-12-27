@@ -368,13 +368,27 @@ namespace uic_etl.services
             foreach (var mitest in model.MitTestDetail)
             {
                 var mitestDetail = new XElement(Uic + "MITestDetail",
-                    new XElement(Uic + "MechanicalIntegrityTestIdentifier", mitest.MechanicalIntegrityTestIdentifier),
-                    new XElement(Uic + "MechanicalIntegrityTestCompletedDate", mitest.MechanicalIntegrityTestCompletedDate),
-                    new XElement(Uic + "MechanicalIntegrityTestResultCode", mitest.MechanicalIntegrityTestResultCode),
-                    new XElement(Uic + "MechanicalIntegrityTestTypeCode", mitest.MechanicalIntegrityTestTypeCode),
-                    new XElement(Uic + "MechanicalIntegrityTestRemedialActionDate", mitest.MechanicalIntegrityTestRemedialActionDate),
-                    new XElement(Uic + "MechanicalIntegrityTestRemedialActionTypeCode", mitest.MechanicalIntegrityTestRemedialActionTypeCode),
-                    new XElement(Uic + "MechanicalIntegrityTestWellIdentifier", mitest.MechanicalIntegrityTestWellIdentifier));
+                    new XElement(Uic + "MechanicalIntegrityTestIdentifier", mitest.MechanicalIntegrityTestIdentifier));
+
+                if (!string.IsNullOrEmpty(mitest.MechanicalIntegrityTestCompletedDate))
+                {
+                    mitestDetail.Add(new XElement(Uic + "MechanicalIntegrityTestCompletedDate", mitest.MechanicalIntegrityTestCompletedDate));
+                }
+
+                mitestDetail.Add(new XElement(Uic + "MechanicalIntegrityTestResultCode", mitest.MechanicalIntegrityTestResultCode));
+                mitestDetail.Add(new XElement(Uic + "MechanicalIntegrityTestTypeCode", mitest.MechanicalIntegrityTestTypeCode));
+
+                if (!string.IsNullOrEmpty(mitest.MechanicalIntegrityTestRemedialActionDate))
+                {
+                    mitestDetail.Add(new XElement(Uic + "MechanicalIntegrityTestRemedialActionDate", mitest.MechanicalIntegrityTestRemedialActionDate));
+                }
+
+                if (!string.IsNullOrEmpty(mitest.MechanicalIntegrityTestRemedialActionTypeCode))
+                {
+                    mitestDetail.Add(new XElement(Uic + "MechanicalIntegrityTestRemedialActionTypeCode", mitest.MechanicalIntegrityTestRemedialActionTypeCode));
+                }
+                
+                mitestDetail.Add(new XElement(Uic + "MechanicalIntegrityTestWellIdentifier", mitest.MechanicalIntegrityTestWellIdentifier));
 
                 wellDetail.Add(mitestDetail);
             }
