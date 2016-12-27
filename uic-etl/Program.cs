@@ -99,6 +99,9 @@ namespace uic_etl
                 var wellInspectionRelation = featureWorkspace.OpenRelationshipClass("WellToInspection");
                 releaser.ManageLifetime(wellInspectionRelation);
 
+                var inspectionCorrectionRelation = featureWorkspace.OpenRelationshipClass("InspectionToCorrection");
+                releaser.ManageLifetime(inspectionCorrectionRelation);
+
                 var facilityInspectionRelation = featureWorkspace.OpenRelationshipClass("FacilityToInspection");
                 releaser.ManageLifetime(facilityInspectionRelation);
 
@@ -138,6 +141,7 @@ namespace uic_etl
                 var verticalWellFieldMap = new FindIndexByFieldNameCommand(verticalWellRelation, VerticalWellEventSdeModel.Fields).Execute();
                 var wellStatusFieldMap = new FindIndexByFieldNameCommand(wellStatusRelation, WellStatusSdeModel.Fields).Execute();
                 var wellInspectionFieldMap = new FindIndexByFieldNameCommand(wellInspectionRelation, WellInspectionSdeModel.Fields).Execute();
+                var correctionFieldMap = new FindIndexByFieldNameCommand(inspectionCorrectionRelation, CorrectionSdeModel.Fields).Execute();
                 var mechanicalInspectionFieldMap = new FindIndexByFieldNameCommand(wellIntegrityRelation, MiTestSdeModel.Fields).Execute();
                 var deepWellFieldMap = new FindIndexByFieldNameCommand(deepWellRelation, WellOperatingSdeModel.Fields).Execute();
                 var wasteFieldMap = new FindIndexByFieldNameCommand(wasteRelation, WasteClassISdeModel.Fields).Execute();
@@ -181,6 +185,10 @@ namespace uic_etl
                 var missingWellViolation = "Guid='{1FE34009-B413-419F-83DE-8673D6D5205B}'";
                 var bhFacilityInspection = "Guid='{0768C21D-D8C1-484B-85F5-22C551BD0E18}'";
                 var contactOrdering = "Guid='{E26A85D4-3624-4986-837C-53383C7B7E48}'";
+                var totalDepth = "Guid='{2D725A99-5409-49BE-8015-E42AE937119F}'";
+                var missingInspectionCorrection = "Guid='{1A0BDDC1-B947-47D9-8784-1116958FCE8F}'";
+
+                whereClause = missingInspectionCorrection;
 
                 var queryFilter = new QueryFilter
                 {
@@ -480,6 +488,26 @@ namespace uic_etl
                             if (!validator.IsValid(xmlWellInspection))
                             {
                                 continue;
+                            }
+
+                            var correctionCursor = inspectionCorrectionRelation.GetObjectsRelatedToObject(wellInspectionFeature);
+                            releaser.ManageLifetime(correctionCursor);
+
+                            IObject correctionFeature;
+                            while ((correctionFeature = correctionCursor.Next()) != null)
+                            {
+                                releaser.ManageLifetime(correctionFeature);
+
+                                var correction = EtlMappingService.MapCorrectionSdeModel(correctionFeature, correctionFieldMap);
+                                var xmlCorrection = mapper.Map<CorrectionSdeModel, CorrectionDetail>(correction);
+                                xmlCorrection.CorrectionInspectionIdentifier = xmlWellInspection.InspectionIdentifier;
+
+                                if (!validator.IsValid(xmlCorrection))
+                                {
+                                    continue;
+                                }
+
+                                xmlWellInspection.CorrectionDetail.Add(xmlCorrection);
                             }
 
                             xmlWell.WellInspectionDetail.Add(xmlWellInspection);
