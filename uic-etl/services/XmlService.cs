@@ -132,16 +132,6 @@ namespace uic_etl.services
                 var inspectionDetail = new XElement(Uic + "FacilityInspectionDetail",
                     new XElement(Uic + "InspectionIdentifier", inspection.InspectionIdentifier));
 
-                if (!string.IsNullOrEmpty(inspection.InspectionAssistanceCode))
-                {
-                    inspectionDetail.Add(new XElement(Uic + "InspectionAssistanceCode", inspection.InspectionAssistanceCode));
-                }
-                
-                if (!string.IsNullOrEmpty(inspection.InspectionDeficiencyCode))
-                {
-                    inspectionDetail.Add(new XElement(Uic + "InspectionDeficiencyCode", inspection.InspectionDeficiencyCode));
-                }  
-                    
                 inspectionDetail.Add(new XElement(Uic + "InspectionActionDate", inspection.InspectionActionDate));
 
                 if (!string.IsNullOrEmpty(inspection.InspectionIcisComplianceMonitoringReasonCode))
