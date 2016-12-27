@@ -1,4 +1,6 @@
-﻿namespace domain.uic_etl.sde
+﻿using System;
+
+namespace domain.uic_etl.sde
 {
     public class VerticalWellEventSdeModel
     {
@@ -9,9 +11,10 @@
         {
             get
             {
-                if (_length.Contains("."))
+                var index = _length.IndexOf(".", StringComparison.Ordinal);
+                if (index > -1)
                 {
-                    return _length;
+                    _length = _length.Remove(index, _length.Length - index);
                 }
 
                 return string.Format("{0}.0", _length);

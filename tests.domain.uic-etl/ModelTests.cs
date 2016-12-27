@@ -4,7 +4,7 @@ using Xunit;
 
 namespace tests.domain.uic_etl
 {
-    public class XmlModels
+    public class ModelTests
     {
         [Fact]
         public void ContactTelephoneStripsExtensions()
@@ -116,7 +116,7 @@ namespace tests.domain.uic_etl
 
             depth.Length = "20.1";
 
-            Assert.Equal("20.1", depth.Length);
+            Assert.Equal("20.0", depth.Length);
         }
     }
 }
