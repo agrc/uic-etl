@@ -188,8 +188,6 @@ namespace uic_etl
                 var totalDepth = "Guid='{2D725A99-5409-49BE-8015-E42AE937119F}'";
                 var missingInspectionCorrection = "Guid='{1A0BDDC1-B947-47D9-8784-1116958FCE8F}'";
 
-                whereClause = missingInspectionCorrection;
-
                 var queryFilter = new QueryFilter
                 {
                     WhereClause = whereClause,
