@@ -80,6 +80,10 @@ namespace domain.uic_etl.xml
                     {
                         return "900.0";
                     }
+                    case "028":
+                    {
+                        return "40.0";
+                    }
                     default:
                     {
                         return "U";
