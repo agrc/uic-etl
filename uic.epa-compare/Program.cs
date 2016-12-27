@@ -56,7 +56,15 @@ namespace uic.epa_compare
             var uicContainerNode = uic.Root.Descendants(Uic + "UIC");
             var uicFacilities = uicContainerNode.Elements(Uic + "FacilityList").OrderBy(sortFacilities);
 
-            var skips = new[] { "LatitudeMeasure", "LongitudeMeasure", "LocationAccuracyValueMeasure", "WellContactIdentifier" };
+            var skips = new[]
+            {
+                "LatitudeMeasure", "LongitudeMeasure", "WellContactIdentifier"
+            };
+//                "WellTotalDepthNumeric",
+//                , "InspectionAssistanceCode", "InspectionDeficiencyCode",
+//                "WellViolationDetail", "WellInspectionDetail", "MechanicalIntegrityTestRemedialActionDate",
+//                "MechanicalIntegrityTestRemedialActionTypeCode", "MechanicalIntegrityTestCompletedDate"
+//            };
             var selector = ElementSelectors.ConditionalBuilder()
                         .WhenElementIsNamed("WellInspectionDetail").ThenUse(ByNameAndTextRecSelector.CanBeCompared)
                         .ElseUse(ElementSelectors.ByNameAndText)
