@@ -3,8 +3,22 @@
     public class VerticalWellEventSdeModel
     {
         public static string[] Fields = {"Length", "EventDescriptor"};
-            
-        public string Length { get; set; }
+        private string _length;
+
+        public string Length
+        {
+            get
+            {
+                if (_length.Contains("."))
+                {
+                    return _length;
+                }
+
+                return string.Format("{0}.0", _length);
+            }
+            set { _length = value; }
+        }
+
         public string EventDescriptor { get; set; }
 
         public bool IsTotalDepth

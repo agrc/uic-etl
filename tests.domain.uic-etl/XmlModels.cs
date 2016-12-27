@@ -103,5 +103,20 @@ namespace tests.domain.uic_etl
 
             Assert.Empty(facility.FacilityAddress);
         }
+
+        [Fact]
+        public void VerticalWellEventContainsDecimal()
+        {
+            var depth = new VerticalWellEventSdeModel
+            {
+                Length = "20"
+            };
+
+            Assert.Equal("20.0", depth.Length);
+
+            depth.Length = "20.1";
+
+            Assert.Equal("20.1", depth.Length);
+        }
     }
 }
