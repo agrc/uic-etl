@@ -97,7 +97,7 @@ namespace uic_etl.services
                     .ForMember(dest => dest.CorrectionIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
                     .ForMember(dest => dest.CorrectiveActionTypeCode, opts => opts.MapFrom(src => src.CorrectiveAction))
                     .ForMember(dest => dest.CorrectionCommentText, opts => opts.MapFrom(src => src.Comments))
-                    .ForMember(dest => dest.CorrectionInspectionIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()));
+                    .ForMember(dest => dest.CorrectionInspectionIdentifier, opts => opts.Ignore());
 
                 _.CreateMap<MiTestSdeModel, MiTestDetail>()
                     .ForMember(dest => dest.MechanicalIntegrityTestIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
