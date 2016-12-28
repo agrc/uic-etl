@@ -78,6 +78,7 @@ namespace uic.epa_compare
             var selector = ElementSelectors.ConditionalBuilder()
                         .WhenElementIsNamed("WellInspectionDetail").ThenUse(ByNameAndTextRecSelector.CanBeCompared)
                         .WhenElementIsNamed("MITestDetail").ThenUse(ByNameAndTextRecSelector.CanBeCompared)
+                        .WhenElementIsNamed("PermitActivityDetail").ThenUse(ByNameAndTextRecSelector.CanBeCompared)
                         .ElseUse(ElementSelectors.ByNameAndText)
                         .Build();
 
