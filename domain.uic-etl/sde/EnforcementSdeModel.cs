@@ -6,9 +6,11 @@ namespace domain.uic_etl.sde
     {
         public static string[] Fields =
         {
-            "Guid"
+            "Guid", "EnforcementType", "EnforcementDate"
         };
 
         public Guid Guid { get; set; }
+        public string EnforcementType { get; set; }
+        public DateTime? EnforcementDate { get; set; }
     }
 }

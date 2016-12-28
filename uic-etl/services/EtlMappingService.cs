@@ -47,7 +47,9 @@ namespace uic_etl.services
 
                 _.CreateMap<EnforcementSdeModel, ResponseDetail>()
                     .ForMember(dest => dest.ResponseViolationIdentifier, opts => opts.Ignore())
-                    .ForMember(dest => dest.ResponseEnforcementIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()));
+                    .ForMember(dest => dest.ResponseEnforcementIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
+                    .ForMember(dest => dest.EnforcementActionDate, opts => opts.MapFrom(src => src.EnforcementDate.HasValue ? src.EnforcementDate.Value.ToString("yyyyMMdd") : ""))
+                    .ForMember(dest => dest.EnforcementActionType, opts => opts.MapFrom(src => src.EnforcementType));
 
                 _.CreateMap<WellSdeModel, WellDetail>()
                     .ForMember(dest => dest.WellTotalDepthNumeric, opts => opts.Ignore())
@@ -227,7 +229,9 @@ namespace uic_etl.services
         {
             var model = new EnforcementSdeModel
             {
-                Guid = new Guid((string)row.Value[fieldMap["Guid"].Index])
+                Guid = new Guid((string)row.Value[fieldMap["Guid"].Index]),
+                EnforcementType = GetDomainValue(row, fieldMap["EnforcementType"]),
+                EnforcementDate = GetDateValue(row.Value[fieldMap["EnforcementDate"].Index])
             };
 
             return model;

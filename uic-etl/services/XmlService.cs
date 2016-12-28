@@ -62,7 +62,7 @@ namespace uic_etl.services
             return payload;
         }
 
-        public static XElement AppendPayloadElements(ref XElement payload, IEnumerable<ContactDetail> contacts, IEnumerable<PermitDetail> permits)
+        public static XElement AppendPayloadElements(ref XElement payload, IEnumerable<ContactDetail> contacts, IEnumerable<PermitDetail> permits, IEnumerable<ResponseDetail> enforcements)
         {
             var node = payload.Descendants(Uic + "UIC").SingleOrDefault();
 
@@ -101,6 +101,16 @@ namespace uic_etl.services
                 }
 
                 node.Add(permitDetail);
+            }
+
+            foreach (var enforcement in enforcements)
+            {
+                var enforcementDetail = new XElement(Uic + "EnforcementDetail",
+                    new XElement(Uic + "EnforcementIdentifier", enforcement.ResponseEnforcementIdentifier),
+                    new XElement(Uic + "EnforcementActionDate", enforcement.EnforcementActionDate),
+                    new XElement(Uic + "EnforcementActionType", enforcement.EnforcementActionType));
+
+                node.Add(enforcementDetail);
             }
 
             return node;

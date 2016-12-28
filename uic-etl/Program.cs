@@ -197,6 +197,7 @@ namespace uic_etl
 
                 var linkedContacts = new HashSet<Guid>();
                 var linkedPermits = new HashSet<Guid>();
+                var linkedEnforcements = new List<ResponseDetail>();
 
                 var facilityCursor = uicFacility.Search(queryFilter, true);
                 releaser.ManageLifetime(facilityCursor);
@@ -283,6 +284,7 @@ namespace uic_etl
                             xmlResponseDetail.ResponseViolationIdentifier = xmlViolation.ViolationIdentifier;
 
                             xmlViolation.ResponseDetail.Add(xmlResponseDetail);
+                            linkedEnforcements.Add(xmlResponseDetail);
                         }
 
                         xmlFacility.FacilityViolationDetail.Add(xmlViolation);
@@ -466,6 +468,7 @@ namespace uic_etl
                                 }
 
                                 xmlViolation.ResponseDetail.Add(xmlResponseDetail);
+                                linkedEnforcements.Add(xmlResponseDetail);
                             }
                             
                             xmlWell.WellViolationDetail.Add(xmlViolation);
@@ -736,7 +739,7 @@ namespace uic_etl
                     }
                 }
 
-                XmlService.AppendPayloadElements(ref payload, contacts, permits);
+                XmlService.AppendPayloadElements(ref payload, contacts, permits, linkedEnforcements);
 
                 doc.Root.Add(payload);
 

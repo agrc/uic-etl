@@ -6,6 +6,8 @@ namespace domain.uic_etl.xml
     {
         public string ResponseEnforcementIdentifier { get; set; }
         public string ResponseViolationIdentifier { get; set; }
+        public string EnforcementActionDate { get; set; }
+        public string EnforcementActionType { get; set; }
     }
 
     public class ResponseDetailValidator : AbstractValidator<ResponseDetail>
