@@ -7,22 +7,22 @@ namespace tests.domain.uic_etl
     public class ModelTests
     {
         [Fact]
-        public void ContactTelephoneStripsExtensions()
+        public void ContactTelephoneStripsExtras()
         {
             var contact = new ContactDetail
             {
                 TelephoneNumberText = "435.471.2209 x35"
             };
 
-            Assert.Equal("435.471.2209", contact.TelephoneNumberText);
+            Assert.Equal("4354712209x35", contact.TelephoneNumberText);
 
             contact.TelephoneNumberText = "801.972.4587X1363";
 
-            Assert.Equal("801.972.4587", contact.TelephoneNumberText);
+            Assert.Equal("8019724587x1363", contact.TelephoneNumberText);
 
             contact.TelephoneNumberText = "801.972.4587";
 
-            Assert.Equal("801.972.4587", contact.TelephoneNumberText);
+            Assert.Equal("8019724587", contact.TelephoneNumberText);
 
             contact.TelephoneNumberText = null;
 
