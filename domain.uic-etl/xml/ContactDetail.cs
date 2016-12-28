@@ -17,6 +17,7 @@ namespace domain.uic_etl.xml
                     return _telephoneNumberText;
                 }
 
+                _telephoneNumberText = _telephoneNumberText.Replace('.', '');
                 var x = _telephoneNumberText.IndexOf("x", StringComparison.InvariantCultureIgnoreCase);
                 if (x > -1)
                 {
