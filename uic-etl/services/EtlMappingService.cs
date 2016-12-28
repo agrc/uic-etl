@@ -21,8 +21,7 @@ namespace uic_etl.services
                     .ForMember(dest => dest.FacilityIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
                     .ForMember(dest => dest.Guid, opts => opts.MapFrom(src => src.Guid))
                     .ForMember(dest => dest.LocalityName, opts => opts.MapFrom(src => src.FacilityCity))
-                    .ForMember(dest => dest.FacilityPetitionStatusCode,
-                        opts => opts.MapFrom(src => src.NoMigrationPetStatus))
+                    .ForMember(dest => dest.FacilityPetitionStatusCode, opts => opts.MapFrom(src => src.NoMigrationPetStatus))
                     .ForMember(dest => dest.FacilitySiteName, opts => opts.MapFrom(src => src.FacilityName))
                     .ForMember(dest => dest.FacilitySiteTypeCode, opts => opts.MapFrom(src => string.IsNullOrEmpty(src.FacilityType) ? "U" : src.FacilityType))
                     .ForMember(dest => dest.FacilityStateIdentifier, opts => opts.MapFrom(src => src.FacilityId))
@@ -30,7 +29,8 @@ namespace uic_etl.services
                     .ForMember(dest => dest.LocationAddressPostalCode, opts => opts.MapFrom(src => src.FacilityZip))
                     .ForMember(dest => dest.LocationAddressStateCode, opts => opts.UseValue("UT"))
                     .ForMember(dest => dest.LocationAddressText, opts => opts.MapFrom(src => src.FacilityAddress))
-                    .ForMember(dest => dest.NaicsCode, opts => opts.MapFrom(src => src.NaicsPrimary));
+                    .ForMember(dest => dest.NaicsCode, opts => opts.MapFrom(src => src.NaicsPrimary))
+                    .ForMember(dest => dest.FacilityInspectionDetail, opts => opts.Ignore());
 
                 _.CreateMap<ViolationSdeModel, ViolationDetail>()
                     .ForMember(dest => dest.ViolationIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()))
