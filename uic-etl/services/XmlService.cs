@@ -345,9 +345,14 @@ namespace uic_etl.services
                 {
                     var correctionDetail = new XElement(Uic + "CorrectionDetail",
                         new XElement(Uic + "CorrectionIdentifier", correction.CorrectionIdentifier),
-                        new XElement(Uic + "CorrectionActionTypeCode", correction.CorrectiveActionTypeCode),
-                        new XElement(Uic + "CorrectionCommentText", correction.CorrectionCommentText),
-                        new XElement(Uic + "CorrectionInspectionIdentifier", correction.CorrectionInspectionIdentifier));
+                        new XElement(Uic + "CorrectionActionTypeCode", correction.CorrectiveActionTypeCode));
+
+                    if (!string.IsNullOrEmpty(correction.CorrectionCommentText))
+                    {
+                        correctionDetail.Add(new XElement(Uic + "CorrectionCommentText", correction.CorrectionCommentText));
+                    }
+                    
+                    correctionDetail.Add(new XElement(Uic + "CorrectionInspectionIdentifier", correction.CorrectionInspectionIdentifier));
 
                     inspectionDetail.Add(correctionDetail);
                 }
