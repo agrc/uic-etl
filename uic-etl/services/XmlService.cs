@@ -84,7 +84,7 @@ namespace uic_etl.services
             {
                 var permitDetail = new XElement(Uic + "PermitDetail",
                     new XElement(Uic + "PermitIdentifier", permit.PermitIdentifier),
-                    new XElement(Uic + "PermitAORWellNumberNumeric", permit.PermitAorWellNumberNumeric),
+                    new XElement(Uic + "PermitAORWellNumberNumeric", permit.PermitAorWellNumberNumeric.ToString("F1")),
                     new XElement(Uic + "PermitAuthorizedStatusCode", permit.PermitAuthorizedStatusCode),
                     new XElement(Uic + "PermitOwnershipTypeCode", permit.PermitOwnershipTypeCode),
                     new XElement(Uic + "PermitAuthorizedIdentifier", permit.PermitAuthorizedIdentifier));
