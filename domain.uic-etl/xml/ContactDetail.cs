@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using FluentValidation;
 
 namespace domain.uic_etl.xml
@@ -6,6 +7,7 @@ namespace domain.uic_etl.xml
     public class ContactDetail
     {
         private string _telephoneNumberText;
+        private readonly Regex _cleanPhoneNumber = new Regex("\\s|\\.");
         public string ContactIdentifier { get; set; }
 
         public string TelephoneNumberText
@@ -17,7 +19,7 @@ namespace domain.uic_etl.xml
                     return _telephoneNumberText;
                 }
 
-                _telephoneNumberText = _telephoneNumberText.Replace(".", "");
+                _telephoneNumberText = _cleanPhoneNumber.Replace(_telephoneNumberText, "").ToLower();
                
                 return _telephoneNumberText;
             }
