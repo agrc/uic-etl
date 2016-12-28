@@ -60,11 +60,7 @@ namespace uic.epa_compare
             {
                 "LatitudeMeasure", "LongitudeMeasure", "WellContactIdentifier"
             };
-//                "WellTotalDepthNumeric",
-//                , "InspectionAssistanceCode", "InspectionDeficiencyCode",
-//                "WellViolationDetail", "WellInspectionDetail", "MechanicalIntegrityTestRemedialActionDate",
-//                "MechanicalIntegrityTestRemedialActionTypeCode", "MechanicalIntegrityTestCompletedDate"
-//            };
+
             var selector = ElementSelectors.ConditionalBuilder()
                         .WhenElementIsNamed("WellInspectionDetail").ThenUse(ByNameAndTextRecSelector.CanBeCompared)
                         .ElseUse(ElementSelectors.ByNameAndText)
