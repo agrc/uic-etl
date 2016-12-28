@@ -108,10 +108,16 @@ namespace uic_etl.services
 
         private static void Append(ValueRange vRange)
         {
-            var request = _service.Spreadsheets.Values.Append(vRange, SpreadsheetId, vRange.Range);
-            request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
+            try
+            {
+                var request = _service.Spreadsheets.Values.Append(vRange, SpreadsheetId, vRange.Range);
+                request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
 
-            var response = request.Execute(); 
+                var response = request.Execute();
+            }
+            catch (Exception)
+            {
+            }
         }
     }
 }
