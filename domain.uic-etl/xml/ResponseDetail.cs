@@ -13,6 +13,11 @@ namespace domain.uic_etl.xml
         {
             get
             {
+                if (string.IsNullOrEmpty(_enforcementActionType))
+                {
+                    return _enforcementActionType;
+                }
+
                 if (_enforcementActionType.ToUpper() == "INF")
                 {
                     _enforcementActionType = "OTR";
