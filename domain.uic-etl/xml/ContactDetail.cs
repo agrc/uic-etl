@@ -19,7 +19,7 @@ namespace domain.uic_etl.xml
                     return _telephoneNumberText;
                 }
 
-                _telephoneNumberText = _cleanPhoneNumber.Replace(_telephoneNumberText, "").ToLower();
+                _telephoneNumberText = _cleanPhoneNumber.Replace(_telephoneNumberText, "");
                
                 return _telephoneNumberText;
             }
@@ -28,10 +28,7 @@ namespace domain.uic_etl.xml
                 if (string.IsNullOrEmpty(value))
                 {
                     _telephoneNumberText = value;
-                    return;
                 }
-
-                _telephoneNumberText = value.Replace(" ", "");
             }
         }
 
