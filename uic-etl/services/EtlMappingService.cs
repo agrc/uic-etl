@@ -137,7 +137,7 @@ namespace uic_etl.services
                     .ForMember(dest => dest.ContactCityName, opts => opts.MapFrom(src => src.ContactMailCity))
                     .ForMember(dest => dest.ContactAddressStateCode, opts => opts.MapFrom(src => src.ContactMailState))
                     .ForMember(dest => dest.ContactAddressText, opts => opts.MapFrom(src => src.ContactMailAddress))
-                    .ForMember(dest => dest.ContactAddressPostalCode, opts => opts.MapFrom(src => string.Format("{0} {1}", src.ZipCode5, src.ZipCode4)))
+                    .ForMember(dest => dest.ContactAddressPostalCode, opts => opts.MapFrom(src => string.Format("{0} {1}", src.ZipCode5, src.ZipCode4).Trim()))
                     .ForMember(dest => dest.ContactIdentifier, opts => opts.MapFrom(src => new GenerateIdentifierCommand(src.Guid).Execute()));
 
                 _.CreateMap<AuthorizationSdeModel, PermitDetail>()
