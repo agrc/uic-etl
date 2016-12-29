@@ -4,10 +4,24 @@ namespace domain.uic_etl.xml
 {
     public class ResponseDetail
     {
+        private string _enforcementActionType;
         public string ResponseEnforcementIdentifier { get; set; }
         public string ResponseViolationIdentifier { get; set; }
         public string EnforcementActionDate { get; set; }
-        public string EnforcementActionType { get; set; }
+
+        public string EnforcementActionType
+        {
+            get
+            {
+                if (_enforcementActionType.ToUpper() == "INF")
+                {
+                    _enforcementActionType = "OTR";
+                }
+
+                return _enforcementActionType;
+            }
+            set { _enforcementActionType = value; }
+        }
     }
 
     public class ResponseDetailValidator : AbstractValidator<ResponseDetail>
