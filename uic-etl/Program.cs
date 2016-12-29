@@ -197,7 +197,7 @@ namespace uic_etl
 
                 var linkedContacts = new HashSet<Guid>();
                 var linkedPermits = new HashSet<Guid>();
-                var linkedEnforcements = new List<ResponseDetail>();
+                var linkedEnforcements = new HashSet<ResponseDetail>();
 
                 var facilityCursor = uicFacility.Search(queryFilter, true);
                 releaser.ManageLifetime(facilityCursor);

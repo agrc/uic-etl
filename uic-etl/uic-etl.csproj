@@ -108,6 +108,7 @@
   <ItemGroup>
     <Compile Include="commands\FindIndexByFieldNameCommand.cs" />
     <Compile Include="commands\GenerateIdentifierCommand.cs" />
+    <Compile Include="comparers\ResponseDetailComparer.cs" />
     <Compile Include="models\Cache.cs" />
     <Compile Include="models\Configruation.cs" />
     <Compile Include="models\dtos\IndexFieldMap.cs" />
@@ -137,5 +138,6 @@
       <Name>domain.uic-etl</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
