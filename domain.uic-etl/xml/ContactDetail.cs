@@ -25,10 +25,7 @@ namespace domain.uic_etl.xml
             }
             set
             {
-                if (string.IsNullOrEmpty(value))
-                {
-                    _telephoneNumberText = value;
-                }
+                _telephoneNumberText = value;
             }
         }
 
