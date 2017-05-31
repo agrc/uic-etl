@@ -524,7 +524,7 @@ namespace uic_etl
 
                                 // well inspection detail
                                 var wellInspectionCursor = wellInspectionRelation.GetObjectsRelatedToObject(wellFeature);
-                                wellReleaser.ManageLifetime(wellInspectionRelation);
+                                wellReleaser.ManageLifetime(wellInspectionCursor);
 
                                 IObject wellInspectionFeature;
                                 while ((wellInspectionFeature = wellInspectionCursor.Next()) != null)
