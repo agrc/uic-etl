@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -40,6 +41,28 @@ namespace uic_etl
                 Console.ReadKey();
 
                 return;
+            }
+
+
+            if (!Directory.Exists(options.OutputXmlPath) && !string.IsNullOrEmpty(options.OutputXmlPath))
+            {
+                Console.Write("uic-etl: ");
+                Console.WriteLine("{0} does not exists. Do you want to create it now? (Y/n)", options.OutputXmlPath);
+                var key = Console.ReadKey();
+
+                DirectoryInfo output = null;
+                if (new[] {ConsoleKey.Enter, ConsoleKey.Y}.Contains(key.Key))
+                {
+                    output = Directory.CreateDirectory(options.OutputXmlPath);
+                }
+
+                if (output == null || !output.Exists)
+                {
+                    Console.Write("uic-etl: ");
+                    Console.WriteLine("output does not exist. exiting.");
+                    Console.ReadKey();
+                    return;
+                }
             }
 
             var debug = new DebugService(options.Verbose);
@@ -743,7 +766,14 @@ namespace uic_etl
 
                 doc.Root.Add(payload);
 
-                using (var w = new XmlTextWriter(string.Format("UTEQ-{0}.xml", DateTime.Now.ToShortDateString().Replace('/', '-')), new UTF8Encoding(false)))
+                var filepath = string.Format("UTEQ-{0}.xml", DateTime.Now.ToShortDateString().Replace('/', '-'));
+
+                if (!string.IsNullOrEmpty(options.OutputXmlPath))
+                {
+                    filepath = System.IO.Path.Combine(options.OutputXmlPath, filepath);
+                }
+
+                using (var w = new XmlTextWriter(filepath, new UTF8Encoding(false)))
                 {
                     w.Formatting = Formatting.Indented;
                     doc.Save(w);

@@ -19,10 +19,9 @@ Usage: uicetl [OPTIONS]+
 Options:
   -c, --connection=VALUE     REQUIRED. the path to the .sde connection file for
                                the UTEQ database. eg: c:\udeq.sde
-  -o, --output=VALUE         the location and filename to save the output of
-                               this tool. eg: c:\udeq.xml. Defaults to current
-                               working directory\uic-{date}.xml
-                               sample.
+  -o, --output=VALUE         the location to save the output of
+                               this tool. eg: c:\. Defaults to current
+                               working directory.
   -v                         increase the debug message verbosity.
   -h, --help                 show this message and exit
 ```
@@ -44,7 +43,7 @@ Options:
 - Veryify the warnings in the [Submission Log](https://docs.google.com/spreadsheets/d/1jeYvLWq7XFmDgKayO7ZFyNuqzkRnDS9Wz0ozwquTErA/)
 - Compress the xml file to zip
 - Login to the [cdxnode](https://enservices.epa.gov/Login.aspx)
-- Click on `Exchange Network Service` 
+- Click on `Exchange Network Service`
 - Select `Send Information`
 - Search for `UIC`
 - Click `Send Info`
@@ -52,4 +51,3 @@ Options:
 - Fill out metadata
 - Add contact email
 - Submit
-

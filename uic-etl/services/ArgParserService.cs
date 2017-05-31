@@ -20,7 +20,7 @@ namespace uic_etl.services
                 },
                 {
                     "o|output=",
-                    "the location and filename to save the output of this tool. eg: c:\\udeq.xml. Defaults to current working directory\\uic.xml",
+                    "the location to save the output of this tool. eg: c:\\temp. Defaults to current working directory\\",
                     v => options.OutputXmlPath = v
                 },
                 {
