@@ -12,7 +12,7 @@ namespace uic_etl.services
             RuntimeManager.Bind(ProductCode.Desktop); 
 
             var init = new AoInitialize();
-            init.Initialize(esriLicenseProductCode.esriLicenseProductCodeArcServer);
+            init.Initialize(esriLicenseProductCode.esriLicenseProductCodeBasic);
 
             var factoryType = Type.GetTypeFromProgID("esriDataSourcesGDB.SdeWorkspaceFactory");
             var workspaceFactory2 = (IWorkspaceFactory2)Activator.CreateInstance(factoryType);
