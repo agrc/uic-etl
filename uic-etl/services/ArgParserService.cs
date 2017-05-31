@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using Mono.Options;
 using uic_etl.models;
 
@@ -92,6 +94,14 @@ namespace uic_etl.services
 
         private static void ShowHelp(OptionSet p)
         {
+            var assembly = Assembly.GetExecutingAssembly();
+            if (assembly.Location != null)
+            {
+                var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+
+                Console.WriteLine("UIC ETL Tool : {0}", fvi.FileVersion);
+            }
+
             Console.WriteLine("Usage: uicetl [OPTIONS]+");
             Console.WriteLine();
             Console.WriteLine("Options:");
