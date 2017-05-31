@@ -11,13 +11,8 @@ namespace uic_etl.services
             _verbose = verbose;
         }
 
-        internal void Write(string format, params object[] args)
+        internal void AlwaysWrite(string format, params object[] args)
         {
-            if (!_verbose)
-            {
-                return;
-            }
-
             Console.Write(" # ");
             Console.Write(format, args);
 
@@ -29,6 +24,16 @@ namespace uic_etl.services
 
             Console.Write("...");
             Console.WriteLine();
-        } 
+        }
+
+        internal void Write(string format, params object[] args)
+        {
+            if (!_verbose)
+            {
+                return;
+            }
+
+            AlwaysWrite(format, args);
+        }
     }
 }

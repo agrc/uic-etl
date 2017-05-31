@@ -67,8 +67,8 @@ namespace uic_etl
 
             var debug = new DebugService(options.Verbose);
             var start = Stopwatch.StartNew();
-            const int limit = 1;
-            debug.Write("Staring: {0}", DateTime.Now.ToString("s"));
+            const int limit = 5;
+            debug.AlwaysWrite("Staring: {0}", DateTime.Now.ToString("s"));
 
             debug.Write("{0} Initializing log writer", start.Elapsed);
             ReportingService.Initalize();
@@ -79,7 +79,7 @@ namespace uic_etl
                 IWorkspace workspace;
                 try
                 {
-                    debug.Write("{1} Connecting to: {0}", options.SdeConnectionPath, start.Elapsed);
+                    debug.AlwaysWrite("{1} Connecting to: {0}", options.SdeConnectionPath, start.Elapsed);
 
                     workspace = WorkspaceService.GetSdeWorkspace(options.SdeConnectionPath);
                     releaser.ManageLifetime(workspace);
@@ -96,7 +96,7 @@ namespace uic_etl
                 var featureWorkspace = (IFeatureWorkspace) workspace;
                 releaser.ManageLifetime(featureWorkspace);
 
-                debug.Write("{0} Opening feature classes", start.Elapsed);
+                debug.AlwaysWrite("{0} Opening feature classes", start.Elapsed);
                 var uicFacility = featureWorkspace.OpenFeatureClass("UICFacility");
                 releaser.ManageLifetime(uicFacility);
 
@@ -197,7 +197,7 @@ namespace uic_etl
                 debug.Write("{0} Creating payload elements", start.Elapsed);
                 var payload = XmlService.CreatePayloadElements();
 
-                debug.Write("{0} Quering UICFacility features.", start.Elapsed);
+                debug.AlwaysWrite("{0} Quering UICFacility features.", start.Elapsed);
                 var whereClause = "1=1";
 
                 var testSubmissionGuids = string.Format("Guid IN ({0})",
@@ -233,7 +233,7 @@ namespace uic_etl
                 {
                     using (var facilityReleaser = new ComReleaser())
                     {
-                        debug.Write("{0} Facilities processed {1}", start.Elapsed, facilityCount++);
+                        debug.AlwaysWrite("{0} Facilities processed {1}", start.Elapsed, facilityCount++);
 #if DEBUG
                         if (facilityCount > limit)
                         {
@@ -836,7 +836,7 @@ namespace uic_etl
                 }
             }
 
-            debug.Write("{0} finished.", start.Elapsed);
+            debug.AlwaysWrite("{0} finished.", start.Elapsed);
             ReportingService.Log(string.Format("{0} finished.", start.Elapsed));
 
             Console.ReadKey();
