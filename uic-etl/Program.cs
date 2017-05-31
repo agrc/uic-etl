@@ -67,7 +67,7 @@ namespace uic_etl
 
             var debug = new DebugService(options.Verbose);
             var start = Stopwatch.StartNew();
-            const int limit = 10;
+            const int limit = 1;
             debug.Write("Staring: {0}", DateTime.Now.ToString("s"));
 
             debug.Write("{0} Initializing log writer", start.Elapsed);
@@ -231,438 +231,483 @@ namespace uic_etl
                 IFeature facilityFeature;
                 while ((facilityFeature = facilityCursor.NextFeature()) != null)
                 {
-                    debug.Write("{0} Facilities processed {1}", start.Elapsed, facilityCount++);
+                    using (var facilityReleaser = new ComReleaser())
+                    {
+                        debug.Write("{0} Facilities processed {1}", start.Elapsed, facilityCount++);
 #if DEBUG
-                    if (facilityCount > limit)
-                    {
-                        break;
-                    }
-#endif
-                    releaser.ManageLifetime(facilityFeature);
-
-                    var facility = EtlMappingService.MapFacilityModel(facilityFeature, facilityFieldMap);
-                    var xmlFacility = mapper.Map<FacilitySdeModel, FacilityDetail>(facility);
-
-                    if (!validator.IsValid(xmlFacility, "R1"))
-                    {
-                        continue;
-                    }
-
-                    var inspectionCursor = facilityInspectionRelation.GetObjectsRelatedToObject(facilityFeature);
-                    releaser.ManageLifetime(inspectionCursor);
-
-                    // Find all UICInspections
-                    IObject inspectionFeature;
-                    while ((inspectionFeature = inspectionCursor.Next()) != null)
-                    {
-                        releaser.ManageLifetime(inspectionFeature);
-
-                        var inspection = EtlMappingService.MapFacilityInspectionModel(inspectionFeature, wellInspectionFieldMap);
-                        var xmlInspection = mapper.Map<WellInspectionSdeModel, WellInspectionDetail>(inspection);
-
-                        if (!validator.IsValid(xmlInspection))
+                        if (facilityCount > limit)
                         {
-                            continue;
-                        }
-
-                        xmlFacility.FacilityInspectionDetail.Add(xmlInspection);
-                    }
-
-                    var violationCursor = facilityViolationRelation.GetObjectsRelatedToObject(facilityFeature);
-                    releaser.ManageLifetime(violationCursor);
-
-                    // Find all facility UICViolations
-                    IObject violationFeature;
-                    while ((violationFeature = violationCursor.Next()) != null)
-                    {
-                        releaser.ManageLifetime(violationFeature);
-
-                        var violation = EtlMappingService.MapViolationModel(violationFeature, violationFieldMap);
-                        var xmlViolation = mapper.Map<ViolationSdeModel, ViolationDetail>(violation);
-                        xmlViolation.ViolationFacilityIdentifier = xmlFacility.FacilityIdentifier;
-
-                        if (!validator.IsValid(xmlViolation))
-                        {
-                            continue;
-                        }
-
-                        var facilityResponseDetailCursor = responseRelation.GetObjectsRelatedToObject(violationFeature);
-                        releaser.ManageLifetime(facilityResponseDetailCursor);
-
-                        // Find all Violation Responses which are UICEnforcements
-                        IObject responseFeature;
-                        while ((responseFeature = facilityResponseDetailCursor.Next()) != null)
-                        {
-                            releaser.ManageLifetime(responseFeature);
-
-                            var responseDetail = EtlMappingService.MapResponseModel(responseFeature, responseFieldMap);
-                            var xmlResponseDetail = mapper.Map<EnforcementSdeModel, ResponseDetail>(responseDetail);
-                            xmlResponseDetail.ResponseViolationIdentifier = xmlViolation.ViolationIdentifier;
-
-                            if (!validator.IsValid(xmlResponseDetail))
-                            {
-                                continue;
-                            }
-
-                            xmlResponseDetail.ResponseViolationIdentifier = xmlViolation.ViolationIdentifier;
-
-                            xmlViolation.ResponseDetail.Add(xmlResponseDetail);
-                            linkedEnforcements.Add(xmlResponseDetail);
-                        }
-
-                        xmlFacility.FacilityViolationDetail.Add(xmlViolation);
-                    }
-
-                    var facilityDetailElement = XmlService.AddFacility(ref payload, xmlFacility);
-
-                    var wellCursor = wellRelation.GetObjectsRelatedToObject(facilityFeature);
-                    releaser.ManageLifetime(wellCursor);
-
-                    debug.Write("{1} finding wells for facility: {0}", facility.Guid, start.Elapsed);
-
-                    var wellCount = 1;
-                    // Find all wells
-                    IFeature wellFeature;
-                    while ((wellFeature = wellCursor.Next()) != null)
-                    {
-                        releaser.ManageLifetime(wellFeature);
-                        debug.Write("{0} Wells processed {1}", start.Elapsed, wellCount++);
-
-                        var well = EtlMappingService.MapWellModel(wellFeature, wellFieldMap);
-                        var xmlWell = mapper.Map<WellSdeModel, WellDetail>(well);
-                        xmlWell.WellSiteAreaNameText = xmlFacility.FacilitySiteName;
-
-                        var facilityContactCursor = facilityToContactRelation.GetObjectsRelatedToObject(facilityFeature);
-                        releaser.ManageLifetime(facilityContactCursor);
-
-                        var mostImportantContact = 1000; // this is the 1 higher than 999 or other contact type
-                        var mostImportantContactGuid = Guid.Empty;
-
-                        IRow facilityContactFeature;
-                        while ((facilityContactFeature = facilityContactCursor.Next()) != null)
-                        {
-                            releaser.ManageLifetime(facilityContactFeature);
-
-                            var contact = EtlMappingService.MapContactSdeModel(facilityContactFeature, contactFieldMap);
-
-                            if (contact.ContactType > mostImportantContact)
-                            {
-                                continue;
-                            }
-
-                            mostImportantContact = contact.ContactType;
-                            mostImportantContactGuid = contact.Guid;
-                        }
-
-                        linkedContacts.Add(mostImportantContactGuid);
-                        xmlWell.WellContactIdentifier = new GenerateIdentifierCommand(mostImportantContactGuid).Execute();
-
-                        var verticalWellCursor = verticalWellRelation.GetObjectsRelatedToObject(wellFeature);
-                        releaser.ManageLifetime(verticalWellCursor);
-
-                        IObject verticalEventFeature;
-                        while ((verticalEventFeature = verticalWellCursor.Next()) != null)
-                        {
-                            var verticalEvent = EtlMappingService.MapVerticalWellEventModel(verticalEventFeature, verticalWellFieldMap);
-                            if (!verticalEvent.IsTotalDepth)
-                            {
-                                continue;
-                            }
-
-                            xmlWell.WellTotalDepthNumeric = verticalEvent.Length;
                             break;
                         }
+#endif
+                        facilityReleaser.ManageLifetime(facilityFeature);
 
-                        if (string.IsNullOrEmpty(xmlWell.WellTotalDepthNumeric))
-                        {
-                            xmlWell.WellTotalDepthNumeric = "empty";
-                        }
+                        var facility = EtlMappingService.MapFacilityModel(facilityFeature, facilityFieldMap);
+                        var xmlFacility = mapper.Map<FacilitySdeModel, FacilityDetail>(facility);
 
-                        var wellStatusCursor = wellStatusRelation.GetObjectsRelatedToObject(wellFeature);
-                        releaser.ManageLifetime(wellStatusCursor);
-
-                        var wellTypeDate = DateTime.MaxValue;
-                        // write well status
-                        IObject wellStatusFeature;
-                        while ((wellStatusFeature = wellStatusCursor.Next()) != null)
-                        {
-                            releaser.ManageLifetime(wellStatusFeature);
-
-                            var wellStatus = EtlMappingService.MapWellStatusModel(wellStatusFeature, wellStatusFieldMap);
-                            var xmlWellStatus = mapper.Map<WellStatusSdeModel, WellStatusDetail>(wellStatus);
-
-                            if (!validator.IsValid(xmlWellStatus))
-                            {
-                                continue;
-                            }
-
-                            // get the earliest date
-                            if (wellStatus.OperatingStatusDate.HasValue && wellTypeDate > wellStatus.OperatingStatusDate)
-                            {
-                                wellTypeDate = wellStatus.OperatingStatusDate.GetValueOrDefault();
-                            }
-
-                            if (xmlWell.WellStatusDetail.Any())
-                            {
-                                var newer = xmlWell.WellStatusDetail.Count(x =>
-                                    DateTime.ParseExact(xmlWellStatus.WellStatusDate, "yyyyMMdd", CultureInfo.InvariantCulture) >
-                                    DateTime.ParseExact(x.WellStatusDate, "yyyyMMdd", CultureInfo.InvariantCulture)) > 0;
-
-                                if (newer)
-                                {
-                                    xmlWell.WellStatusDetail.Clear();
-                                }
-                                else
-                                {
-                                    continue;
-                                }
-                            }
-
-                            xmlWell.WellStatusDetail.Add(xmlWellStatus);
-                        }
-
-                        var wellTypeDateFormatted = wellTypeDate.ToString("yyyyMMdd");
-
-                        if (wellTypeDate == DateTime.MaxValue)
-                        {
-                            wellTypeDateFormatted = null;
-                        }
-
-                        // Add Well Type Details
-                        var wellTypeDetail = new WellTypeDetail
-                        {
-                            WellTypeIdentifier = xmlWell.WellIdentifier,
-                            WellTypeCode = xmlWell.WellTypeCode,
-                            WellTypeDate = wellTypeDateFormatted,
-                            WellTypeWellIdentifier = new GenerateIdentifierCommand(well.Guid).Execute()
-                        };
-
-                        if (validator.IsValid(wellTypeDetail))
-                        {
-                            xmlWell.WellTypeDetail.Add(wellTypeDetail);
-                        }
-
-                        // location detail
-                        var utm = wellFeature.ShapeCopy;
-
-                        utm.Project(newSpatialRefefence);
-                        var point = (IPoint) utm;
-
-                        var locationDetail = new LocationDetail(well, facility, point.X, point.Y, guid => new GenerateIdentifierCommand(guid).Execute());
-
-                        if (validator.IsValid(locationDetail))
-                        {
-                            xmlWell.LocationDetail = locationDetail;
-                        }
-
-                        // well violation detail uses same table and relationship as facility violations
-                        var wellViolationCursor = wellViolationRelation.GetObjectsRelatedToObject(wellFeature);
-                        releaser.ManageLifetime(wellViolationCursor);
-
-                        IObject wellViolationFeature;
-                        while ((wellViolationFeature = wellViolationCursor.Next()) != null)
-                        {
-                            releaser.ManageLifetime(wellViolationFeature);
-
-                            var violation = EtlMappingService.MapViolationModel(wellViolationFeature, violationFieldMap);
-                            var xmlViolation = mapper.Map<ViolationSdeModel, ViolationDetail>(violation);
-
-                            if (!validator.IsValid(xmlViolation))
-                            {
-                                continue;
-                            }
-
-                            var wellResponseDetailCursor = responseRelation.GetObjectsRelatedToObject(wellViolationFeature);
-                            releaser.ManageLifetime(wellResponseDetailCursor);
-
-                            IObject responseFeature;
-                            while ((responseFeature = wellResponseDetailCursor.Next()) != null)
-                            {
-                                releaser.ManageLifetime(responseFeature);
-
-                                var responseDetail = EtlMappingService.MapResponseModel(responseFeature, responseFieldMap);
-                                var xmlResponseDetail = mapper.Map<EnforcementSdeModel, ResponseDetail>(responseDetail);
-
-                                xmlResponseDetail.ResponseViolationIdentifier = xmlViolation.ViolationIdentifier;
-
-                                if (!validator.IsValid(xmlResponseDetail))
-                                {
-                                    continue;
-                                }
-
-                                xmlViolation.ResponseDetail.Add(xmlResponseDetail);
-                                linkedEnforcements.Add(xmlResponseDetail);
-                            }
-                            
-                            xmlWell.WellViolationDetail.Add(xmlViolation);
-                        }
-
-                        // well inspection detail
-                        var wellInspectionCursor = wellInspectionRelation.GetObjectsRelatedToObject(wellFeature);
-                        releaser.ManageLifetime(wellInspectionRelation);
-
-                        IObject wellInspectionFeature;
-                        while ((wellInspectionFeature = wellInspectionCursor.Next()) != null)
-                        {
-                            releaser.ManageLifetime(wellInspectionFeature);
-
-                            var wellInspection = EtlMappingService.MapWellInspectionModel(wellInspectionFeature, wellInspectionFieldMap);
-                            var xmlWellInspection = mapper.Map<WellInspectionSdeModel, WellInspectionDetail>(wellInspection);
-
-                            if (!validator.IsValid(xmlWellInspection))
-                            {
-                                continue;
-                            }
-
-                            var correctionCursor = inspectionCorrectionRelation.GetObjectsRelatedToObject(wellInspectionFeature);
-                            releaser.ManageLifetime(correctionCursor);
-
-                            IObject correctionFeature;
-                            while ((correctionFeature = correctionCursor.Next()) != null)
-                            {
-                                releaser.ManageLifetime(correctionFeature);
-
-                                var correction = EtlMappingService.MapCorrectionSdeModel(correctionFeature, correctionFieldMap);
-                                var xmlCorrection = mapper.Map<CorrectionSdeModel, CorrectionDetail>(correction);
-                                xmlCorrection.CorrectionInspectionIdentifier = xmlWellInspection.InspectionIdentifier;
-
-                                if (!validator.IsValid(xmlCorrection))
-                                {
-                                    continue;
-                                }
-
-                                xmlWellInspection.CorrectionDetail.Add(xmlCorrection);
-                            }
-
-                            xmlWell.WellInspectionDetail.Add(xmlWellInspection);
-                        }
-
-                        // MI Test detail
-                        var mechanicalIntegrityCursor = wellIntegrityRelation.GetObjectsRelatedToObject(wellFeature);
-                        releaser.ManageLifetime(mechanicalIntegrityCursor);
-
-                        IObject mechanicalIntegrityFeature;
-                        while ((mechanicalIntegrityFeature = mechanicalIntegrityCursor.Next()) != null)
-                        {
-                            releaser.ManageLifetime(mechanicalIntegrityFeature);
-
-                            var mit = EtlMappingService.MapMiTestSdeModel(mechanicalIntegrityFeature, mechanicalInspectionFieldMap);
-                            var xmlMit = mapper.Map<MiTestSdeModel, MiTestDetail>(mit);
-
-                            if (validator.IsValid(xmlMit))
-                            {
-                                xmlWell.MitTestDetail.Add(xmlMit);
-                            }
-                        }
-
-                        // Engineering Detail
-                        var deepWellCursor = deepWellRelation.GetObjectsRelatedToObject(wellFeature);
-                        releaser.ManageLifetime(deepWellCursor);
-
-                        IObject deepWellFeature;
-                        while ((deepWellFeature = deepWellCursor.Next()) != null)
-                        {
-                            releaser.ManageLifetime(deepWellFeature);
-
-                            var deepWell = EtlMappingService.MapWellOperationSdeModel(deepWellFeature, deepWellFieldMap);
-                            var engineeringDetail = mapper.Map<WellOperatingSdeModel, EngineeringDetail>(deepWell);
-
-                            if (!validator.IsValid(engineeringDetail, "R1"))
-                            {
-                                continue;
-                            }
-
-                            if (!new[] {1, 2}.Contains(xmlWell.WellClass) || !validator.IsValid(engineeringDetail, "R2C"))
-                            {
-                                continue;
-                            }
-
-                            xmlWell.EngineeringDetail.Add(engineeringDetail);
-                        }
-
-                        // Waste Detail
-                        var wasteCurser = wasteRelation.GetObjectsRelatedToObject(wellFeature);
-                        releaser.ManageLifetime(wasteCurser);
-
-                        IObject wasteFeature;
-                        while ((wasteFeature = wasteCurser.Next()) != null)
-                        {
-                            releaser.ManageLifetime(wasteFeature);
-
-                            var waste = EtlMappingService.MapWasteClassISdeModel(wasteFeature, wasteFieldMap);
-                            var xmlWaste = mapper.Map<WasteClassISdeModel, WasteDetail>(waste);
-
-                            if (!validator.IsValid(xmlWaste, "R1"))
-                            {
-                                continue;
-                            }
-
-                            if (xmlWell.WellClass != 1 || !validator.IsValid(xmlWaste, "R2C"))
-                            {
-                                debug.Write("Waste {0} failed RC2", xmlWaste.WasteIdentifier);
-                            }
-
-                            xmlWell.WasteDetail.Add(xmlWaste);
-                        }
-
-                        if (!validator.IsValid(xmlWell, "R1"))
+                        if (!validator.IsValid(xmlFacility, "R1"))
                         {
                             continue;
                         }
 
-                        if (!validator.IsValid(xmlWell, "R2C"))
+                        var inspectionCursor = facilityInspectionRelation.GetObjectsRelatedToObject(facilityFeature);
+                        facilityReleaser.ManageLifetime(inspectionCursor);
+
+                        // Find all UICInspections
+                        IObject inspectionFeature;
+                        while ((inspectionFeature = inspectionCursor.Next()) != null)
                         {
-                            continue;
+                            using (var inspectionReleaser = new ComReleaser())
+                            {
+                                inspectionReleaser.ManageLifetime(inspectionFeature);
+
+                                var inspection = EtlMappingService.MapFacilityInspectionModel(inspectionFeature, wellInspectionFieldMap);
+                                var xmlInspection = mapper.Map<WellInspectionSdeModel, WellInspectionDetail>(inspection);
+
+                                if (!validator.IsValid(xmlInspection))
+                                {
+                                    continue;
+                                }
+
+                                xmlFacility.FacilityInspectionDetail.Add(xmlInspection);
+                            }
                         }
 
-                        if (xmlWell.WellClass == 6 && !validator.IsValid(xmlWell, "R2C-except-6"))
+                        var violationCursor = facilityViolationRelation.GetObjectsRelatedToObject(facilityFeature);
+                        facilityReleaser.ManageLifetime(violationCursor);
+
+                        // Find all facility UICViolations
+                        IObject violationFeature;
+                        while ((violationFeature = violationCursor.Next()) != null)
                         {
-                            debug.Write("Well {0} failed RC2", xmlWell.WellIdentifier);
+                            using (var violationReleaser = new ComReleaser())
+                            {
+                                violationReleaser.ManageLifetime(violationFeature);
+
+                                var violation = EtlMappingService.MapViolationModel(violationFeature, violationFieldMap);
+                                var xmlViolation = mapper.Map<ViolationSdeModel, ViolationDetail>(violation);
+                                xmlViolation.ViolationFacilityIdentifier = xmlFacility.FacilityIdentifier;
+
+                                if (!validator.IsValid(xmlViolation))
+                                {
+                                    continue;
+                                }
+
+                                var facilityResponseDetailCursor = responseRelation.GetObjectsRelatedToObject(violationFeature);
+                                violationReleaser.ManageLifetime(facilityResponseDetailCursor);
+
+                                // Find all Violation Responses which are UICEnforcements
+                                IObject responseFeature;
+                                while ((responseFeature = facilityResponseDetailCursor.Next()) != null)
+                                {
+                                    using (var responseReleaser = new ComReleaser())
+                                    {
+                                        responseReleaser.ManageLifetime(responseFeature);
+
+                                        var responseDetail = EtlMappingService.MapResponseModel(responseFeature, responseFieldMap);
+                                        var xmlResponseDetail = mapper.Map<EnforcementSdeModel, ResponseDetail>(responseDetail);
+                                        xmlResponseDetail.ResponseViolationIdentifier = xmlViolation.ViolationIdentifier;
+
+                                        if (!validator.IsValid(xmlResponseDetail))
+                                        {
+                                            continue;
+                                        }
+
+                                        xmlResponseDetail.ResponseViolationIdentifier = xmlViolation.ViolationIdentifier;
+
+                                        xmlViolation.ResponseDetail.Add(xmlResponseDetail);
+                                        linkedEnforcements.Add(xmlResponseDetail);
+                                    }
+                                }
+
+                                xmlFacility.FacilityViolationDetail.Add(xmlViolation);
+                            }
                         }
 
-                        if (new[] {1, 2}.Contains(xmlWell.WellClass) && !validator.IsValid(xmlWell, "R2C-1-2"))
+                        var facilityDetailElement = XmlService.AddFacility(ref payload, xmlFacility);
+
+                        var wellCursor = wellRelation.GetObjectsRelatedToObject(facilityFeature);
+                        facilityReleaser.ManageLifetime(wellCursor);
+
+                        debug.Write("{1} finding wells for facility: {0}", facility.Guid, start.Elapsed);
+
+                        var wellCount = 1;
+                        // Find all wells
+                        IFeature wellFeature;
+                        while ((wellFeature = wellCursor.Next()) != null)
                         {
-                            debug.Write("Well {0} failed RC2", xmlWell.WellIdentifier);
+                            using (var wellReleaser = new ComReleaser())
+                            {
+                                wellReleaser.ManageLifetime(wellFeature);
+                                debug.Write("{0} Wells processed {1}", start.Elapsed, wellCount++);
+
+                                var well = EtlMappingService.MapWellModel(wellFeature, wellFieldMap);
+                                var xmlWell = mapper.Map<WellSdeModel, WellDetail>(well);
+                                xmlWell.WellSiteAreaNameText = xmlFacility.FacilitySiteName;
+
+                                var facilityContactCursor = facilityToContactRelation.GetObjectsRelatedToObject(facilityFeature);
+                                wellReleaser.ManageLifetime(facilityContactCursor);
+
+                                var mostImportantContact = 1000; // this is the 1 higher than 999 or other contact type
+                                var mostImportantContactGuid = Guid.Empty;
+
+                                IRow facilityContactFeature;
+                                while ((facilityContactFeature = facilityContactCursor.Next()) != null)
+                                {
+                                    using (var facilityContactReleaser = new ComReleaser())
+                                    {
+                                        facilityContactReleaser.ManageLifetime(facilityContactFeature);
+
+                                        var contact = EtlMappingService.MapContactSdeModel(facilityContactFeature, contactFieldMap);
+
+                                        if (contact.ContactType > mostImportantContact)
+                                        {
+                                            continue;
+                                        }
+
+                                        mostImportantContact = contact.ContactType;
+                                        mostImportantContactGuid = contact.Guid;
+                                    }
+                                }
+
+                                linkedContacts.Add(mostImportantContactGuid);
+                                xmlWell.WellContactIdentifier = new GenerateIdentifierCommand(mostImportantContactGuid).Execute();
+
+                                var verticalWellCursor = verticalWellRelation.GetObjectsRelatedToObject(wellFeature);
+                                wellReleaser.ManageLifetime(verticalWellCursor);
+
+                                IObject verticalEventFeature;
+                                while ((verticalEventFeature = verticalWellCursor.Next()) != null)
+                                {
+                                    var verticalEvent = EtlMappingService.MapVerticalWellEventModel(verticalEventFeature, verticalWellFieldMap);
+                                    if (!verticalEvent.IsTotalDepth)
+                                    {
+                                        continue;
+                                    }
+
+                                    xmlWell.WellTotalDepthNumeric = verticalEvent.Length;
+                                    break;
+                                }
+
+                                if (string.IsNullOrEmpty(xmlWell.WellTotalDepthNumeric))
+                                {
+                                    xmlWell.WellTotalDepthNumeric = "empty";
+                                }
+
+                                var wellStatusCursor = wellStatusRelation.GetObjectsRelatedToObject(wellFeature);
+                                wellReleaser.ManageLifetime(wellStatusCursor);
+
+                                var wellTypeDate = DateTime.MaxValue;
+                                // write well status
+                                IObject wellStatusFeature;
+                                while ((wellStatusFeature = wellStatusCursor.Next()) != null)
+                                {
+                                    using (var wellStatusReleaser = new ComReleaser())
+                                    {
+                                        wellStatusReleaser.ManageLifetime(wellStatusFeature);
+
+                                        var wellStatus = EtlMappingService.MapWellStatusModel(wellStatusFeature, wellStatusFieldMap);
+                                        var xmlWellStatus = mapper.Map<WellStatusSdeModel, WellStatusDetail>(wellStatus);
+
+                                        if (!validator.IsValid(xmlWellStatus))
+                                        {
+                                            continue;
+                                        }
+
+                                        // get the earliest date
+                                        if (wellStatus.OperatingStatusDate.HasValue && wellTypeDate > wellStatus.OperatingStatusDate)
+                                        {
+                                            wellTypeDate = wellStatus.OperatingStatusDate.GetValueOrDefault();
+                                        }
+
+                                        if (xmlWell.WellStatusDetail.Any())
+                                        {
+                                            var newer = xmlWell.WellStatusDetail.Count(x =>
+                                                DateTime.ParseExact(xmlWellStatus.WellStatusDate, "yyyyMMdd", CultureInfo.InvariantCulture) >
+                                                DateTime.ParseExact(x.WellStatusDate, "yyyyMMdd", CultureInfo.InvariantCulture)) > 0;
+
+                                            if (newer)
+                                            {
+                                                xmlWell.WellStatusDetail.Clear();
+                                            }
+                                            else
+                                            {
+                                                continue;
+                                            }
+                                        }
+
+                                        xmlWell.WellStatusDetail.Add(xmlWellStatus);
+                                    }
+                                }
+
+                                var wellTypeDateFormatted = wellTypeDate.ToString("yyyyMMdd");
+
+                                if (wellTypeDate == DateTime.MaxValue)
+                                {
+                                    wellTypeDateFormatted = null;
+                                }
+
+                                // Add Well Type Details
+                                var wellTypeDetail = new WellTypeDetail
+                                {
+                                    WellTypeIdentifier = xmlWell.WellIdentifier,
+                                    WellTypeCode = xmlWell.WellTypeCode,
+                                    WellTypeDate = wellTypeDateFormatted,
+                                    WellTypeWellIdentifier = new GenerateIdentifierCommand(well.Guid).Execute()
+                                };
+
+                                if (validator.IsValid(wellTypeDetail))
+                                {
+                                    xmlWell.WellTypeDetail.Add(wellTypeDetail);
+                                }
+
+                                // location detail
+                                var utm = wellFeature.ShapeCopy;
+
+                                utm.Project(newSpatialRefefence);
+                                var point = (IPoint) utm;
+
+                                var locationDetail = new LocationDetail(well, facility, point.X, point.Y, guid => new GenerateIdentifierCommand(guid).Execute());
+
+                                if (validator.IsValid(locationDetail))
+                                {
+                                    xmlWell.LocationDetail = locationDetail;
+                                }
+
+                                // well violation detail uses same table and relationship as facility violations
+                                var wellViolationCursor = wellViolationRelation.GetObjectsRelatedToObject(wellFeature);
+                                wellReleaser.ManageLifetime(wellViolationCursor);
+
+                                IObject wellViolationFeature;
+                                while ((wellViolationFeature = wellViolationCursor.Next()) != null)
+                                {
+                                    using (var wellViolationReleaser = new ComReleaser())
+                                    {
+                                        wellViolationReleaser.ManageLifetime(wellViolationFeature);
+
+                                        var violation = EtlMappingService.MapViolationModel(wellViolationFeature, violationFieldMap);
+                                        var xmlViolation = mapper.Map<ViolationSdeModel, ViolationDetail>(violation);
+
+                                        if (!validator.IsValid(xmlViolation))
+                                        {
+                                            continue;
+                                        }
+
+                                        var wellResponseDetailCursor = responseRelation.GetObjectsRelatedToObject(wellViolationFeature);
+                                        wellViolationReleaser.ManageLifetime(wellResponseDetailCursor);
+
+                                        IObject responseFeature;
+                                        while ((responseFeature = wellResponseDetailCursor.Next()) != null)
+                                        {
+                                            using (var responseReleaser = new ComReleaser())
+                                            {
+                                                responseReleaser.ManageLifetime(responseFeature);
+
+                                                var responseDetail = EtlMappingService.MapResponseModel(responseFeature, responseFieldMap);
+                                                var xmlResponseDetail = mapper.Map<EnforcementSdeModel, ResponseDetail>(responseDetail);
+
+                                                xmlResponseDetail.ResponseViolationIdentifier = xmlViolation.ViolationIdentifier;
+
+                                                if (!validator.IsValid(xmlResponseDetail))
+                                                {
+                                                    continue;
+                                                }
+
+                                                xmlViolation.ResponseDetail.Add(xmlResponseDetail);
+                                                linkedEnforcements.Add(xmlResponseDetail);
+                                            }
+                                        }
+
+                                        xmlWell.WellViolationDetail.Add(xmlViolation);
+                                    }
+                                }
+
+                                // well inspection detail
+                                var wellInspectionCursor = wellInspectionRelation.GetObjectsRelatedToObject(wellFeature);
+                                wellReleaser.ManageLifetime(wellInspectionRelation);
+
+                                IObject wellInspectionFeature;
+                                while ((wellInspectionFeature = wellInspectionCursor.Next()) != null)
+                                {
+                                    using (var wellInspectionReleaser = new ComReleaser())
+                                    {
+                                        wellInspectionReleaser.ManageLifetime(wellInspectionFeature);
+
+                                        var wellInspection = EtlMappingService.MapWellInspectionModel(wellInspectionFeature, wellInspectionFieldMap);
+                                        var xmlWellInspection = mapper.Map<WellInspectionSdeModel, WellInspectionDetail>(wellInspection);
+
+                                        if (!validator.IsValid(xmlWellInspection))
+                                        {
+                                            continue;
+                                        }
+
+                                        var correctionCursor = inspectionCorrectionRelation.GetObjectsRelatedToObject(wellInspectionFeature);
+                                        wellInspectionReleaser.ManageLifetime(correctionCursor);
+
+                                        IObject correctionFeature;
+                                        while ((correctionFeature = correctionCursor.Next()) != null)
+                                        {
+                                            using (var correctionReleaser = new ComReleaser())
+                                            {
+                                                correctionReleaser.ManageLifetime(correctionFeature);
+
+                                                var correction = EtlMappingService.MapCorrectionSdeModel(correctionFeature, correctionFieldMap);
+                                                var xmlCorrection = mapper.Map<CorrectionSdeModel, CorrectionDetail>(correction);
+                                                xmlCorrection.CorrectionInspectionIdentifier = xmlWellInspection.InspectionIdentifier;
+
+                                                if (!validator.IsValid(xmlCorrection))
+                                                {
+                                                    continue;
+                                                }
+
+                                                xmlWellInspection.CorrectionDetail.Add(xmlCorrection);
+                                            }
+                                        }
+
+                                        xmlWell.WellInspectionDetail.Add(xmlWellInspection);
+                                    }
+                                }
+
+                                // MI Test detail
+                                var mechanicalIntegrityCursor = wellIntegrityRelation.GetObjectsRelatedToObject(wellFeature);
+                                wellReleaser.ManageLifetime(mechanicalIntegrityCursor);
+
+                                IObject mechanicalIntegrityFeature;
+                                while ((mechanicalIntegrityFeature = mechanicalIntegrityCursor.Next()) != null)
+                                {
+                                    using (var mechanicalReleaser = new ComReleaser())
+                                    {
+                                        mechanicalReleaser.ManageLifetime(mechanicalIntegrityFeature);
+
+                                        var mit = EtlMappingService.MapMiTestSdeModel(mechanicalIntegrityFeature, mechanicalInspectionFieldMap);
+                                        var xmlMit = mapper.Map<MiTestSdeModel, MiTestDetail>(mit);
+
+                                        if (validator.IsValid(xmlMit))
+                                        {
+                                            xmlWell.MitTestDetail.Add(xmlMit);
+                                        }
+                                    }
+                                }
+
+                                // Engineering Detail
+                                var deepWellCursor = deepWellRelation.GetObjectsRelatedToObject(wellFeature);
+                                wellReleaser.ManageLifetime(deepWellCursor);
+
+                                IObject deepWellFeature;
+                                while ((deepWellFeature = deepWellCursor.Next()) != null)
+                                {
+                                    using (var deepWellReleaser = new ComReleaser())
+                                    {
+                                        deepWellReleaser.ManageLifetime(deepWellFeature);
+
+                                        var deepWell = EtlMappingService.MapWellOperationSdeModel(deepWellFeature, deepWellFieldMap);
+                                        var engineeringDetail = mapper.Map<WellOperatingSdeModel, EngineeringDetail>(deepWell);
+
+                                        if (!validator.IsValid(engineeringDetail, "R1"))
+                                        {
+                                            continue;
+                                        }
+
+                                        if (!new[] {1, 2}.Contains(xmlWell.WellClass) || !validator.IsValid(engineeringDetail, "R2C"))
+                                        {
+                                            continue;
+                                        }
+
+                                        xmlWell.EngineeringDetail.Add(engineeringDetail);
+                                    }
+                                }
+
+                                // Waste Detail
+                                var wasteCurser = wasteRelation.GetObjectsRelatedToObject(wellFeature);
+                                wellReleaser.ManageLifetime(wasteCurser);
+
+                                IObject wasteFeature;
+                                while ((wasteFeature = wasteCurser.Next()) != null)
+                                {
+                                    using (var wasteReleaser = new ComReleaser())
+                                    {
+                                        wasteReleaser.ManageLifetime(wasteFeature);
+
+                                        var waste = EtlMappingService.MapWasteClassISdeModel(wasteFeature, wasteFieldMap);
+                                        var xmlWaste = mapper.Map<WasteClassISdeModel, WasteDetail>(waste);
+
+                                        if (!validator.IsValid(xmlWaste, "R1"))
+                                        {
+                                            continue;
+                                        }
+
+                                        if (xmlWell.WellClass != 1 || !validator.IsValid(xmlWaste, "R2C"))
+                                        {
+                                            debug.Write("Waste {0} failed RC2", xmlWaste.WasteIdentifier);
+                                        }
+
+                                        xmlWell.WasteDetail.Add(xmlWaste);
+                                    }
+                                }
+
+                                if (!validator.IsValid(xmlWell, "R1"))
+                                {
+                                    continue;
+                                }
+
+                                if (!validator.IsValid(xmlWell, "R2C"))
+                                {
+                                    continue;
+                                }
+
+                                if (xmlWell.WellClass == 6 && !validator.IsValid(xmlWell, "R2C-except-6"))
+                                {
+                                    debug.Write("Well {0} failed RC2", xmlWell.WellIdentifier);
+                                }
+
+                                if (new[] {1, 2}.Contains(xmlWell.WellClass) && !validator.IsValid(xmlWell, "R2C-1-2"))
+                                {
+                                    debug.Write("Well {0} failed RC2", xmlWell.WellIdentifier);
+                                }
+
+                                if (xmlWell.WellClass == 5 && !validator.IsValid(xmlWell, "R2C-5"))
+                                {
+                                    debug.Write("Well {0} failed RC2", xmlWell.WellIdentifier);
+                                }
+
+                                if (new[] {3, 4}.Contains(xmlWell.WellClass) && !validator.IsValid(xmlWell, "R2C-3-4"))
+                                {
+                                    debug.Write("Well {0} failed RC2", xmlWell.WellIdentifier);
+                                }
+
+                                if (xmlWell.WellTypeCode == "1001" && !validator.IsValid(xmlFacility, "R2C-1H"))
+                                {
+                                    // todo: remove facility and exit
+                                }
+
+                                if (xmlWell.WellClass == 1 && !validator.IsValid(xmlFacility, "R2C-Class1"))
+                                {
+                                    // todo: remove facility and exit
+                                }
+
+                                var authCursor = authorizationWellRelation.GetObjectsRelatedToObject(wellFeature);
+                                wellReleaser.ManageLifetime(authCursor);
+
+                                IObject authFeature;
+                                while ((authFeature = authCursor.Next()) != null)
+                                {
+                                    using (var authReleaser = new ComReleaser())
+                                    {
+                                        authReleaser.ManageLifetime(authFeature);
+
+                                        var authorize = EtlMappingService.MapAuthorizationSdeModel(authFeature, authorizationFieldMap);
+                                        linkedPermits.Add(authorize.Guid);
+                                    }
+                                }
+
+                                XmlService.AddWell(ref facilityDetailElement, xmlWell);
+                            }
                         }
-
-                        if (xmlWell.WellClass == 5 && !validator.IsValid(xmlWell, "R2C-5"))
-                        {
-                            debug.Write("Well {0} failed RC2", xmlWell.WellIdentifier);
-                        }
-
-                        if (new[] {3, 4}.Contains(xmlWell.WellClass) && !validator.IsValid(xmlWell, "R2C-3-4"))
-                        {
-                            debug.Write("Well {0} failed RC2", xmlWell.WellIdentifier);
-                        }
-
-                        if (xmlWell.WellTypeCode == "1001" && !validator.IsValid(xmlFacility, "R2C-1H"))
-                        {
-                            // todo: remove facility and exit
-                        }
-
-                        if (xmlWell.WellClass == 1 && !validator.IsValid(xmlFacility, "R2C-Class1"))
-                        {
-                            // todo: remove facility and exit
-                        }
-
-                        var authCursor = authorizationWellRelation.GetObjectsRelatedToObject(wellFeature);
-                        releaser.ManageLifetime(authCursor);
-
-                        IObject authFeature;
-                        while ((authFeature = authCursor.Next()) != null)
-                        {
-                            releaser.ManageLifetime(authFeature);
-
-                            var authorize = EtlMappingService.MapAuthorizationSdeModel(authFeature, authorizationFieldMap);
-                            linkedPermits.Add(authorize.Guid);
-                        }
-
-                        XmlService.AddWell(ref facilityDetailElement, xmlWell);
                     }
                 }
 
                 debug.Write("{0} finding all linked contacts", start.Elapsed);
-                
+
                 var contacts = new List<ContactDetail>();
 
                 if (linkedContacts.Any())
@@ -676,17 +721,20 @@ namespace uic_etl
                     IRow contactFeature;
                     while ((contactFeature = contactCursor.NextRow()) != null)
                     {
-                        releaser.ManageLifetime(contactFeature);
-
-                        var contact = EtlMappingService.MapContactSdeModel(contactFeature, contactFieldMap);
-                        var xmlContact = mapper.Map<ContactSdeModel, ContactDetail>(contact);
-
-                        if (!validator.IsValid(xmlContact))
+                        using (var contactReleaser = new ComReleaser())
                         {
-                            continue;
-                        }
+                            contactReleaser.ManageLifetime(contactFeature);
 
-                        contacts.Add(xmlContact);
+                            var contact = EtlMappingService.MapContactSdeModel(contactFeature, contactFieldMap);
+                            var xmlContact = mapper.Map<ContactSdeModel, ContactDetail>(contact);
+
+                            if (!validator.IsValid(xmlContact))
+                            {
+                                continue;
+                            }
+
+                            contacts.Add(xmlContact);
+                        }
                     }
                 }
 
@@ -703,62 +751,70 @@ namespace uic_etl
                     IRow authorizeFeature;
                     while ((authorizeFeature = authorizationCursor.NextRow()) != null)
                     {
-                        releaser.ManageLifetime(authorizeFeature);
-
-                        var authorize = EtlMappingService.MapAuthorizationSdeModel(authorizeFeature, authorizationFieldMap);
-                        var xmlPermit = mapper.Map<AuthorizationSdeModel, PermitDetail>(authorize);
-
-                        if (!validator.IsValid(xmlPermit, "R1"))
+                        using (var authorizeReleaser = new ComReleaser())
                         {
-                            continue;
-                        }
+                            authorizeReleaser.ManageLifetime(authorizeFeature);
 
-                        if (!validator.IsValid(xmlPermit, "R2"))
-                        {
-                            debug.Write("Permit {0} did not pass R2", xmlPermit);
-                        }
+                            var authorize = EtlMappingService.MapAuthorizationSdeModel(authorizeFeature, authorizationFieldMap);
+                            var xmlPermit = mapper.Map<AuthorizationSdeModel, PermitDetail>(authorize);
 
-                        var authorizationActionCursor = authorizationActionRelation.GetObjectsRelatedToObject((IObject) authorizeFeature);
-                        releaser.ManageLifetime(authorizationActionCursor);
-
-                        IObject authorizationActionFeature;
-                        while ((authorizationActionFeature = authorizationActionCursor.Next()) != null)
-                        {
-                            var authorizationAction = EtlMappingService.MapAuthorizationActionSdeModel(authorizationActionFeature,
-                                authorizationActionFieldMap);
-                            var permitActivityDetail = mapper.Map<AuthorizationActionSdeModel, PermitActivityDetail>(authorizationAction);
-                            permitActivityDetail.PermitActivityPermitIdentifier = xmlPermit.PermitIdentifier;
-
-                            if (string.IsNullOrEmpty(permitActivityDetail.PermitActivityActionTypeCode) ||
-                                permitActivityDetail.PermitActivityActionTypeCode.ToUpper() == "NR")
-                            {
-                                // skip authorized by rule wells.
-                                // https://github.com/agrc/uic-etl/issues/10#issuecomment-241120723
-                                continue;
-                            }
-
-                            if (!validator.IsValid(permitActivityDetail))
+                            if (!validator.IsValid(xmlPermit, "R1"))
                             {
                                 continue;
                             }
 
-                            xmlPermit.PermitActivityDetail.Add(permitActivityDetail);
-                        }
+                            if (!validator.IsValid(xmlPermit, "R2"))
+                            {
+                                debug.Write("Permit {0} did not pass R2", xmlPermit);
+                            }
 
-                        var areaOfReviewCursor = areaOfReviewRelation.GetObjectsRelatedToObject((IObject) authorizeFeature);
-                        releaser.ManageLifetime(areaOfReviewCursor);
+                            var authorizationActionCursor = authorizationActionRelation.GetObjectsRelatedToObject((IObject) authorizeFeature);
+                            authorizeReleaser.ManageLifetime(authorizationActionCursor);
 
-                        var areaOfReviewFeature = areaOfReviewCursor.Next();
-                        if (areaOfReviewFeature == null)
-                        {
+                            IObject authorizationActionFeature;
+                            while ((authorizationActionFeature = authorizationActionCursor.Next()) != null)
+                            {
+                                using (var authorizeActionReleaser = new ComReleaser())
+                                {
+                                    authorizeActionReleaser.ManageLifetime(authorizationActionFeature);
+
+                                    var authorizationAction = EtlMappingService.MapAuthorizationActionSdeModel(authorizationActionFeature,
+                                        authorizationActionFieldMap);
+                                    var permitActivityDetail = mapper.Map<AuthorizationActionSdeModel, PermitActivityDetail>(authorizationAction);
+                                    permitActivityDetail.PermitActivityPermitIdentifier = xmlPermit.PermitIdentifier;
+
+                                    if (string.IsNullOrEmpty(permitActivityDetail.PermitActivityActionTypeCode) ||
+                                        permitActivityDetail.PermitActivityActionTypeCode.ToUpper() == "NR")
+                                    {
+                                        // skip authorized by rule wells.
+                                        // https://github.com/agrc/uic-etl/issues/10#issuecomment-241120723
+                                        continue;
+                                    }
+
+                                    if (!validator.IsValid(permitActivityDetail))
+                                    {
+                                        continue;
+                                    }
+
+                                    xmlPermit.PermitActivityDetail.Add(permitActivityDetail);
+                                }
+                            }
+
+                            var areaOfReviewCursor = areaOfReviewRelation.GetObjectsRelatedToObject((IObject) authorizeFeature);
+                            authorizeReleaser.ManageLifetime(areaOfReviewCursor);
+
+                            var areaOfReviewFeature = areaOfReviewCursor.Next();
+                            if (areaOfReviewFeature == null)
+                            {
+                                permits.Add(xmlPermit);
+                                continue;
+                            }
+
+                            var areaOfReview = EtlMappingService.MapAreaOfReviewSdeModel(areaOfReviewFeature, areaOfReviewFieldMap);
+                            xmlPermit.PermitAorWellNumberNumeric = areaOfReview.PermitAorWellNumberNumeric;
+
                             permits.Add(xmlPermit);
-                            continue;
                         }
-
-                        var areaOfReview = EtlMappingService.MapAreaOfReviewSdeModel(areaOfReviewFeature, areaOfReviewFieldMap);
-                        xmlPermit.PermitAorWellNumberNumeric = areaOfReview.PermitAorWellNumberNumeric;
-
-                        permits.Add(xmlPermit);
                     }
                 }
 
