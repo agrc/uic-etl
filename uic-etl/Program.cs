@@ -233,7 +233,7 @@ namespace uic_etl
                 {
                     using (var facilityReleaser = new ComReleaser())
                     {
-                        debug.AlwaysWrite("{0} Facilities processed {1}", start.Elapsed, facilityCount++);
+                        debug.AlwaysWrite("{0} Processing facilities {1}", start.Elapsed, ++facilityCount);
 #if DEBUG
                         if (facilityCount > limit)
                         {
@@ -331,7 +331,7 @@ namespace uic_etl
 
                         debug.Write("{1} finding wells for facility: {0}", facility.Guid, start.Elapsed);
 
-                        var wellCount = 1;
+                        var wellCount = 0;
                         // Find all wells
                         IFeature wellFeature;
                         while ((wellFeature = wellCursor.Next()) != null)
@@ -339,7 +339,7 @@ namespace uic_etl
                             using (var wellReleaser = new ComReleaser())
                             {
                                 wellReleaser.ManageLifetime(wellFeature);
-                                debug.Write("{0} Wells processed {1}", start.Elapsed, wellCount++);
+                                debug.Write("{0} Processing well {1}", start.Elapsed, ++wellCount);
 
                                 var well = EtlMappingService.MapWellModel(wellFeature, wellFieldMap);
                                 var xmlWell = mapper.Map<WellSdeModel, WellDetail>(well);
