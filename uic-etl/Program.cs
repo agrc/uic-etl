@@ -198,18 +198,26 @@ namespace uic_etl
                 var payload = XmlService.CreatePayloadElements();
 
                 debug.AlwaysWrite("{0} Quering UICFacility features.", start.Elapsed);
-                var whereClause = "1=1";
+                var whereClauses = new Dictionary<string, string>
+                {
+                    {"all", "1=1"},
+                    {
+                        "testSubmission",
+                        string.Format("Guid IN ({0})",
+                            string.Join(",", "'{268BB302-89F2-4BAA-A19B-45B3C207F236}'", "'{B6BD6456-2607-4172-A498-55471FF720C0}'",
+                                "'{8551FD2F-599C-4BE1-852A-643E633D8E66}'"))
+                    },
+                    {"multipleWellStatus", "Guid='{ADB83294-B48E-440D-83D2-365005C232C7}'"},
+                    {"noWellInspection", "Guid='{8738A1C1-5354-4308-8209-B976DF463884}'"},
+                    {"missingWellViolation", "Guid='{1FE34009-B413-419F-83DE-8673D6D5205B}'"},
+                    {"bhFacilityInspection", "Guid='{0768C21D-D8C1-484B-85F5-22C551BD0E18}'"},
+                    {"contactOrdering", "Guid='{E26A85D4-3624-4986-837C-53383C7B7E48}'"},
+                    {"totalDepth", "Guid='{2D725A99-5409-49BE-8015-E42AE937119F}'"},
+                    {"noInspectionCorrection", "Guid='{1A0BDDC1-B947-47D9-8784-1116958FCE8F}'"},
+                    {"noWell", "Guid='{4390BC4D-2266-43A8-9EA2-A8971C98CFBC}'"}
+                };
 
-                var testSubmissionGuids = string.Format("Guid IN ({0})",
-                    string.Join(",", "'{268BB302-89F2-4BAA-A19B-45B3C207F236}'", "'{B6BD6456-2607-4172-A498-55471FF720C0}'",
-                        "'{8551FD2F-599C-4BE1-852A-643E633D8E66}'"));
-                var multipleWellStatus = "Guid='{ADB83294-B48E-440D-83D2-365005C232C7}'";
-                var noWellInspection = "Guid='{8738A1C1-5354-4308-8209-B976DF463884}'";
-                var missingWellViolation = "Guid='{1FE34009-B413-419F-83DE-8673D6D5205B}'";
-                var bhFacilityInspection = "Guid='{0768C21D-D8C1-484B-85F5-22C551BD0E18}'";
-                var contactOrdering = "Guid='{E26A85D4-3624-4986-837C-53383C7B7E48}'";
-                var totalDepth = "Guid='{2D725A99-5409-49BE-8015-E42AE937119F}'";
-                var missingInspectionCorrection = "Guid='{1A0BDDC1-B947-47D9-8784-1116958FCE8F}'";
+                var whereClause = whereClauses["all"];
 
                 var queryFilter = new QueryFilter
                 {
