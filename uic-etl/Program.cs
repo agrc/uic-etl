@@ -66,6 +66,8 @@ namespace uic_etl
             }
 
             var debug = new DebugService(options.Verbose);
+            var schemaTron = new SchemaTronValidatorService();
+
             var start = Stopwatch.StartNew();
             const int limit = 5;
             debug.AlwaysWrite("Staring: {0}", DateTime.Now.ToString("s"));
@@ -711,6 +713,8 @@ namespace uic_etl
                                 XmlService.AddWell(ref facilityDetailElement, xmlWell);
                             }
                         }
+
+                        schemaTron.ValidateSixtyOneB(xmlFacility, wellCount);
                     }
                 }
 
